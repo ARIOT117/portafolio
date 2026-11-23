@@ -160,9 +160,12 @@ function ProjectDialog({ project }: { project: Project }) {
   // Título de la pestaña: "<proyecto> · Diego Esparza"; al cerrar vuelve al título base
   // (LangProvider fija el título base en su efecto, que corre después del de este hijo:
   // por eso se reaplica en el siguiente frame al cambiar de idioma.)
+  const ownTitle = useRef('')
   useEffect(() => {
+    const title = `${text.name} · Diego Esparza`
+    ownTitle.current = title
     const set = () => {
-      document.title = `${text.name} · Diego Esparza`
+      document.title = title
     }
     set()
     const id = requestAnimationFrame(set)
@@ -170,7 +173,9 @@ function ProjectDialog({ project }: { project: Project }) {
   }, [text.name])
   useEffect(
     () => () => {
-      document.title = baseTitle.current
+      // Con AnimatePresence la vista anterior se desmonta al terminar su salida,
+      // cuando la siguiente («Siguiente proyecto») ya puso su título: no pisarlo.
+      if (document.title === ownTitle.current) document.title = baseTitle.current
     },
     [],
   )
