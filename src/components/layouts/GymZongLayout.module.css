@@ -180,9 +180,9 @@
   will-change: transform;
 }
 
-.slide[data-pos='-1'] .float,
-.slide[data-pos='1'] .float {
-  animation: gz-float 5s ease-in-out infinite alternate;
+/* Flota en los tres teléfonos (también el central); el desfase va inline por teléfono */
+.float {
+  animation: gz-float 3.2s ease-in-out infinite alternate;
 }
 
 .figure {
@@ -218,7 +218,7 @@
 
 /* La captura activa se desplaza sola, como si alguien usara la app */
 .slide[data-pos='0'] .screen img {
-  animation: gz-scroll 3.5s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation: gz-scroll var(--gz-slot, 2.3s) cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 
 .caption {
@@ -326,21 +326,21 @@
 
 @keyframes gz-float {
   from {
-    transform: translateY(0);
+    transform: translateY(12px) rotate(-1deg);
   }
   to {
-    transform: translateY(-10px);
+    transform: translateY(-12px) rotate(1deg);
   }
 }
 
 @keyframes gz-scroll {
   0%,
-  12% {
+  6% {
     transform: translateY(0);
   }
-  62%,
+  58%,
   100% {
-    transform: translateY(-15%);
+    transform: translateY(-22%);
   }
 }
 

@@ -1,7 +1,7 @@
 import '@fontsource-variable/manrope'
 import '@fontsource-variable/inter'
 import { AnimatePresence, motion } from 'motion/react'
-import { useCallback, useEffect, useRef, useState, type PointerEvent, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type PointerEvent, type KeyboardEvent, type CSSProperties } from 'react'
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
@@ -62,7 +62,8 @@ const features: { title: Bi; text: Bi; detail?: boolean }[] = [
   },
 ]
 
-const SLOT_MS = 3500
+/** Ms por pantalla; lo usan la barra de progreso y el scroll interno (--gz-slot). */
+const SLOT_MS = 2300
 
 /** Posición de cada teléfono según su distancia circular a la pantalla activa. */
 const slotFor = (rel: number) => {
@@ -165,6 +166,7 @@ function Screens({ images }: { images: string[] }) {
       aria-roledescription="carousel"
       aria-label={L.carousel[lang]}
       data-paused={paused}
+      style={{ '--gz-slot': `${SLOT_MS}ms` } as CSSProperties}
     >
       <div
         ref={stageRef}
@@ -186,10 +188,10 @@ function Screens({ images }: { images: string[] }) {
                 data-pos={Math.abs(rel) > 1 ? 'far' : rel}
                 initial={false}
                 animate={slotFor(rel)}
-                transition={{ type: 'spring', stiffness: 105, damping: 17, mass: 1 }}
+                transition={{ type: 'spring', stiffness: 170, damping: 20, mass: 1 }}
                 aria-hidden={isActive ? undefined : true}
               >
-                <div className={styles.float} style={{ animationDelay: `${-i * 0.9}s` }}>
+                <div className={styles.float} style={{ animationDelay: `${-i * 1.07}s` }}>
                   <div className={styles.phone}>
                     <div className={styles.screen}>
                       <img
