@@ -10,8 +10,10 @@ import styles from './FolderGrid.module.css'
 
 const N = projects.length
 const STEP = 360 / N
-/** Segundos por vuelta completa del anillo. */
-const TURN_SECONDS = 28
+/** Milisegundos que cada carpeta reposa al frente antes de avanzar un paso. */
+const DWELL_MS = 3500
+/** Descanso extra tras una interacción del usuario. */
+const USER_DWELL_MS = 5500
 const DRAG_DEG_PER_PX = 0.32
 const DRAG_THRESHOLD = 6
 const RESUME_DELAY = 1400
@@ -19,8 +21,16 @@ const RESUME_DELAY = 1400
 const TILT = 0.38
 
 const labels = {
-  es: { prev: 'Proyecto anterior', next: 'Proyecto siguiente', ring: 'Carrusel de proyectos' },
-  en: { prev: 'Previous project', next: 'Next project', ring: 'Project carousel' },
+  es: { prev: 'Proyecto anterior', next: 'Proyecto siguiente', ring: 'Carrusel de proyectos', pause: 'Pausar el carrusel', play: 'Reanudar el carrusel', pick: 'Elegir proyecto' },
+  en: { prev: 'Previous project', next: 'Next project', ring: 'Project carousel', pause: 'Pause the carousel', play: 'Resume the carousel', pick: 'Choose project' },
+}
+
+/** Nombres cortos para los chips. */
+const chipNames: Record<string, { es: string; en: string }> = {
+  'eclipse-rojo': { es: 'Eclipse Rojo', en: 'Red Eclipse' },
+  'gym-zong': { es: 'Gym Zong', en: 'Gym Zong' },
+  apigym: { es: 'ApiGym', en: 'ApiGym' },
+  catstore: { es: 'CATSTORE', en: 'CATSTORE' },
 }
 
 const wrap180 = (a: number) => ((((a + 180) % 360) + 360) % 360) - 180
@@ -50,6 +60,9 @@ export default function FolderGrid() {
     const i = projects.findIndex((p) => p.slug === open)
     return i < 0 ? 0 : i
   })
+  const [userPaused, setUserPaused] = useState(false)
+  // El lector de pantalla solo anuncia el pie tras una interacción; el avance automático es mudo.
+  const [live, setLive] = useState(false)
 
   // Estado mutable del carrusel: nada de esto provoca renders por fotograma.
   const c = useRef({
@@ -63,6 +76,8 @@ export default function FolderGrid() {
     focus: false,
     visible: true,
     resumeAt: 0,
+    dwell: 0,
+    userPaused: false,
     front: 0,
     open: null as string | null,
   })
@@ -79,19 +94,27 @@ export default function FolderGrid() {
       const cos = Math.cos(rad)
       if (Math.abs(th) < 0.01) {
         el.style.transform = 'none'
+        el.style.zIndex = '20'
         face.style.opacity = '1'
         face.style.filter = 'none'
       } else {
         const x = Math.sin(rad) * s.radius
         const z = (cos - 1) * s.radius
-        el.style.transform = `translate3d(${x.toFixed(2)}px,0,${z.toFixed(2)}px) rotateY(${(-th * TILT).toFixed(2)}deg)`
         const k = (1 + cos) / 2 // 1 al frente, 0 atrás
-        face.style.opacity = (0.28 + 0.72 * k * k).toFixed(3)
+        // Las traseras se apagan y encogen para leerse «detrás» sin asomar junto a la frontal.
+        el.style.transform = `translate3d(${x.toFixed(2)}px,0,${z.toFixed(2)}px) rotateY(${(-th * TILT).toFixed(2)}deg) scale(${(1 - 0.12 * (1 - k)).toFixed(3)})`
+        el.style.zIndex = String(Math.round(cos * 10) + 10)
+        face.style.opacity = (0.15 + 0.85 * Math.pow(k, 1.6)).toFixed(3)
         face.style.filter = `blur(${((1 - k) * 2.2).toFixed(2)}px)`
       }
       el.style.pointerEvents = cos < -0.2 ? 'none' : ''
     }
-    const fi = frontIndex(angle)
+    // El pie cambia al aterrizar: durante un vuelo animado sigue al destino cuando ya está cerca.
+    let fi = frontIndex(angle)
+    if (s.anim) {
+      if (Math.abs(angle - s.target) < 10) fi = frontIndex(s.target)
+      else fi = s.front
+    }
     if (fi !== s.front) {
       s.front = fi
       setFront(fi)
@@ -104,10 +127,11 @@ export default function FolderGrid() {
   }
 
   /** Lleva el anillo a un ángulo con un muelle suave (sin rebote). */
-  const animateTo = (target: number, velocity = 0) => {
+  const animateTo = (target: number, velocity = 0, user = true) => {
     const s = c.current
     stopAnim()
     s.target = target
+    s.dwell = user ? -(USER_DWELL_MS - DWELL_MS) : 0
     s.resumeAt = performance.now() + RESUME_DELAY
     const ctl = animate(s.angle, target, {
       type: 'spring',
@@ -131,12 +155,13 @@ export default function FolderGrid() {
     const s = c.current
     stopAnim()
     s.target = nearestTo(s.angle, i)
+    s.dwell = 0
     render(s.target)
   }
 
   const paused = () => {
     const s = c.current
-    return s.hover || s.focus || s.dragging || !s.visible || document.hidden || s.open !== null
+    return s.userPaused || s.hover || s.focus || s.dragging || !s.visible || document.hidden || s.open !== null
   }
 
   // Mide el radio según el ancho real de la carpeta.
@@ -173,7 +198,7 @@ export default function FolderGrid() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, reduced])
 
-  // Rotación automática continua + visibilidad de la sección.
+  // Avance automático por pasos (reposa DWELL_MS al frente y gira un paso) + visibilidad de la sección.
   useEffect(() => {
     if (reduced) return
     const s = c.current
@@ -186,8 +211,8 @@ export default function FolderGrid() {
       const flying = stage?.querySelector('[data-flying]') != null
       if (flying) s.resumeAt = now + RESUME_DELAY
       if (!paused() && !flying && !s.anim && !drag.current.down && now >= s.resumeAt) {
-        s.target = s.angle + (360 / TURN_SECONDS) * dt
-        render(s.target)
+        s.dwell += dt * 1000
+        if (s.dwell >= DWELL_MS) animateTo((Math.round(s.target / STEP) + 1) * STEP, 0, false)
       }
       raf = requestAnimationFrame(tick)
     }
@@ -258,6 +283,7 @@ export default function FolderGrid() {
     const stale = performance.now() - d.lastT > 90
     const v = stale ? 0 : d.v
     const projected = s.angle + v * 0.22
+    setLive(true)
     animateTo(Math.round(projected / STEP) * STEP, v)
   }
 
@@ -275,6 +301,7 @@ export default function FolderGrid() {
     if (off > 30) {
       e.preventDefault()
       e.stopPropagation()
+      setLive(true)
       animateTo(nearestTo(s.angle, i))
       return
     }
@@ -283,14 +310,31 @@ export default function FolderGrid() {
 
   const step = (dir: 1 | -1) => {
     const s = c.current
+    setLive(true)
     animateTo((Math.round(s.target / STEP) + dir) * STEP)
+  }
+
+  const goTo = (i: number) => {
+    const s = c.current
+    setLive(true)
+    animateTo(nearestTo(s.target, i))
+  }
+
+  const togglePause = () => {
+    const s = c.current
+    s.userPaused = !s.userPaused
+    s.dwell = 0
+    setUserPaused(s.userPaused)
   }
 
   const onFocus = (i: number) => (e: FocusEvent<HTMLLIElement>) => {
     const s = c.current
     // Solo foco de teclado: el foco por clic no debe dejar el anillo en pausa.
     if (e.target.matches(':focus-visible')) s.focus = true
-    if (Math.abs(wrap180(i * STEP - s.target)) > 1) animateTo(nearestTo(s.target, i))
+    if (Math.abs(wrap180(i * STEP - s.target)) > 1) {
+      setLive(true)
+      animateTo(nearestTo(s.target, i))
+    }
   }
 
   const list: Variants = {
@@ -394,10 +438,12 @@ export default function FolderGrid() {
         </div>
       </div>
       <div className={styles.controls}>
-        <button type="button" className={styles.nav} aria-label={l.prev} onClick={() => step(-1)}>
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
-        <div className={styles.caption} aria-live="off">
+        <div className={`${styles.cluster} ${styles.clusterStart}`}>
+          <button type="button" className={styles.nav} aria-label={l.prev} onClick={() => step(-1)}>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        </div>
+        <div className={styles.caption} aria-live={live ? 'polite' : 'off'}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={front}
@@ -411,10 +457,33 @@ export default function FolderGrid() {
             </motion.div>
           </AnimatePresence>
         </div>
-        <button type="button" className={styles.nav} aria-label={l.next} onClick={() => step(1)}>
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
+        <div className={styles.cluster}>
+          <button type="button" className={styles.nav} aria-label={l.next} onClick={() => step(1)}>
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+          <button type="button" className={styles.nav} aria-label={userPaused ? l.play : l.pause} aria-pressed={userPaused} onClick={togglePause}>
+            {userPaused ? (
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor" /></svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M8.5 5.5v13M15.5 5.5v13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+            )}
+          </button>
+        </div>
       </div>
+      <ul className={styles.chips} aria-label={l.pick}>
+        {projects.map((p, i) => (
+          <li key={p.slug}>
+            <button
+              type="button"
+              className={styles.chip}
+              aria-current={i === front ? 'true' : undefined}
+              onClick={() => goTo(i)}
+            >
+              {chipNames[p.slug]?.[lang === 'en' ? 'en' : 'es'] ?? p.slug}
+            </button>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }

@@ -1,6 +1,6 @@
 .card {
   --back: color-mix(in srgb, var(--accent) 20%, #d8d3c6);
-  --front: color-mix(in srgb, var(--accent) 9%, rgb(253 252 249 / 0.34));
+  --front: color-mix(in srgb, var(--accent) 9%, rgb(253 252 249 / 0.26));
   --front-edge: color-mix(in srgb, var(--accent) 22%, rgb(253 252 249 / 0.7));
 
   display: block;
@@ -103,12 +103,12 @@
 
 /* Panel frontal: translúcido y bajo, la portada se lee como contenido de la carpeta */
 .front {
-  inset: 52% 0 0;
+  inset: 74% 0 0;
   background: var(--front);
   border: 1px solid var(--front-edge);
   border-radius: 14px;
-  -webkit-backdrop-filter: blur(3px);
-  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
   transform-origin: 50% 100%;
   transform: perspective(900px) rotateX(0deg);
   transition: transform var(--duration-slow) var(--ease-out-expo);

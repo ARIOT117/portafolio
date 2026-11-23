@@ -78,12 +78,58 @@
 
 .controls {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: 5.5rem minmax(0, 1fr) 5.5rem;
   align-items: start;
-  gap: var(--space-4);
-  max-width: 34rem;
+  gap: var(--space-3);
+  max-width: 44rem;
   margin: var(--space-5) auto 0;
   padding-inline: var(--gutter);
+}
+
+.cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* El grupo izquierdo se alinea al borde del pie; el derecho lleva también pausa/reanudar */
+.clusterStart {
+  justify-content: flex-end;
+}
+
+.chips {
+  list-style: none;
+  padding: 0 var(--gutter);
+  margin: var(--space-3) auto 0;
+  max-width: 44rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.chip {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-ink-2);
+  font: inherit;
+  font-size: var(--text-xs, 0.75rem);
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out-quart), color var(--duration-fast) var(--ease-out-quart);
+}
+
+.chip:hover {
+  background: rgb(22 21 15 / 0.05);
+  color: inherit;
+}
+
+.chip[aria-current='true'] {
+  color: inherit;
+  border-color: var(--color-line, rgb(22 21 15 / 0.14));
+  background: rgb(22 21 15 / 0.04);
 }
 
 .caption {
@@ -139,8 +185,16 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: var(--space-7) var(--space-6);
+  margin: 0 auto;
 }
 
 .rowItem {
-  width: min(100%, 17rem);
+  width: min(100%, 15rem);
+  flex: 0 0 auto;
+}
+
+@media (max-width: 520px) {
+  .rowItem {
+    width: min(100%, 17rem);
+  }
 }
