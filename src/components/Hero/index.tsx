@@ -16,7 +16,7 @@ export default function Hero() {
       y: 0,
       transition: reduced
         ? reducedTransition
-        : { duration: 0.8, ease: easeOutExpo, delay: 0.12 + i * 0.08 },
+        : { duration: 0.8, ease: easeOutExpo, delay: 0.5 + i * 0.08 },
     }),
   }
   const state = phase === 'type' ? 'hidden' : 'show'

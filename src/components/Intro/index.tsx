@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect } from 'react'
 import { useT } from '../../i18n/context'
+import Scramble from './Scramble'
 import { easeInOutQuart, easeOutExpo, easeOutQuart } from '../../styles/motion'
 import styles from './Intro.module.css'
 import {
@@ -13,7 +14,10 @@ import {
 } from './introStore'
 
 const WORD = 'ARIOT117'
-const STAGGER = 0.045
+const NAME = 'Diego Esparza'
+/** Línea de tiempo (ms desde que arranca la intro). */
+const PUNCH_AT = 1000
+const NAME_AT = 1350
 
 /** Transición de la palabra hacia la marca de la Nav (la lee también Nav). */
 export const brandFlight = { duration: FLY_MS / 1000, ease: easeInOutQuart }
@@ -76,26 +80,44 @@ export default function Intro() {
       {phase === 'type' && (
         <div className={styles.stage} onClick={skipIntro}>
           <motion.div
-            layoutId="brand"
-            className={styles.word}
-            initial={{ letterSpacing: '0.3em' }}
-            animate={{ letterSpacing: '-0.035em' }}
-            transition={{ duration: 1.1, ease: easeOutExpo }}
-          >
-            <span className="sr-only">{WORD}</span>
-            {WORD.split('').map((char, i) => (
-              <motion.span
-                key={i}
-                aria-hidden
-                className={styles.letter}
-                initial={{ opacity: 0, y: 8, filter: 'blur(12px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                transition={{ duration: 0.7, ease: easeOutExpo, delay: 0.1 + i * STAGGER }}
+            className={styles.flash}
+            aria-hidden
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.7, 0] }}
+            transition={{ duration: 0.55, delay: PUNCH_AT / 1000, times: [0, 0.3, 1], ease: easeOutQuart }}
+          />
+          <div className={styles.lockup}>
+            <motion.div
+              layoutId="brand"
+              className={styles.word}
+              transition={brandFlight}
+            >
+              <motion.div
+                className={styles.punch}
+                animate={{ scale: [1, 1.07, 1] }}
+                transition={{ duration: 0.45, delay: PUNCH_AT / 1000, times: [0, 0.4, 1], ease: easeOutExpo }}
               >
-                {char}
-              </motion.span>
-            ))}
-          </motion.div>
+                <span className="sr-only">{WORD}</span>
+                <Scramble text={WORD} start={80} step={85} cycle={260} />
+                <motion.span
+                  aria-hidden
+                  className={styles.sweep}
+                  initial={{ x: '-130%', opacity: 0 }}
+                  animate={{ x: '130%', opacity: [0, 1, 1, 0] }}
+                  transition={{ duration: 0.6, delay: PUNCH_AT / 1000, ease: easeInOutQuart }}
+                />
+              </motion.div>
+            </motion.div>
+            <motion.p
+              className={styles.name}
+              initial={{ opacity: 0, y: 10, filter: 'blur(8px)' }}
+              animate={{ opacity: [0, 1, 1, 0], y: [10, 0, 0, -6], filter: ['blur(8px)', 'blur(0px)', 'blur(0px)', 'blur(4px)'] }}
+              transition={{ duration: (TYPE_MS - NAME_AT) / 1000, delay: NAME_AT / 1000, times: [0, 0.25, 0.85, 1], ease: easeOutExpo }}
+            >
+              <span className="sr-only">{NAME}</span>
+              <Scramble text={NAME} start={40} step={28} cycle={160} />
+            </motion.p>
+          </div>
           <button
             type="button"
             className={styles.skip}

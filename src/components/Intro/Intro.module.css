@@ -16,20 +16,89 @@
   cursor: pointer;
 }
 
+.lockup {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+}
+
 .word {
   display: flex;
   font-size: clamp(2.5rem, 1.2rem + 8vw, 7rem);
   font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-display);
   line-height: 1;
   color: var(--color-ink);
   white-space: nowrap;
-  /* El tracking inicial (0.3em) desplaza el conjunto: compensa el espacio final */
-  padding-inline-start: 0.1em;
 }
 
+.punch {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  padding-block: 0.06em;
+  will-change: transform;
+}
+
+/* Cada letra reserva su ancho real; el glifo cambiante se superpone centrado */
 .letter {
+  position: relative;
   display: inline-block;
-  will-change: transform, filter, opacity;
+}
+
+.ghost {
+  opacity: 0;
+}
+
+.glyph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--color-ink-3);
+  font-size: 0.8em;
+  transition:
+    color 120ms linear,
+    font-size 120ms linear;
+}
+
+.locked {
+  color: inherit;
+  font-size: 1em;
+}
+
+/* Destello de luz que cruza la palabra */
+.sweep {
+  position: absolute;
+  inset: 0 -20%;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    color-mix(in srgb, var(--color-surface) 92%, transparent) 50%,
+    transparent 62%
+  );
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 50% 40% at 50% 50%,
+    var(--color-accent-soft),
+    transparent 70%
+  );
+}
+
+.name {
+  display: flex;
+  margin: 0;
+  font-size: clamp(1.125rem, 0.9rem + 1.2vw, 1.75rem);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-ink-2);
+  white-space: nowrap;
 }
 
 .skip {
