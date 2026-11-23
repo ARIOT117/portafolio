@@ -15,6 +15,8 @@ export const TYPE_MS = 1500
 export const FLY_MS = 850
 
 function shouldSkipIntro(): boolean {
+  // Entrada directa a una vista de proyecto: sin intro
+  if (window.location.pathname.startsWith('/p/')) return true
   try {
     if (window.sessionStorage.getItem(INTRO_STORAGE_KEY)) return true
   } catch {

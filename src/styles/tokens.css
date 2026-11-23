@@ -94,5 +94,6 @@
   /* Capas */
   --z-nav: 20;
   --z-overlay: 40;
+  --z-view: 120; /* vista de proyecto: por encima de la Nav */
   --z-intro: 100;
 }

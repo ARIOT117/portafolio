@@ -24,8 +24,8 @@ export const en: Dict = {
   hero: {
     greeting: "Hi, I'm",
     name: 'Diego Esparza',
-    role: 'Full-stack developer. Strong in databases and AI integration.',
-    about: 'I study software development and work both in a job and with freelance clients.',
+    role: 'Full-stack developer focused on databases and AI integration.',
+    about: 'Software development student. Open to full-time roles and freelance projects.',
     location: 'Chihuahua, Mexico',
     ctaProjects: 'See projects',
     ctaContact: 'Contact',

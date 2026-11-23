@@ -1,3 +1,168 @@
-.root {
+.card {
+  --back: color-mix(in srgb, var(--accent) 20%, #d8d3c6);
+  --front: color-mix(in srgb, var(--accent) 9%, rgb(253 252 249 / 0.6));
+  --front-edge: color-mix(in srgb, var(--accent) 22%, rgb(253 252 249 / 0.9));
+
   display: block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-lg);
+  outline-offset: 10px;
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: transform var(--duration-base) var(--ease-out-quart);
+}
+
+.card[data-active] {
+  transform: none;
+}
+
+/* Contenedor que se transforma en la vista (layoutId) */
+.art {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 11;
+  background: transparent;
+  /* Al cerrar, el dibujo reaparece cuando termina el vuelo de vuelta (sin deformarse) */
+  transition: background-color var(--duration-fast) var(--ease-out-quart) 520ms;
+}
+
+.card[data-active] .art {
+  background: var(--back);
+  transition-delay: 0ms;
+}
+
+.inner,
+.caption {
+  transition: opacity 220ms var(--ease-out-quart) 520ms;
+}
+
+.card[data-active] .inner,
+.card[data-active] .caption {
+  transition-duration: 90ms;
+  transition-delay: 0ms;
+}
+
+.inner {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.card[data-active] .inner,
+.card[data-active] .caption {
+  opacity: 0;
+}
+
+.tab,
+.back,
+.sheet,
+.front {
+  position: absolute;
+  display: block;
+}
+
+.tab {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 36%;
+  height: 14%;
+  background: var(--back);
+  border-radius: 14px 14px 0 0;
+}
+
+.back {
+  inset: 9% 0 0;
+  background: var(--back);
+  border-radius: 0 14px 14px 14px;
+  box-shadow: var(--shadow-md);
+}
+
+.sheet {
+  inset: 15% 5.5% 10%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+  box-shadow: 0 1px 3px rgb(22 21 15 / 0.12);
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+}
+
+.sheet img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 14%;
+}
+
+.sheetLight {
+  background: var(--color-surface);
+}
+
+.sheetLight img {
+  object-fit: contain;
+  object-position: center 30%;
+  padding: 6% 12%;
+}
+
+.front {
+  inset: 34% 0 0;
+  background: var(--front);
+  border: 1px solid var(--front-edge);
+  border-radius: 14px;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  transform-origin: 50% 100%;
+  transform: perspective(900px) rotateX(0deg);
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+}
+
+.card:focus-visible .front,
+.card:focus-visible .sheet {
+  transition-duration: var(--duration-base);
+}
+
+.card:focus-visible .front {
+  transform: perspective(900px) rotateX(-12deg);
+}
+
+.card:focus-visible .sheet {
+  transform: translateY(-9%);
+}
+
+@media (hover: hover) {
+  .card:hover .front {
+    transform: perspective(900px) rotateX(-12deg);
+  }
+
+  .card:hover .sheet {
+    transform: translateY(-9%);
+  }
+}
+
+.caption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-block-start: var(--space-5);
+}
+
+.name {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-snug);
+}
+
+.kicker {
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  max-width: 44ch;
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .front,
+  .sheet,
+  .card {
+    transition-duration: 0.01ms;
+  }
 }

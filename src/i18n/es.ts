@@ -23,9 +23,9 @@ export const es = {
   hero: {
     greeting: 'Hola, soy',
     name: 'Diego Esparza',
-    role: 'Desarrollador full-stack. Fuerte en bases de datos e integración de IA.',
+    role: 'Desarrollador full-stack, con foco en bases de datos e integración de IA.',
     about:
-      'Estudio desarrollo de software y trabajo en empleo y con clientes freelance.',
+      'Estudiante de desarrollo de software. Disponible para empleo y proyectos freelance.',
     location: 'Chihuahua, México',
     ctaProjects: 'Ver proyectos',
     ctaContact: 'Contacto',

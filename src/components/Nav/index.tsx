@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router'
 import { useT, type Lang } from '../../i18n/LangProvider'
 import { brandFlight } from '../Intro'
 import { useIntroPhase } from '../Intro/introStore'
@@ -8,6 +9,7 @@ import styles from './Nav.module.css'
 export default function Nav() {
   const { t, lang, setLang } = useT()
   const phase = useIntroPhase()
+  const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -26,14 +28,17 @@ export default function Nav() {
   return (
     <header className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}>
       <div className={styles.inner}>
-        <a
-          href="#"
+        <Link
+          to="/"
           className={styles.brandLink}
           aria-label={t.nav.home}
           tabIndex={introRunning ? -1 : undefined}
           onClick={(e) => {
-            e.preventDefault()
-            window.scrollTo({ top: 0, behavior: 'smooth' })
+            // Ya en la home: solo sube. Desde un proyecto, navega a "/".
+            if (location.pathname === '/') {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }
           }}
         >
           {introRunning ? (
@@ -45,7 +50,7 @@ export default function Nav() {
               {t.nav.brand}
             </motion.span>
           )}
-        </a>
+        </Link>
 
         <div
           className={styles.right}
@@ -55,8 +60,8 @@ export default function Nav() {
           }}
         >
           <nav aria-label="Principal" className={styles.links}>
-            <a href="#proyectos">{t.nav.projects}</a>
-            <a href="#contacto">{t.nav.contact}</a>
+            <Link to={{ pathname: '/', hash: '#proyectos' }}>{t.nav.projects}</Link>
+            <Link to={{ pathname: '/', hash: '#contacto' }}>{t.nav.contact}</Link>
           </nav>
           <div role="group" aria-label={t.nav.language} className={styles.lang}>
             {options.map((o) => (
