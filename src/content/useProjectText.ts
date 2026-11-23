@@ -1,5 +1,5 @@
 import type { Project } from './projects'
-import { useT } from '../i18n/LangProvider'
+import { useT } from '../i18n/context'
 
 /** Textos de un proyecto en el idioma activo (claves bajo `project.i18nKey`). */
 export interface ProjectText {

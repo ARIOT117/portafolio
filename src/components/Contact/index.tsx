@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL } from '../../content/contact'
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import styles from './Contact.module.css'
 
 const arrow = (

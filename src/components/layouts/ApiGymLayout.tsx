@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { animate, motion, useInView } from 'motion/react'
 import type { Project } from '../../content/projects'
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import { tween, useReducedMotionSafe } from '../../styles/motion'
 import ProjectBasics from './ProjectBasics'
 import styles from './ApiGymLayout.module.css'

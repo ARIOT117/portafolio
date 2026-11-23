@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect } from 'react'
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import { easeInOutQuart, easeOutExpo, easeOutQuart } from '../../styles/motion'
 import styles from './Intro.module.css'
 import {

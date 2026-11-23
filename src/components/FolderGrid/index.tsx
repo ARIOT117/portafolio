@@ -1,6 +1,6 @@
 import { motion, type Variants } from 'motion/react'
 import { projects } from '../../content/projects'
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import { easeOutExpo, reducedTransition, useReducedMotionSafe } from '../../styles/motion'
 import Folder from '../Folder'
 import styles from './FolderGrid.module.css'

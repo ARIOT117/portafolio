@@ -5,7 +5,7 @@ import '@fontsource-variable/fraunces/wght-italic.css'
 import '@fontsource-variable/inter'
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
 import { ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './CatstoreLayout.module.css'
@@ -127,7 +127,14 @@ export default function CatstoreLayout({ project }: { project: Project }) {
           <p className={styles.kicker}>{text.kicker}</p>
           <h1 id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
             <span className={styles.brand}>{brand?.trim()}</span>
-            {sub && <span className={styles.sub}>{sub}</span>}
+            {sub && (
+              <>
+                {/* Espacios como nodos de texto (el título es flex, no se ven) para que el nombre accesible sea "CATSTORE · Snacks and Cats" */}
+                {' '}
+                <span className="sr-only">·</span>{' '}
+                <span className={styles.sub}>{sub}</span>
+              </>
+            )}
           </h1>
           <p className={styles.summary}>{text.summary}</p>
           <ProjectLinks project={project} />

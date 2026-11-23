@@ -1,8 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { en } from './en'
 import { es, type Dict } from './es'
-
-export type Lang = 'es' | 'en'
+import { LangContext, type Lang } from './context'
 
 const dictionaries: Record<Lang, Dict> = { es, en }
 const STORAGE_KEY = 'lang'
@@ -17,14 +16,6 @@ export function detectLang(): Lang {
   const nav = typeof navigator !== 'undefined' ? navigator.language : 'es'
   return nav?.toLowerCase().startsWith('es') ? 'es' : 'en'
 }
-
-interface LangContextValue {
-  t: Dict
-  lang: Lang
-  setLang: (lang: Lang) => void
-}
-
-const LangContext = createContext<LangContextValue | null>(null)
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(detectLang)
@@ -45,10 +36,4 @@ export function LangProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => ({ t: dictionaries[lang], lang, setLang }), [lang, setLang])
   return <LangContext.Provider value={value}>{children}</LangContext.Provider>
-}
-
-export function useT(): LangContextValue {
-  const ctx = useContext(LangContext)
-  if (!ctx) throw new Error('useT debe usarse dentro de <LangProvider>')
-  return ctx
 }

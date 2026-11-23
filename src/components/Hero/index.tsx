@@ -1,5 +1,5 @@
 import { motion, type Variants } from 'motion/react'
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import { easeOutExpo, reducedTransition, useReducedMotionSafe } from '../../styles/motion'
 import { useIntroPhase } from '../Intro/introStore'
 import styles from './Hero.module.css'

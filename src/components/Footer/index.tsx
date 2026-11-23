@@ -1,4 +1,4 @@
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import styles from './Footer.module.css'
 
 export default function Footer() {

@@ -1,5 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
-import { LangProvider, detectLang, useT } from './LangProvider'
+import { LangProvider, detectLang } from './LangProvider'
+import { useT } from './context'
 
 function setNavigatorLanguage(value: string) {
   vi.spyOn(window.navigator, 'language', 'get').mockReturnValue(value)

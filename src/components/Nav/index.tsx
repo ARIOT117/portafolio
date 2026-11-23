@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router'
-import { useT, type Lang } from '../../i18n/LangProvider'
+import { useT, type Lang } from '../../i18n/context'
 import { brandFlight } from '../Intro'
 import { useIntroPhase } from '../Intro/introStore'
 import styles from './Nav.module.css'

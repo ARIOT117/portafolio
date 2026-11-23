@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import type { LinkKind, Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
-import { useT } from '../../i18n/LangProvider'
+import { useT } from '../../i18n/context'
 import styles from './ProjectBasics.module.css'
 
 /** Id del h1 del proyecto: lo usa la vista para aria-labelledby y para el foco. */
