@@ -11,6 +11,7 @@ import { useProjectText } from '../../content/useProjectText'
 import { useT, type Lang } from '../../i18n/LangProvider'
 import { easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
 import { ProjectLinks, projectTitleId } from './ProjectBasics'
+import EclipseRojoPlanet from './EclipseRojoPlanet'
 import styles from './EclipseRojoLayout.module.css'
 
 type Bi = { es: string; en: string }
@@ -97,8 +98,9 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
   return (
     <div className={styles.root} style={vars}>
       <section className={styles.hero}>
-        <img className={styles.heroImg} src={project.assets.cover} alt="" width={1440} height={900} fetchPriority="high" />
+        <EclipseRojoPlanet />
         <div className={styles.heroShade} aria-hidden />
+        <p className={styles.heroCredit}>{lang === 'es' ? 'Textura de Marte' : 'Mars texture'}: Solar System Scope (CC BY 4.0)</p>
         <div className={styles.heroInner}>
           {text.award && (
             <p className={styles.award}>
