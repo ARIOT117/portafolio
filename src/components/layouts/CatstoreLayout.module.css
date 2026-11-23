@@ -9,6 +9,13 @@
   --cs-terra: #b04a2c;
   --cs-rule: #ddd3c0;
   --serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --pc-ink: var(--cs-ink);
+  --pc-ink-2: #55513f;
+  --pc-line: var(--cs-rule);
+  --pc-card: var(--cs-card);
+  --pc-accent: var(--cs-terra);
+  --pc-font: var(--serif);
+  --pc-radius: 0.875rem;
   --sans: 'Inter Variable', var(--font-sans);
 
   min-height: 100%;
@@ -380,19 +387,17 @@
   color: #55513f;
 }
 
-.endLinks {
-  margin-block-start: var(--space-3);
+.closingWrap {
+  max-width: 82rem;
+  margin: var(--space-8) auto 0;
+  padding-inline: var(--gutter);
 }
 
 @media (min-width: 48rem) {
   .basicsInner {
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr;
     align-items: start;
     gap: var(--space-7);
-  }
-
-  .endLinks {
-    margin: 0;
   }
 }
 

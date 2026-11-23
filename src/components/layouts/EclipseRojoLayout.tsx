@@ -10,7 +10,7 @@ import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT, type Lang } from '../../i18n/context'
 import { easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
-import { ProjectLinks, projectTitleId } from './ProjectBasics'
+import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import EclipseRojoPlanet from './EclipseRojoPlanet'
 import styles from './EclipseRojoLayout.module.css'
 
@@ -421,14 +421,7 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
         </Reveal>
 
         <Reveal>
-          <section aria-labelledby="er-hl">
-            <h2 id="er-hl" className={styles.label}>{t.projects.highlights}</h2>
-            <ul className={styles.list}>
-              {text.highlights.map((h) => (
-                <li key={h}>{h}</li>
-              ))}
-            </ul>
-          </section>
+          <ProjectClosing project={project} linksClassName={styles.actions} />
         </Reveal>
 
         <p className={styles.honest}>{pick(L.honest, lang)}</p>

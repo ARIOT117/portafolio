@@ -44,7 +44,8 @@ export const en: Dict = {
     viewSite: 'View site',
     viewRepo: 'View repository',
     play: 'Play',
-    showcase: 'Showcase',
+    showcase: 'See the app',
+    next: 'Next project',
     publication: 'Post',
     privateRepo: 'Private repository',
     notFound: "I couldn't find that project.",
@@ -69,21 +70,29 @@ export const en: Dict = {
     kicker: 'A Mars mission design game, built in Unity',
     summary:
       'A single-player game built in Unity for the NASA Space Apps Challenge 2026, Space Mission Design Game challenge, with team DualDynamics. You design a mission to Mars, fly the spacecraft and scan the planet for a thermal anomaly during a dust storm. It plays in the browser.',
-    role: ['Game mechanics', 'Design', 'Interface'],
+    role: [
+      'I designed and programmed the game mechanics',
+      'I did the visual design',
+      'I built the interface and HUD',
+    ],
     highlights: [
       'You design the mission: orbit, launcher and instruments, within limits on mass, power, cost and slots.',
       'You operate the spacecraft and scan Mars during a dust storm.',
       'At the end you get a mission report. It runs in the browser with WebGL.',
     ],
     award: '1st place, local event · NASA Space Apps 2026',
-    awardSub: 'Now competing globally',
+    awardSub: 'Global round: result pending',
   },
   gymZong: {
     name: 'Gym Zong',
     kicker: 'An offline Android app for strength routines',
     summary:
-      'You open the app, know what is on today, log your workout and see your progress. It is in Spanish and works offline with SQLite. It has streaks with freezes, stats, a calendar and a history. It has its own identity: a flower, warm white and mint.',
-    role: ['Product', 'Design', 'Development'],
+      'You open the app, know what is on today, log your workout and see your progress. It is in Spanish and works offline with SQLite, so you can train even without a signal. It has streaks with freezes, stats, a calendar and a history.',
+    role: [
+      'I defined the product',
+      'I designed the app: screens and visual identity',
+      'I built the whole app with Expo and React Native',
+    ],
     credits:
       'My project end to end. Ideas, QA and design proposals: Irvin Chavez and Diego Soto.',
     highlights: [
@@ -96,7 +105,7 @@ export const en: Dict = {
     name: 'ApiGym',
     kicker: 'Movement library',
     summary:
-      'The exercise library behind Gym Zong, now live: 1,257 exercises with images and SVG animations, filters by muscle, equipment and family, and a documented public read API. It is a project by team 5-5DE.',
+      'The exercise library behind Gym Zong, now live: 1,257 exercises with images and SVG animations, filters by muscle, equipment and family, and a documented public read API.',
     role: [
       'Wrote the instructions on how to build it',
       'Generated the animated SVGs',

@@ -11,6 +11,13 @@
   --ag-line: #27434c;
   --ag-track: #2a4750;
   --ag-sans: 'Manrope Variable', var(--font-sans);
+  --pc-ink: var(--ag-ink);
+  --pc-ink-2: var(--ag-ink-2);
+  --pc-line: var(--ag-line);
+  --pc-card: var(--ag-surface);
+  --pc-accent: var(--ag-accent);
+  --pc-font: var(--ag-sans);
+  --pc-radius: var(--radius-lg);
 
   min-height: 100%;
   background: var(--ag-bg);
@@ -88,6 +95,7 @@
 }
 
 .team {
+  margin-block-start: var(--space-5);
   font-size: var(--text-sm);
   color: var(--ag-ink-2);
 }
@@ -361,6 +369,9 @@
   margin: 0;
   padding: var(--space-5);
   overflow-x: auto;
+  /* Las cadenas largas se parten en lugar de cortarse sin aviso en pantallas angostas */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   line-height: 1.7;
@@ -550,7 +561,7 @@
 
 @media (min-width: 900px) {
   .cols {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-8);
   }
 }
@@ -612,4 +623,49 @@
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* Explorador: en escritorio la lista llena la altura del escenario, como filas */
+@media (min-width: 900px) {
+  .explorer {
+    align-items: stretch;
+  }
+
+  .chipsCol {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chipsCol .chips {
+    flex: 1;
+    display: grid;
+    grid-auto-rows: minmax(2.75rem, 1fr);
+    gap: var(--space-2);
+  }
+
+  .chipsCol .chips li {
+    display: flex;
+  }
+
+  .chipsCol .chip {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    border-radius: var(--radius-md);
+    padding-inline: var(--space-5);
+    text-align: start;
+  }
+
+  .chipsCol .chipId {
+    display: inline;
+  }
+}
+
+.chipId {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  opacity: 0.75;
 }

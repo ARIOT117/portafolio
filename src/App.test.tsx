@@ -79,7 +79,10 @@ describe('carpetas y vista de proyecto', () => {
     async (slug) => {
       renderAt(`/p/${slug}`)
       const dialog = await screen.findByRole('dialog')
-      const links = within(dialog).getAllByRole('link')
+      // Solo los enlaces que salen del sitio; «Siguiente proyecto» es interno.
+      const links = within(dialog)
+        .getAllByRole('link')
+        .filter((a) => /^https?:\/\//.test(a.getAttribute('href') ?? ''))
       expect(links.length).toBeGreaterThan(0)
       for (const a of links) {
         expect(a).toHaveAttribute('target', '_blank')

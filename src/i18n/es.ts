@@ -44,7 +44,8 @@ export const es = {
     viewSite: 'Ver sitio',
     viewRepo: 'Ver repositorio',
     play: 'Jugar',
-    showcase: 'Vitrina',
+    showcase: 'Ver la app',
+    next: 'Siguiente proyecto',
     publication: 'Publicación',
     privateRepo: 'Repositorio privado',
     notFound: 'No encontré ese proyecto.',
@@ -69,21 +70,29 @@ export const es = {
     kicker: 'Juego de diseño de misiones a Marte, hecho en Unity',
     summary:
       'Juego para un jugador hecho en Unity para el NASA Space Apps Challenge 2026, reto Space Mission Design Game, con el equipo DualDynamics. Diseñas una misión a Marte, operas la nave y escaneas el planeta en busca de una anomalía térmica durante una tormenta de polvo. Se juega en el navegador.',
-    role: ['Mecánicas de juego', 'Diseño', 'Interfaz'],
+    role: [
+      'Diseñé y programé las mecánicas del juego',
+      'Hice el diseño visual',
+      'Construí la interfaz y el HUD',
+    ],
     highlights: [
       'Diseñas la misión: órbita, lanzador e instrumentos, dentro de límites de masa, potencia, costo y espacios.',
       'Operas la nave y escaneas Marte durante una tormenta de polvo.',
       'Al terminar recibes un informe de la misión. Corre en el navegador con WebGL.',
     ],
     award: '1er lugar local · NASA Space Apps 2026',
-    awardSub: 'En competencia global',
+    awardSub: 'Etapa global: resultado pendiente',
   },
   gymZong: {
     name: 'Gym Zong',
     kicker: 'App Android de rutinas de fuerza, sin conexión',
     summary:
-      'Abres la app, sabes qué toca, registras el entrenamiento y ves tu progreso. Está en español y funciona sin conexión con SQLite. Tiene rachas con congelaciones, estadísticas, calendario e historial. Tiene identidad propia: una flor, blanco cálido y menta.',
-    role: ['Producto', 'Diseño', 'Desarrollo'],
+      'Abres la app, sabes qué toca, registras el entrenamiento y ves tu progreso. Está en español y funciona sin conexión con SQLite, así que entrenas aunque no tengas señal. Tiene rachas con congelaciones, estadísticas, calendario e historial.',
+    role: [
+      'Definí el producto',
+      'Diseñé la app: pantallas e identidad visual',
+      'Programé la app completa con Expo y React Native',
+    ],
     credits:
       'Proyecto mío de principio a fin. Ideas, QA y propuestas de diseño: Irvin Chavez y Diego Soto.',
     highlights: [
@@ -96,7 +105,7 @@ export const es = {
     name: 'ApiGym',
     kicker: 'Biblioteca de movimiento',
     summary:
-      'La biblioteca de ejercicios detrás de Gym Zong, ya en línea: 1,257 ejercicios con imágenes y animaciones SVG, filtros por músculo, equipo y familia, y una API pública de lectura documentada. Es un proyecto del equipo 5-5DE.',
+      'La biblioteca de ejercicios detrás de Gym Zong, ya en línea: 1,257 ejercicios con imágenes y animaciones SVG, filtros por músculo, equipo y familia, y una API pública de lectura documentada.',
     role: [
       'Escribí las instrucciones de cómo construirla',
       'Generé los SVG animados',

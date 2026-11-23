@@ -5,7 +5,7 @@ import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { tween, useReducedMotionSafe } from '../../styles/motion'
-import { ProjectLinks, projectTitleId } from './ProjectBasics'
+import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './ApiGymLayout.module.css'
 
 interface ManifestExercise {
@@ -132,7 +132,8 @@ function Explorer({ exercises, lang, reduced }: { exercises: ManifestExercise[];
                 aria-pressed={i === index}
                 onClick={() => setIndex(i)}
               >
-                {nameOf(e)}
+                <span>{nameOf(e)}</span>
+                <span className={styles.chipId}>{e.id}</span>
               </button>
             </li>
           ))}
@@ -350,11 +351,6 @@ export default function ApiGymLayout({ project }: { project: Project }) {
           </h1>
           <p className={styles.summary}>{text.summary}</p>
           <ProjectLinks project={project} className={styles.links} />
-          {project.team && (
-            <p className={styles.team}>
-              <span>{t.projects.team}</span> {project.team}
-            </p>
-          )}
         </div>
         <div className={styles.heroCount}>
           <Counter to={1257} reduced={reduced} />
@@ -445,15 +441,18 @@ export default function ApiGymLayout({ project }: { project: Project }) {
                 <li key={s}>{s}</li>
               ))}
             </ul>
+            {project.team && (
+              <p className={styles.team}>
+                <span>{t.projects.team}</span> {project.team}
+              </p>
+            )}
           </div>
-          <div>
-            <h2 id={`${project.slug}-highlights`} className={styles.label}>{t.projects.highlights}</h2>
-            <ul className={styles.list}>
-              {text.highlights.map((h) => (
-                <li key={h}>{h}</li>
-              ))}
-            </ul>
-          </div>
+        </motion.div>
+      </section>
+
+      <section className={styles.block}>
+        <motion.div {...reveal}>
+          <ProjectClosing project={project} linksClassName={styles.links} />
         </motion.div>
       </section>
     </div>

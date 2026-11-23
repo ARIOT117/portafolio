@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
-import type { LinkKind, Project } from '../../content/projects'
+import { Link, useLocation } from 'react-router'
+import { projects, type LinkKind, type Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import styles from './ProjectBasics.module.css'
@@ -52,13 +53,15 @@ export interface ProjectBasicsProps {
   /** `light` (por defecto) o `dark`: ajusta tinta, líneas y chips. */
   tone?: 'light' | 'dark'
   style?: CSSProperties
+  /** Muestra los créditos bajo «Mi rol» (por defecto sí). Un layout puede pintarlos al final. */
+  inlineCredits?: boolean
 }
 
 /**
  * Bloque base de una vista de proyecto: nombre (h1), kicker, resumen, rol,
- * stack, puntos clave y enlaces. Los layouts finales lo usan dentro de su diseño.
+ * stack y enlaces. Los layouts finales lo usan dentro de su diseño.
  */
-export default function ProjectBasics({ project, className, tone = 'light', style }: ProjectBasicsProps) {
+export default function ProjectBasics({ project, className, tone = 'light', style, inlineCredits = true }: ProjectBasicsProps) {
   const { t } = useT()
   const text = useProjectText(project)
   const rootClass = [styles.root, tone === 'dark' ? styles.dark : '', className].filter(Boolean).join(' ')
@@ -87,7 +90,7 @@ export default function ProjectBasics({ project, className, tone = 'light', styl
               <li key={r}>{r}</li>
             ))}
           </ul>
-          {text.credits && <p className={styles.credits}>{text.credits}</p>}
+          {inlineCredits && text.credits && <p className={styles.credits}>{text.credits}</p>}
           {project.team && (
             <p className={styles.team}>
               <span className={styles.teamLabel}>{t.projects.team}</span> {project.team}
@@ -105,16 +108,72 @@ export default function ProjectBasics({ project, className, tone = 'light', styl
         </section>
       </div>
 
-      <section aria-labelledby={`${project.slug}-highlights`}>
-        <h2 id={`${project.slug}-highlights`} className={styles.label}>{t.projects.highlights}</h2>
-        <ul className={styles.list}>
-          {text.highlights.map((h) => (
-            <li key={h}>{h}</li>
-          ))}
-        </ul>
-      </section>
-
       <ProjectLinks project={project} />
     </div>
+  )
+}
+
+/** Miniatura del proyecto siguiente, con su tamaño real. */
+function thumbOf(project: Project): { src: string; width: number; height: number } {
+  if (project.assets.manifest) return { src: '/projects/apigym/site-home.webp', width: 1440, height: 900 }
+  const portrait = project.slug === 'gym-zong'
+  return { src: project.assets.cover, width: portrait ? 1080 : 1440, height: portrait ? 2400 : 900 }
+}
+
+export interface ProjectClosingProps {
+  project: Project
+  /** El layout fija el orden/columna; los colores salen de las variables --pc-*. */
+  className?: string
+  /** Clase extra para los botones de enlaces (el layout los viste a su manera). */
+  linksClassName?: string
+}
+
+/**
+ * Cierre común de cada caso: enlaces principales repetidos y tarjeta del
+ * proyecto siguiente (orden del arreglo, con vuelta al inicio). Se pinta con
+ * --pc-ink, --pc-ink-2, --pc-line, --pc-card, --pc-accent, --pc-font y
+ * --pc-radius, que cada layout define con su propio kit.
+ */
+export function ProjectClosing({ project, className, linksClassName }: ProjectClosingProps) {
+  const { t } = useT()
+  const location = useLocation()
+  const backgroundLocation = (location.state as { backgroundLocation?: unknown } | null)?.backgroundLocation
+  const index = projects.findIndex((p) => p.slug === project.slug)
+  const next = projects[(index + 1) % projects.length]!
+  const nextText = useProjectText(next)
+  const thumb = thumbOf(next)
+
+  return (
+    <section
+      className={[styles.closing, className].filter(Boolean).join(' ')}
+      aria-label={t.projects.next}
+      style={{ '--pb-accent': project.accent } as CSSProperties}
+    >
+      <ProjectLinks project={project} className={[styles.closingLinks, linksClassName].filter(Boolean).join(' ')} />
+      <Link
+        to={`/p/${next.slug}`}
+        // replace: «Volver» sigue llevando a la home aunque se salte de caso en caso
+        replace={Boolean(backgroundLocation)}
+        state={backgroundLocation ? { backgroundLocation } : undefined}
+        className={styles.next}
+      >
+        <img
+          className={styles.nextThumb}
+          src={thumb.src}
+          width={thumb.width}
+          height={thumb.height}
+          alt=""
+          loading="lazy"
+          decoding="async"
+        />
+        <span className={styles.nextBody}>
+          <span className={styles.nextLabel}>
+            {t.projects.next} <span aria-hidden>→</span>
+          </span>
+          <span className={styles.nextName}>{nextText.name}</span>
+          <span className={styles.nextKicker}>{nextText.kicker}</span>
+        </span>
+      </Link>
+    </section>
   )
 }

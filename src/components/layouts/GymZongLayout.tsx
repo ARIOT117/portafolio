@@ -1,12 +1,12 @@
 import '@fontsource-variable/manrope'
 import '@fontsource-variable/inter'
 import { AnimatePresence, motion } from 'motion/react'
-import { useCallback, useEffect, useRef, useState, type PointerEvent, type KeyboardEvent, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type PointerEvent, type KeyboardEvent } from 'react'
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
-import ProjectBasics from './ProjectBasics'
+import ProjectBasics, { ProjectClosing } from './ProjectBasics'
 import styles from './GymZongLayout.module.css'
 
 type Bi = { es: string; en: string }
@@ -18,7 +18,19 @@ const L = {
   slide: { es: 'Pantalla', en: 'Screen' },
   pause: { es: 'Pausar animación de pantallas', en: 'Pause screen animation' },
   play: { es: 'Reanudar animación de pantallas', en: 'Play screen animation' },
-  features: { es: 'Rasgos clave', en: 'Key features' },
+  features: { es: 'Qué hace la app', en: 'What the app does' },
+  detailCaption: {
+    es: 'Detalle de la app: tu semana y tu mejor serie por ejercicio.',
+    en: 'App detail: your week and your best set per exercise.',
+  },
+  statsAlt: {
+    es: 'Gym Zong, pantalla Esta semana: series, peso total y tiempo del entrenamiento',
+    en: 'Gym Zong, This week screen: sets, total weight and workout time',
+  },
+  recordsAlt: {
+    es: 'Gym Zong, pantalla Mis récords: mejor serie de cada ejercicio',
+    en: 'Gym Zong, My records screen: best set for each exercise',
+  },
 } satisfies Record<string, Bi>
 
 const captions: Bi[] = [
@@ -30,56 +42,21 @@ const captions: Bi[] = [
   { es: 'Récords', en: 'Records' },
 ]
 
-const svgProps = {
-  viewBox: '0 0 24 24',
-  width: 22,
-  height: 22,
-  fill: 'none',
-  stroke: 'currentColor',
-  strokeWidth: 1.5,
-  strokeLinecap: 'round',
-  strokeLinejoin: 'round',
-  'aria-hidden': true,
-} as const
-
-const features: { icon: ReactNode; tone?: 'streak'; title: Bi; text: Bi }[] = [
+const features: { title: Bi; text: Bi; detail?: boolean }[] = [
   {
-    icon: (
-      <svg {...svgProps}>
-        <ellipse cx="12" cy="5.5" rx="7.5" ry="2.75" />
-        <path d="M4.5 5.5v13c0 1.5 3.4 2.75 7.5 2.75s7.5-1.25 7.5-2.75v-13M4.5 12c0 1.5 3.4 2.75 7.5 2.75s7.5-1.25 7.5-2.75" />
-      </svg>
-    ),
     title: { es: 'Sin conexión, con SQLite', en: 'Offline, with SQLite' },
     text: { es: 'Tus datos viven en el teléfono.', en: 'Your data lives on the phone.' },
   },
   {
-    icon: (
-      <svg {...svgProps}>
-        <path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9" />
-        <path d="m9.5 4.5 2.5 2 2.5-2M9.5 19.5l2.5-2 2.5 2" />
-      </svg>
-    ),
-    tone: 'streak',
     title: { es: 'Rachas con congelaciones', en: 'Streaks with freezes' },
     text: { es: 'Congela un día sin perder la racha.', en: 'Freeze a day without losing the streak.' },
   },
   {
-    icon: (
-      <svg {...svgProps}>
-        <path d="M5 20v-8M12 20V4M19 20v-5M3 20h18" />
-      </svg>
-    ),
     title: { es: 'Estadísticas y récords', en: 'Stats and records' },
     text: { es: 'Tu semana y tus mejores marcas.', en: 'Your week and your best marks.' },
+    detail: true,
   },
   {
-    icon: (
-      <svg {...svgProps}>
-        <rect x="7" y="2.5" width="10" height="19" rx="2.75" />
-        <path d="M11 18.25h2" />
-      </svg>
-    ),
     title: { es: 'Español y Android primero', en: 'Spanish and Android first' },
     text: { es: 'Pensada en español, para Android.', en: 'Built in Spanish, for Android.' },
   },
@@ -298,7 +275,7 @@ export default function GymZongLayout({ project }: { project: Project }) {
   return (
     <div className={styles.page}>
       {/* ProjectBasics usa display: contents; su CSS reparte cabecera, enlaces y datos en la rejilla */}
-      <ProjectBasics project={project} className={styles.pb} />
+      <ProjectBasics project={project} className={styles.pb} inlineCredits={false} />
 
       <img
         className={styles.logo}
@@ -320,15 +297,40 @@ export default function GymZongLayout({ project }: { project: Project }) {
         <Screens images={project.assets.images} />
       </motion.section>
 
-      <ul className={styles.features} aria-label={L.features[lang]}>
-        {features.map((f, i) => (
-          <motion.li key={f.title.en} className={styles.feature} {...reveal(i * 0.06)}>
-            <span className={[styles.icon, f.tone === 'streak' ? styles.streak : ''].filter(Boolean).join(' ')}>{f.icon}</span>
-            <h2 className={styles.featureTitle}>{f.title[lang]}</h2>
-            <p className={styles.featureText}>{f.text[lang]}</p>
-          </motion.li>
-        ))}
-      </ul>
+      <section className={styles.features} aria-labelledby="gz-features">
+        <motion.div {...reveal(0)}>
+          <h2 id="gz-features" className={styles.featuresTitle}>{L.features[lang]}</h2>
+        </motion.div>
+        <div className={styles.featuresBody}>
+          <ol className={styles.featureList}>
+            {features.map((f, i) => (
+              <motion.li key={f.title.en} className={styles.feature} {...reveal(i * 0.06)}>
+                <span className={styles.featureNum} aria-hidden>{String(i + 1).padStart(2, '0')}</span>
+                <h3 className={styles.featureTitle}>{f.title[lang]}</h3>
+                <p className={styles.featureText}>{f.text[lang]}</p>
+              </motion.li>
+            ))}
+          </ol>
+          <motion.figure className={styles.details} {...reveal(0.1)}>
+            <div className={styles.crops}>
+              <div className={styles.crop} data-shot="stats">
+                <img src="/projects/gym-zong/screen-05.webp" width={1080} height={2400} alt={L.statsAlt[lang]} loading="lazy" decoding="async" />
+              </div>
+              <div className={styles.crop} data-shot="records">
+                <img src="/projects/gym-zong/screen-06.webp" width={1080} height={2400} alt={L.recordsAlt[lang]} loading="lazy" decoding="async" />
+              </div>
+            </div>
+            <figcaption className={styles.detailCap}>
+              <span className={styles.featureNum} aria-hidden>03</span>
+              {L.detailCaption[lang]}
+            </figcaption>
+          </motion.figure>
+        </div>
+      </section>
+
+      <ProjectClosing project={project} className={styles.closing} />
+
+      {text.credits && <p className={styles.credits}>{text.credits}</p>}
     </div>
   )
 }

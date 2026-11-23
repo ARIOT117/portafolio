@@ -8,7 +8,7 @@ import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
-import { ProjectLinks, projectTitleId } from './ProjectBasics'
+import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './CatstoreLayout.module.css'
 
 type Lang = 'es' | 'en'
@@ -103,7 +103,8 @@ function Reveal({ children, className, delay = 0 }: { children: ReactNode; class
       className={className}
       initial={{ opacity: 0, y: reduced ? 0 : 14 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -8% 0px' }}
+      /* margen positivo: dispara antes de entrar, para que la banda bajo el hero no se vea vacía */
+      viewport={{ once: true, margin: '0px 0px 25% 0px' }}
       transition={{ duration: reduced ? 0.12 : duration.slow, ease: easeOutExpo, delay: reduced ? 0 : delay }}
     >
       {children}
@@ -253,7 +254,9 @@ export default function CatstoreLayout({ project }: { project: Project }) {
               ))}
             </ul>
           </div>
-          <ProjectLinks project={project} className={styles.endLinks} />
+        </Reveal>
+        <Reveal className={styles.closingWrap}>
+          <ProjectClosing project={project} />
         </Reveal>
       </section>
     </div>

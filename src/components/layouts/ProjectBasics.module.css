@@ -188,3 +188,129 @@
   color: var(--pb-ink-3);
   text-wrap: pretty;
 }
+
+/* ---------- Cierre del caso (ProjectClosing) ---------- */
+.closing {
+  --pc-ink: var(--pb-ink);
+  --pc-ink-2: var(--pb-ink-2);
+  --pc-line: var(--pb-line);
+  --pc-card: var(--pb-chip);
+  --pc-accent: var(--pb-accent);
+  --pc-font: inherit;
+  --pc-radius: var(--radius-lg);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-block-start: var(--space-7);
+  border-block-start: 1px solid var(--pc-line);
+  color: var(--pc-ink);
+}
+
+.closingLinks {
+  align-self: flex-start;
+}
+
+.next {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--pc-line);
+  border-radius: var(--pc-radius);
+  background: var(--pc-card);
+  color: var(--pc-ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    border-color var(--duration-fast) var(--ease-out-quart),
+    transform var(--duration-fast) var(--ease-out-quart);
+}
+
+.next:hover {
+  border-color: var(--pc-accent);
+}
+
+.next:active {
+  transform: scale(0.99);
+}
+
+.next:focus-visible {
+  outline: 2px solid var(--pc-accent);
+  outline-offset: 3px;
+}
+
+.nextThumb {
+  display: block;
+  width: 5.5rem;
+  height: 4.5rem;
+  object-fit: cover;
+  object-position: top;
+  border-radius: calc(var(--pc-radius) - 6px);
+  border: 1px solid var(--pc-line);
+  background: var(--pc-line);
+}
+
+.nextBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nextLabel {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--pc-ink-2);
+}
+
+.next:hover .nextLabel {
+  color: var(--pc-ink);
+}
+
+.nextName {
+  font-family: var(--pc-font);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.nextKicker {
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: var(--pc-ink-2);
+  text-wrap: pretty;
+}
+
+@media (min-width: 48rem) {
+  .closing {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+
+  .closingLinks {
+    align-self: center;
+  }
+
+  .next {
+    flex: 0 1 30rem;
+    grid-template-columns: 7rem minmax(0, 1fr);
+  }
+
+  .nextThumb {
+    width: 7rem;
+    height: 5.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .next {
+    transition: none;
+  }
+}

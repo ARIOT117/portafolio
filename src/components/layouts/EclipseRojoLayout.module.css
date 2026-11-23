@@ -11,6 +11,14 @@
   --pb-ink-2: var(--er-ink-2);
   --pb-ink-3: var(--er-ink-3);
   --pb-line: var(--er-line);
+  --pb-bg: var(--er-bg);
+  --pc-ink: var(--er-ink);
+  --pc-ink-2: var(--er-ink-2);
+  --pc-line: #34465a;
+  --pc-card: var(--er-panel);
+  --pc-accent: var(--er-cyan-text);
+  --pc-font: 'Rajdhani', var(--font-sans);
+  --pc-radius: 3px;
 
   min-height: 100%;
   background: var(--er-bg);
@@ -60,7 +68,7 @@
   bottom: 1rem;
   z-index: 1;
   margin: 0;
-  font-size: 11px;
+  font-size: 0.75rem;
   line-height: 1.4;
   color: rgb(255 255 255 / 0.6);
   text-align: right;
