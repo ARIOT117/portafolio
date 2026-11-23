@@ -10,7 +10,7 @@ import styles from './Folder.module.css'
 
 const MAGNET_PX = 6
 
-export default function Folder({ project }: { project: Project }) {
+export default function Folder({ project, caption = true }: { project: Project; caption?: boolean }) {
   const { t } = useT()
   const text = useProjectText(project)
   const location = useLocation()
@@ -61,10 +61,12 @@ export default function Folder({ project }: { project: Project }) {
           <span className={styles.front} data-folder-front />
         </span>
       </span>
-      <span className={styles.caption}>
-        <span className={styles.name}>{text.name}</span>
-        <span className={styles.kicker}>{text.kicker}</span>
-      </span>
+      {caption && (
+        <span className={styles.caption}>
+          <span className={styles.name}>{text.name}</span>
+          <span className={styles.kicker}>{text.kicker}</span>
+        </span>
+      )}
     </Link>
   )
 }
