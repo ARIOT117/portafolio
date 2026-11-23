@@ -1,4 +1,5 @@
 import { motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import '@fontsource-variable/fraunces/wght.css'
 import '@fontsource-variable/fraunces/wght-italic.css'
@@ -20,47 +21,70 @@ const local = {
     es: 'Un sitio completo de principio a fin: lo que ve quien visita la cafetería y lo que pasa detrás de una cuenta.',
     en: 'A site that works end to end: what a visitor to the cafe sees, and what happens behind an account.',
   },
-  shots: {
-    home: {
-      es: 'Página de inicio de Catstore: un gatito esponjoso sobre fondo durazno y el título "Todo para consentir a tu michi"',
-      en: 'Catstore home page: a fluffy kitten on a peach background with the headline "Todo para consentir a tu michi"',
+  shots: [
+    {
+      tab: { es: 'Inicio', en: 'Home' },
+      alt: {
+        es: 'Inicio de snacks & cats: "Un cafecito. Un antojo. Muchos michis." con un gato negro con moño rosa',
+        en: 'snacks & cats home page: "Un cafecito. Un antojo. Muchos michis." with a black cat wearing a pink bow tie',
+      },
     },
-    products: {
-      es: 'Página de productos de Catstore con buscador y tarjetas de productos',
-      en: 'Catstore products page with a search bar and product cards',
+    {
+      tab: { es: 'El menú', en: 'Menu' },
+      alt: {
+        es: 'Página El menú: bebidas con café, como latte y capuchino, con precios en pesos mexicanos y categorías a la izquierda',
+        en: 'Menu page: coffee drinks such as latte and cappuccino with prices in Mexican pesos and categories on the left',
+      },
     },
-    mobile: {
-      es: 'Inicio de Catstore en un teléfono',
-      en: 'Catstore home page on a phone',
+    {
+      tab: { es: 'Tiendita', en: 'Shop' },
+      alt: {
+        es: 'Tiendita: productos para gatos como alimento y juguetes, con filtros y buscador',
+        en: 'Shop page: cat products such as food and toys, with filters and a search bar',
+      },
     },
+  ],
+  mobile: {
+    es: 'Inicio de snacks & cats en un teléfono',
+    en: 'snacks & cats home page on a phone',
   },
+  tablist: { es: 'Páginas del sitio', en: 'Site pages' },
   stageLabel: {
     es: 'Capturas del sitio en computadora y teléfono',
     en: 'Site screenshots on desktop and phone',
   },
   features: [
     {
-      t: { es: 'Menú con precios', en: 'Menu with prices' },
-      d: { es: 'Lo que sirve la cafetería, con su precio.', en: 'What the cafe serves, with each price.' },
+      t: { es: 'El menú', en: 'The menu' },
+      d: {
+        es: 'Bebidas con café, sin café, limonadas y antojos, con precios en pesos.',
+        en: 'Coffee drinks, non-coffee drinks, lemonades and treats, priced in pesos.',
+      },
     },
     {
-      t: { es: 'Ubicación', en: 'Location' },
-      d: { es: 'Dónde encontrar la cafetería en Chihuahua.', en: 'Where to find the cafe in Chihuahua.' },
+      t: { es: 'La cafetería', en: 'The cafe' },
+      d: {
+        es: 'Ubicación en el centro de Chihuahua, mapa en Maps y contacto por WhatsApp.',
+        en: 'Location in downtown Chihuahua, a Maps link and WhatsApp contact.',
+      },
     },
     {
-      t: { es: 'Tienda de demostración', en: 'Demo store' },
-      d: { es: 'Productos para gatos con buscador.', en: 'Cat products with a search bar.' },
+      t: { es: 'Tiendita', en: 'Shop' },
+      d: {
+        es: 'Productos para tu gato: alimento, juguetes y premios, con buscador.',
+        en: 'Products for your cat: food, toys and treats, with a search bar.',
+      },
     },
     {
-      t: { es: 'Cuentas de usuario', en: 'User accounts' },
-      d: { es: 'Registro e inicio de sesión.', en: 'Sign up and sign in.' },
+      t: { es: 'Cuentas', en: 'Accounts' },
+      d: { es: 'Registro e inicio de sesión desde Acceder.', en: 'Sign up and sign in from Acceder.' },
     },
     {
       t: { es: 'Carrito persistente', en: 'Persistent cart' },
-      d: { es: 'El carrito sigue ahí cuando vuelves.', en: 'The cart is still there when you come back.' },
+      d: { es: 'El carrito se guarda al iniciar sesión.', en: 'The cart is saved once you sign in.' },
     },
     {
-      t: { es: 'Pedidos', en: 'Orders' },
+      t: { es: 'Mis pedidos', en: 'My orders' },
       d: { es: 'Cada compra queda guardada en la cuenta.', en: 'Each purchase is saved to the account.' },
     },
     {
@@ -70,7 +94,7 @@ const local = {
   ],
 } as const
 
-const URL_TEXT = 'catstore-puce.vercel.app'
+const URL_TEXT = 'web-production-1899fab5.up.railway.app'
 
 function Reveal({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const reduced = useReducedMotionSafe()
@@ -87,40 +111,29 @@ function Reveal({ children, className, delay = 0 }: { children: ReactNode; class
   )
 }
 
-function Browser({ src, alt, className }: { src: string; alt: string; className?: string }) {
-  return (
-    <figure className={[styles.browser, className].filter(Boolean).join(" ")}>
-      <div className={styles.bar} aria-hidden>
-        <span className={styles.dots}>
-          <i />
-          <i />
-          <i />
-        </span>
-        <span className={styles.url}>
-          <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
-            <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" />
-          </svg>
-          {URL_TEXT}
-        </span>
-      </div>
-      <img src={src} alt={alt} width={1440} height={900} loading="eager" decoding="async" />
-    </figure>
-  )
-}
-
 export default function CatstoreLayout({ project }: { project: Project }) {
   const { t, lang } = useT()
   const text = useProjectText(project)
   const [brand, ...rest] = text.name.split('·')
   const sub = rest.join('·').trim()
   const reduced = useReducedMotionSafe()
-  const [home, products] = project.assets.images
+  const [home, menu, shop, mobile] = project.assets.images
+  const shotSrc = [home!, menu!, shop!]
+  const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    if (reduced || paused) return
+    const id = window.setInterval(() => setActive((i) => (i + 1) % shotSrc.length), 4800)
+    return () => window.clearInterval(id)
+    // shotSrc.length es constante
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced, paused])
 
   return (
     <div
       className={styles.page}
-      style={{ '--pb-ink': '#7a4632', '--pb-ink-2': '#6b4f43', '--pb-ink-3': '#7d5f52', '--pb-line': '#d9bfa8', '--pb-bg': '#fbf4ea', '--pb-accent': project.accent } as CSSProperties}
+      style={{ '--pb-ink': '#322f25', '--pb-ink-2': '#55513f', '--pb-ink-3': '#6b6753', '--pb-line': '#ddd3c0', '--pb-bg': '#f8f3e9', '--pb-accent': '#b04a2c' } as CSSProperties}
     >
       <section className={styles.hero}>
         <div className={styles.heroText}>
@@ -148,10 +161,56 @@ export default function CatstoreLayout({ project }: { project: Project }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduced ? 0.12 : duration.slow, ease: easeOutExpo, delay: reduced ? 0 : 0.1 }}
         >
-          <Browser className={styles.bProducts} src={products!} alt={pick(lang, local.shots.products)} />
-          <Browser className={styles.bHome} src={home!} alt={pick(lang, local.shots.home)} />
+          <div className={styles.tabs} role="group" aria-label={pick(lang, local.tablist)}>
+            {local.shots.map((sh, i) => (
+              <button
+                key={sh.tab.es}
+                type="button"
+                className={styles.tab}
+                aria-pressed={active === i}
+                onClick={() => {
+                  setActive(i)
+                  setPaused(true)
+                }}
+              >
+                {pick(lang, sh.tab)}
+              </button>
+            ))}
+          </div>
+          <figure className={styles.browser}>
+            <div className={styles.bar} aria-hidden>
+              <span className={styles.dots}>
+                <i />
+                <i />
+                <i />
+              </span>
+              <span className={styles.url}>
+                <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2.5" y="5.5" width="7" height="5" rx="1" />
+                  <path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" />
+                </svg>
+                {URL_TEXT}
+              </span>
+            </div>
+            <div className={styles.screens}>
+              {shotSrc.map((src, i) => (
+                <img
+                  key={src}
+                  className={styles.screen}
+                  data-active={active === i}
+                  src={src}
+                  alt={pick(lang, local.shots[i]!.alt)}
+                  aria-hidden={active === i ? undefined : true}
+                  width={1440}
+                  height={900}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              ))}
+            </div>
+          </figure>
           <figure className={styles.phone}>
-            <img src="/projects/catstore/mobile.webp" alt={pick(lang, local.shots.mobile)} width={390} height={844} loading="eager" decoding="async" />
+            <img src={mobile!} alt={pick(lang, local.mobile)} width={780} height={1688} loading="lazy" decoding="async" />
           </figure>
         </motion.div>
       </section>
