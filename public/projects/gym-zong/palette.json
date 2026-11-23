@@ -1,0 +1,168 @@
+{
+  "claro": {
+    "background": "#FAF8F4",
+    "surface": "#FFFDF9",
+    "surfaceMuted": "#F3EFE8",
+    "streakTrainedBackground": "#FDF0E2",
+    "streakTrainedText": "#9A5A12",
+    "streakFrozenBackground": "#E6F4FB",
+    "streakFrozenText": "#1F6E95",
+    "text": "#0F2E36",
+    "mutedText": "#5C7075",
+    "primary": "#3DD9B8",
+    "onPrimary": "#05302A",
+    "border": "#ECE6DC",
+    "accentText": "#0B7A66",
+    "orderText": "#0B7A66",
+    "tabActive": "#E9F8F3",
+    "body": "#2E4A51",
+    "bodySoft": "#4A6168",
+    "primaryWash": "#E9F8F3",
+    "primaryInk": "#0B7A66",
+    "line": "#ECE6DC",
+    "track": "#EEE9E1",
+    "fieldBorder": "#768A8F",
+    "chartWeek": "#7B8CFF",
+    "chartStreak": "#F2A65A",
+    "frozen": "#8CCFEF",
+    "danger": "#B3261E",
+    "scrim": "rgba(15,46,54,0.55)",
+    "cameraVeil": "rgba(15,46,54,0.72)",
+    "gridLine": "rgba(250,248,244,0.45)",
+    "lightVeil": "rgba(250,248,244,0.14)",
+    "ripple": "rgba(15,46,54,0.12)"
+  },
+  "oscuro": {
+    "background": "#0B1B20",
+    "surface": "#12272D",
+    "surfaceMuted": "#183038",
+    "streakTrainedBackground": "#3A2A14",
+    "streakTrainedText": "#F5BA7C",
+    "streakFrozenBackground": "#12303F",
+    "streakFrozenText": "#9AD6F2",
+    "text": "#EAF4F1",
+    "mutedText": "#9DB5B6",
+    "primary": "#3DD9B8",
+    "onPrimary": "#05302A",
+    "border": "#27434C",
+    "accentText": "#5CE0C3",
+    "orderText": "#5CE0C3",
+    "tabActive": "#12393A",
+    "body": "#CCDDDB",
+    "bodySoft": "#AFC5C5",
+    "primaryWash": "#12393A",
+    "primaryInk": "#5CE0C3",
+    "line": "#27434C",
+    "track": "#2A4750",
+    "fieldBorder": "#6F9096",
+    "chartWeek": "#9AA7FF",
+    "chartStreak": "#F2A65A",
+    "frozen": "#8CCFEF",
+    "danger": "#FF8A80",
+    "scrim": "rgba(0,0,0,0.62)",
+    "cameraVeil": "rgba(0,0,0,0.72)",
+    "gridLine": "rgba(250,248,244,0.45)",
+    "lightVeil": "rgba(250,248,244,0.14)",
+    "ripple": "rgba(234,244,241,0.14)"
+  },
+  "tipografia": {
+    "display": {
+      "fontFamily": "Manrope_700Bold",
+      "fontSize": 34,
+      "lineHeight": 40,
+      "letterSpacing": -0.9
+    },
+    "title": {
+      "fontFamily": "Manrope_700Bold",
+      "fontSize": 28,
+      "lineHeight": 34,
+      "letterSpacing": -0.6
+    },
+    "heading": {
+      "fontFamily": "Manrope_700Bold",
+      "fontSize": 20,
+      "lineHeight": 26
+    },
+    "metric": {
+      "fontFamily": "Manrope_700Bold",
+      "fontSize": 30,
+      "lineHeight": 34,
+      "fontVariant": [
+        "tabular-nums"
+      ]
+    },
+    "metricSm": {
+      "fontFamily": "Manrope_700Bold",
+      "fontSize": 22,
+      "lineHeight": 28,
+      "fontVariant": [
+        "tabular-nums"
+      ]
+    },
+    "numericField": {
+      "fontFamily": "Manrope_700Bold",
+      "fontSize": 24,
+      "lineHeight": 30,
+      "fontVariant": [
+        "tabular-nums"
+      ]
+    },
+    "body": {
+      "fontFamily": "Inter_400Regular",
+      "fontSize": 16,
+      "lineHeight": 25
+    },
+    "bodySm": {
+      "fontFamily": "Inter_400Regular",
+      "fontSize": 14,
+      "lineHeight": 20
+    },
+    "bodyStrong": {
+      "fontFamily": "Inter_600SemiBold",
+      "fontSize": 16,
+      "lineHeight": 24
+    },
+    "button": {
+      "fontFamily": "Inter_700Bold",
+      "fontSize": 17,
+      "lineHeight": 22
+    },
+    "label": {
+      "fontFamily": "Inter_600SemiBold",
+      "fontSize": 14,
+      "lineHeight": 20
+    },
+    "caption": {
+      "fontFamily": "Inter_600SemiBold",
+      "fontSize": 13,
+      "lineHeight": 18
+    },
+    "tab": {
+      "fontFamily": "Inter_600SemiBold",
+      "fontSize": 13,
+      "lineHeight": 16
+    },
+    "brand": {
+      "fontFamily": "Manrope_700Bold",
+      "fontSize": 15,
+      "lineHeight": 20,
+      "letterSpacing": 2.2
+    }
+  },
+  "espaciado": {
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "xxl": 32
+  },
+  "radios": {
+    "sm": 4,
+    "chip": 12,
+    "button": 14,
+    "field": 16,
+    "card": 20,
+    "full": 999
+  }
+}

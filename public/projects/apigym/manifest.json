@@ -1,0 +1,82 @@
+[
+  {
+    "id": "0043",
+    "name": "Sentadilla profunda con barra",
+    "nameEn": "barbell full squat",
+    "frames": [
+      "/projects/apigym/0043/frame-00.svg",
+      "/projects/apigym/0043/frame-01.svg",
+      "/projects/apigym/0043/frame-02.svg"
+    ]
+  },
+  {
+    "id": "0289",
+    "name": "Press de banca con mancuernas",
+    "nameEn": "dumbbell bench press",
+    "frames": [
+      "/projects/apigym/0289/frame-00.svg",
+      "/projects/apigym/0289/frame-01.svg",
+      "/projects/apigym/0289/frame-02.svg"
+    ]
+  },
+  {
+    "id": "0032",
+    "name": "Peso muerto convencional",
+    "nameEn": "barbell deadlift",
+    "frames": [
+      "/projects/apigym/0032/frame-00.svg",
+      "/projects/apigym/0032/frame-01.svg",
+      "/projects/apigym/0032/frame-02.svg"
+    ]
+  },
+  {
+    "id": "0652",
+    "name": "Dominadas con agarre prono",
+    "nameEn": "pull-up",
+    "frames": [
+      "/projects/apigym/0652/frame-00.svg",
+      "/projects/apigym/0652/frame-01.svg",
+      "/projects/apigym/0652/frame-02.svg"
+    ]
+  },
+  {
+    "id": "0027",
+    "name": "Remo inclinado con barra",
+    "nameEn": "barbell bent over row",
+    "frames": [
+      "/projects/apigym/0027/frame-00.svg",
+      "/projects/apigym/0027/frame-01.svg",
+      "/projects/apigym/0027/frame-02.svg"
+    ]
+  },
+  {
+    "id": "0336",
+    "name": "Zancadas con mancuernas",
+    "nameEn": "dumbbell lunge",
+    "frames": [
+      "/projects/apigym/0336/frame-00.svg",
+      "/projects/apigym/0336/frame-01.svg",
+      "/projects/apigym/0336/frame-02.svg"
+    ]
+  },
+  {
+    "id": "0091",
+    "name": "Press militar con barra",
+    "nameEn": "barbell seated overhead press",
+    "frames": [
+      "/projects/apigym/0091/frame-00.svg",
+      "/projects/apigym/0091/frame-01.svg",
+      "/projects/apigym/0091/frame-02.svg"
+    ]
+  },
+  {
+    "id": "0031",
+    "name": "Curl de bíceps con barra",
+    "nameEn": "barbell curl",
+    "frames": [
+      "/projects/apigym/0031/frame-00.svg",
+      "/projects/apigym/0031/frame-01.svg",
+      "/projects/apigym/0031/frame-02.svg"
+    ]
+  }
+]
