@@ -1,3 +1,7 @@
 .root {
   display: block;
 }
+
+.root {
+  scroll-margin-top: 4rem;
+}

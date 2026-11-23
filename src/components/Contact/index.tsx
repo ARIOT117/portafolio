@@ -1,5 +1,5 @@
 import styles from './Contact.module.css'
 
 export default function Contact() {
-  return <div className={styles.root}>Contact</div>
+  return <section id="contacto" className={styles.root}>Contact</section>
 }
