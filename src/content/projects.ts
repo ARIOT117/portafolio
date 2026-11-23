@@ -69,9 +69,13 @@ export const projects: Project[] = [
   },
   {
     slug: 'apigym',
-    accent: '#2A479A',
-    folderGradient: 'linear-gradient(160deg, #8A9BD0 0%, #4A63B5 55%, #2A479A 100%)',
-    links: [{ kind: 'repo', href: 'https://github.com/5-5DE/ApiGym' }],
+    accent: '#3DD9B8',
+    accent2: '#0B1B20',
+    folderGradient: 'linear-gradient(160deg, #2A4750 0%, #12272D 55%, #0B1B20 100%)',
+    links: [
+      { kind: 'live', href: 'https://apigym-production-b297.up.railway.app/' },
+      { kind: 'repo', href: 'https://github.com/5-5DE/ApiGym' },
+    ],
     stack: ['Node.js', 'JavaScript', 'SVG'],
     team: '5-5DE',
     assets: {
@@ -87,13 +91,18 @@ export const projects: Project[] = [
     accent: '#C98A4B',
     folderGradient: 'linear-gradient(160deg, #EBC48F 0%, #C98A4B 55%, #9A6530 100%)',
     links: [
-      { kind: 'live', href: 'https://catstore-puce.vercel.app' },
+      { kind: 'live', href: 'https://web-production-1899fab5.up.railway.app/' },
       { kind: 'repo', href: 'https://github.com/ARIOT117/CATSTORE' },
     ],
     stack: ['PHP', 'MySQL', 'HTML', 'CSS', 'JavaScript'],
     assets: {
       cover: '/projects/catstore/home.webp',
-      images: ['/projects/catstore/home.webp', '/projects/catstore/extra-01.webp'],
+      images: [
+        '/projects/catstore/home.webp',
+        '/projects/catstore/menu.webp',
+        '/projects/catstore/tiendita.webp',
+        '/projects/catstore/mobile.webp',
+      ],
     },
     i18nKey: 'catstore',
   },

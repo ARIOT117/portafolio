@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { animate, motion, useInView } from 'motion/react'
+import '@fontsource-variable/manrope'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { AnimatePresence, animate, motion, useInView } from 'motion/react'
 import type { Project } from '../../content/projects'
+import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { tween, useReducedMotionSafe } from '../../styles/motion'
-import ProjectBasics from './ProjectBasics'
+import { ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './ApiGymLayout.module.css'
 
 interface ManifestExercise {
@@ -14,11 +16,131 @@ interface ManifestExercise {
 }
 
 type Lang = 'es' | 'en'
-const bi = (lang: Lang, es: string, en: string) => (lang === 'es' ? es : en)
+
+const SITE = 'https://apigym-production-b297.up.railway.app'
+const SITE_HOST = 'apigym-production-b297.up.railway.app'
+const SHOTS = ['site-home', 'site-catalog', 'site-detail'] as const
 
 /** Secuencia de cuadros tal como la define la animación de ApiGym. */
 const SEQUENCE = [0, 1, 2, 1]
-const FRAME_MS = 400
+const FRAME_MS = 220
+
+/** Respuesta real de GET /api/v1/exercises?limit=2, recortada. */
+const SAMPLE = {
+  data: [
+    {
+      id: 'flow-2312',
+      name: 'Abdominal bicicleta con codo a rodilla contraria',
+      nameEn: 'lying elbow to knee',
+      primaryMuscles: ['abdominals'],
+      equipment: 'body only',
+      difficulty: 'beginner',
+      mechanic: 'compound',
+      force: 'mixed',
+      popular: false,
+    },
+  ],
+  pagination: { total: 1257, count: 2, limit: 2, offset: 0, nextOffset: 2 },
+}
+
+function AnimatedFrames({ frames, active }: { frames: string[]; active: number }) {
+  return (
+    <>
+      {frames.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt=""
+          width={627}
+          height={627}
+          decoding="async"
+          draggable={false}
+          className={styles.frame}
+          data-on={i === active}
+        />
+      ))}
+    </>
+  )
+}
+
+function Explorer({ exercises, lang, reduced }: { exercises: ManifestExercise[]; lang: Lang; reduced: boolean }) {
+  const { t } = useT()
+  const ui = (t as unknown as { apigym: { ui: Record<string, string> } }).apigym.ui
+  const [index, setIndex] = useState(0)
+  const [step, setStep] = useState(0)
+  const [ref, visible] = useInViewFlag<HTMLDivElement>()
+  const ex = exercises[index] ?? exercises[0]!
+
+  useEffect(() => {
+    if (reduced || !visible) return
+    const id = window.setInterval(() => setStep((s) => (s + 1) % SEQUENCE.length), FRAME_MS)
+    return () => window.clearInterval(id)
+  }, [reduced, visible])
+
+  const active = reduced ? 0 : (SEQUENCE[step] ?? 0)
+  const nameOf = (e: ManifestExercise) => (lang === 'es' ? e.name : e.nameEn)
+  const secondary = lang === 'es' ? ex.nameEn : ex.name
+
+  return (
+    <div className={styles.explorer} ref={ref}>
+      <div className={styles.stageWrap}>
+        <div className={styles.stage} role="img" aria-label={nameOf(ex)}>
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={ex.id}
+              className={styles.stageLayer}
+              initial={{ opacity: 0, scale: reduced ? 1 : 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={reduced ? { duration: 0.12 } : tween(0.5)}
+            >
+              <AnimatedFrames frames={ex.frames} active={active} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+        <div className={styles.stageMeta} aria-live="polite">
+          <p className={styles.stageName}>{nameOf(ex)}</p>
+          <p className={styles.stageSub}>{secondary}</p>
+          <dl className={styles.metaRow}>
+            <div>
+              <dt>id</dt>
+              <dd>{ex.id}</dd>
+            </div>
+            <div>
+              <dt>{ui.frames}</dt>
+              <dd>{ex.frames.length}</dd>
+            </div>
+            <div className={styles.dots} aria-hidden>
+              {ex.frames.map((f, i) => (
+                <span key={f} data-on={i === active} />
+              ))}
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div className={styles.chipsCol}>
+        <p className={styles.chipsLabel} id="apigym-chips">
+          {ui.explorerList}
+        </p>
+        <ul className={styles.chips} aria-labelledby="apigym-chips">
+          {exercises.map((e, i) => (
+            <li key={e.id}>
+              <button
+                type="button"
+                className={styles.chip}
+                aria-pressed={i === index}
+                onClick={() => setIndex(i)}
+              >
+                {nameOf(e)}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
 
 function useInViewFlag<T extends Element>() {
   const ref = useRef<T>(null)
@@ -33,45 +155,9 @@ function useInViewFlag<T extends Element>() {
   return [ref, visible] as const
 }
 
-function ExerciseCard({ ex, lang, reduced }: { ex: ManifestExercise; lang: Lang; reduced: boolean }) {
-  const [ref, visible] = useInViewFlag<HTMLLIElement>()
-  const [step, setStep] = useState(0)
-
-  useEffect(() => {
-    if (reduced || !visible) return
-    const id = window.setInterval(() => setStep((s) => (s + 1) % SEQUENCE.length), FRAME_MS)
-    return () => window.clearInterval(id)
-  }, [reduced, visible])
-
-  const active = reduced ? 0 : (SEQUENCE[step] ?? 0)
-  const name = lang === 'es' ? ex.name : ex.nameEn
-
-  return (
-    <li ref={ref} className={styles.card}>
-      <div className={styles.stage} role="img" aria-label={name}>
-        {ex.frames.map((src, i) => (
-          <img
-            key={src}
-            src={src}
-            alt=""
-            width={627}
-            height={627}
-            loading="lazy"
-            decoding="async"
-            className={styles.frame}
-            data-on={i === active}
-          />
-        ))}
-      </div>
-      <p className={styles.cardName}>{name}</p>
-      <p className={styles.cardId}>id {ex.id}</p>
-    </li>
-  )
-}
-
 function Counter({ to, reduced }: { to: number; reduced: boolean }) {
   const ref = useRef<HTMLSpanElement>(null)
-  const inView = useInView(ref, { once: true, margin: '0px 0px -10% 0px' })
+  const inView = useInView(ref, { once: true })
   const [n, setN] = useState(reduced ? to : 0)
   useEffect(() => {
     if (reduced) {
@@ -79,7 +165,7 @@ function Counter({ to, reduced }: { to: number; reduced: boolean }) {
       return
     }
     if (!inView) return
-    const c = animate(0, to, { duration: 1.4, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => setN(Math.round(v)) })
+    const c = animate(0, to, { duration: 1.6, ease: [0.16, 1, 0.3, 1], onUpdate: (v) => setN(Math.round(v)) })
     return () => c.stop()
   }, [inView, reduced, to])
   return (
@@ -149,107 +235,227 @@ function renderJson(value: unknown, depth = 0, key?: string, last = true): React
   return [line(<span className={cls}>{JSON.stringify(value)}</span>, `${depth}-${key}-${String(value).slice(0, 12)}`)]
 }
 
+function BrowserShots({ reduced }: { reduced: boolean }) {
+  const { t } = useT()
+  const ui = (t as unknown as { apigym: { ui: { shots: string[]; shotAlts: string[]; showShot: string } } }).apigym.ui
+  const [i, setI] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const [ref, visible] = useInViewFlag<HTMLDivElement>()
+
+  useEffect(() => {
+    if (reduced || paused || !visible) return
+    const id = window.setInterval(() => setI((v) => (v + 1) % SHOTS.length), 4500)
+    return () => window.clearInterval(id)
+  }, [reduced, paused, visible])
+
+  return (
+    <div className={styles.browserWrap} ref={ref}>
+      <div className={styles.browser}>
+        <div className={styles.browserBar}>
+          <span className={styles.lights} aria-hidden>
+            <i />
+            <i />
+            <i />
+          </span>
+          <a className={styles.url} href={SITE} target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+              <rect x="3" y="7" width="10" height="7" rx="1.5" />
+              <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
+            </svg>
+            <span>{SITE_HOST}</span>
+          </a>
+        </div>
+        <div className={styles.viewport}>
+          {SHOTS.map((name, k) => (
+            <img
+              key={name}
+              src={`/projects/apigym/${name}.webp`}
+              alt={ui.shotAlts[k]}
+              width={1440}
+              height={900}
+              loading="lazy"
+              decoding="async"
+              className={styles.shot}
+              data-on={k === i}
+              aria-hidden={k !== i}
+            />
+          ))}
+        </div>
+      </div>
+      <div className={styles.tabs} role="group" aria-label={ui.showShot}>
+        {SHOTS.map((name, k) => (
+          <button
+            key={name}
+            type="button"
+            className={styles.tab}
+            aria-pressed={k === i}
+            onClick={() => {
+              setI(k)
+              setPaused(true)
+            }}
+          >
+            {ui.shots[k]}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function ApiGymLayout({ project }: { project: Project }) {
-  const { lang } = useT()
+  const { lang, t } = useT()
+  const text = useProjectText(project)
+  const ui = (t as unknown as { apigym: { ui: Record<string, string> } }).apigym.ui
   const reduced = useReducedMotionSafe()
   const [exercises, setExercises] = useState<ManifestExercise[]>([])
-  const [sample, setSample] = useState<unknown>(null)
 
   useEffect(() => {
     const ctrl = new AbortController()
-    const load = async (url: string, set: (d: never) => void) => {
+    ;(async () => {
       try {
-        const r = await fetch(url, { signal: ctrl.signal })
-        if (r.ok) set((await r.json()) as never)
+        const r = await fetch(project.assets.manifest ?? '/projects/apigym/manifest.json', { signal: ctrl.signal })
+        if (r.ok) setExercises((await r.json()) as ManifestExercise[])
       } catch {
-        /* sin datos: la sección no se muestra */
+        /* sin datos: el explorador no se muestra */
       }
-    }
-    void load(project.assets.manifest ?? '/projects/apigym/manifest.json', setExercises as (d: never) => void)
-    void load('/projects/apigym/sample.json', setSample as (d: never) => void)
+    })()
     return () => ctrl.abort()
   }, [project.assets.manifest])
 
   const reveal = reduced
     ? {}
     : {
-        initial: { opacity: 0, y: 16 },
+        initial: { opacity: 0, y: 18 },
         whileInView: { opacity: 1, y: 0 },
         viewport: { once: true, margin: '0px 0px -8% 0px' },
-        transition: tween(0.6),
+        transition: tween(0.7),
       }
 
-  const stats = [
-    { value: '3', label: bi(lang, 'cuadros SVG por ejercicio', 'SVG frames per exercise') },
-    { value: '100%', label: bi(lang, 'de los ejercicios con animación', 'of exercises animated') },
+  const facts = [
+    { k: ui.factKey, v: ui.factKeyBody },
+    { k: ui.factPage, v: ui.factPageBody },
+    { k: ui.fact404, v: ui.fact404Body },
   ]
 
   return (
-    <div className={styles.root}>
-      <ProjectBasics project={project} tone="dark" className={styles.basics} />
-
-      <section className={styles.band} aria-labelledby="apigym-cover">
-        <motion.div className={styles.bandInner} {...reveal}>
-          <h2 id="apigym-cover" className={styles.sectionLabel}>
-            {bi(lang, 'Cobertura del catálogo', 'Catalog coverage')}
-          </h2>
-          <div className={styles.stats}>
-            <p className={styles.bigStat}>
-              <Counter to={1257} reduced={reduced} />
-              <span className={styles.bigUnit}>{bi(lang, 'ejercicios', 'exercises')}</span>
+    <div className={styles.root} style={{ '--ag-accent': project.accent } as CSSProperties}>
+      <header className={styles.hero}>
+        <div className={styles.heroText}>
+          <p className={styles.kicker}>
+            <img src="/projects/apigym/logo-b-menta.svg" alt="" width={36} height={32} className={styles.symbol} />
+            <span>{text.kicker}</span>
+          </p>
+          <h1 id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
+            {text.name}
+          </h1>
+          <p className={styles.summary}>{text.summary}</p>
+          <ProjectLinks project={project} className={styles.links} />
+          {project.team && (
+            <p className={styles.team}>
+              <span>{t.projects.team}</span> {project.team}
             </p>
-            <ul className={styles.smallStats}>
-              {stats.map((s) => (
-                <li key={s.value}>
-                  <span className={styles.smallNum}>{s.value}</span>
-                  <span className={styles.smallLabel}>{s.label}</span>
-                </li>
+          )}
+        </div>
+        <div className={styles.heroCount}>
+          <Counter to={1257} reduced={reduced} />
+          <span className={styles.countLabel}>{ui.countLabel}</span>
+        </div>
+      </header>
+
+      {exercises.length > 0 && (
+        <section className={styles.block} aria-labelledby="apigym-explorer">
+          <motion.div {...reveal}>
+            <h2 id="apigym-explorer" className={styles.h2}>
+              {ui.explorerTitle}
+            </h2>
+            <p className={styles.lead}>{ui.explorerLead}</p>
+            <Explorer exercises={exercises} lang={lang} reduced={reduced} />
+          </motion.div>
+        </section>
+      )}
+
+      <section className={styles.block} aria-labelledby="apigym-api">
+        <motion.div {...reveal}>
+          <h2 id="apigym-api" className={styles.h2}>
+            {ui.apiTitle}
+          </h2>
+          <p className={styles.lead}>{ui.apiLead}</p>
+          <div className={styles.apiGrid}>
+            <figure className={styles.code}>
+              <div className={styles.request}>
+                <span className={styles.verb}>GET</span>
+                <code>
+                  <span className={styles.jP}>/api/v1/</span>exercises<span className={styles.jP}>?</span>
+                  <span className={styles.jKey}>limit</span>
+                  <span className={styles.jP}>=</span>
+                  <span className={styles.jNum}>2</span>
+                </code>
+                <span className={styles.status}>200</span>
+              </div>
+              <pre className={styles.pre} tabIndex={0} aria-label="JSON">
+                <code>{renderJson(SAMPLE)}</code>
+              </pre>
+              <figcaption className={styles.codeCap}>{ui.apiCaption}</figcaption>
+            </figure>
+            <div className={styles.factsCol}>
+              <ul className={styles.facts}>
+                {facts.map((f) => (
+                  <li key={f.k}>
+                    <h3>{f.k}</h3>
+                    <p>{f.v}</p>
+                  </li>
+                ))}
+              </ul>
+              <a className={styles.docs} href={`${SITE}/docs`} target="_blank" rel="noopener noreferrer">
+                {ui.apiDocs}
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M6 3.5h6.5V10M12.5 3.5 4 12" />
+                </svg>
+                <span className="sr-only">({t.projects.externalLink})</span>
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      <section className={styles.block} aria-labelledby="apigym-site">
+        <motion.div {...reveal}>
+          <h2 id="apigym-site" className={styles.h2}>
+            {ui.siteTitle}
+          </h2>
+          <p className={styles.lead}>{ui.siteLead}</p>
+          <BrowserShots reduced={reduced} />
+        </motion.div>
+      </section>
+
+      <section className={styles.block} aria-labelledby={`${project.slug}-role`}>
+        <motion.div className={styles.cols} {...reveal}>
+          <div>
+            <h2 id={`${project.slug}-role`} className={styles.label}>{t.projects.role}</h2>
+            <ul className={styles.list}>
+              {text.role.map((r) => (
+                <li key={r}>{r}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 id={`${project.slug}-stack`} className={styles.label}>{t.projects.stack}</h2>
+            <ul className={styles.stack}>
+              {project.stack.map((s) => (
+                <li key={s}>{s}</li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 id={`${project.slug}-highlights`} className={styles.label}>{t.projects.highlights}</h2>
+            <ul className={styles.list}>
+              {text.highlights.map((h) => (
+                <li key={h}>{h}</li>
               ))}
             </ul>
           </div>
         </motion.div>
       </section>
-
-      {exercises.length > 0 && (
-        <section className={styles.block} aria-labelledby="apigym-grid">
-          <motion.div {...reveal}>
-            <h2 id="apigym-grid" className={styles.sectionLabel}>
-              {bi(lang, 'Ocho de los 1,257, en movimiento', 'Eight of the 1,257, in motion')}
-            </h2>
-            <ul className={styles.grid}>
-              {exercises.map((ex) => (
-                <ExerciseCard key={ex.id} ex={ex} lang={lang} reduced={reduced} />
-              ))}
-            </ul>
-            <p className={styles.note}>
-              {bi(
-                lang,
-                'Cada ejercicio son tres cuadros SVG en bucle.',
-                'Each exercise is three SVG frames in a loop.',
-              )}
-            </p>
-          </motion.div>
-        </section>
-      )}
-
-      {sample !== null && (
-        <section className={styles.block} aria-labelledby="apigym-json">
-          <motion.div {...reveal}>
-            <h2 id="apigym-json" className={styles.sectionLabel}>
-              {bi(lang, 'Qué devuelve', 'What it returns')}
-            </h2>
-            <figure className={styles.code}>
-              <figcaption className={styles.codeHead}>
-                <span>{bi(lang, 'Ejemplo de ficha', 'Sample entry')}</span>
-                <span className={styles.codeMeta}>application/json</span>
-              </figcaption>
-              <pre className={styles.pre} tabIndex={0} aria-label={bi(lang, 'Ficha de ejemplo en JSON', 'Sample entry as JSON')}>
-                <code>{renderJson(sample)}</code>
-              </pre>
-            </figure>
-          </motion.div>
-        </section>
-      )}
     </div>
   )
 }
