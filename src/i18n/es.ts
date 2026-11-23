@@ -55,6 +55,7 @@ export const es = {
     title: 'Hablemos',
     leadLinkedin: 'Busco empleo y proyectos freelance. Escríbeme por LinkedIn.',
     leadEmail: 'Busco empleo y proyectos freelance. Escríbeme.',
+    leadWhatsapp: 'Busco empleo y proyectos freelance. Escríbeme por WhatsApp o LinkedIn.',
     copyEmail: 'Copiar correo',
     copied: 'Correo copiado',
     sendEmail: 'Escribir por correo',
@@ -107,9 +108,9 @@ export const es = {
     summary:
       'La biblioteca de ejercicios detrás de Gym Zong, ya en línea: 1,257 ejercicios con imágenes y animaciones SVG, filtros por músculo, equipo y familia, y una API pública de lectura documentada.',
     role: [
-      'Escribí las instrucciones de cómo construirla',
-      'Generé los SVG animados',
-      'Redacté la información de los ejercicios',
+      'Programé las animaciones SVG de los ejercicios',
+      'Traduje todo el contenido',
+      'Colaboré en gran parte de la API',
     ],
     highlights: [
       'En línea: 1,257 ejercicios con imágenes y animaciones SVG.',

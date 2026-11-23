@@ -55,6 +55,7 @@ export const en: Dict = {
     title: "Let's talk",
     leadLinkedin: 'Looking for full-time roles and freelance projects. Reach me on LinkedIn.',
     leadEmail: 'Looking for full-time roles and freelance projects. Write to me.',
+    leadWhatsapp: 'Looking for full-time roles and freelance projects. Reach me on WhatsApp or LinkedIn.',
     copyEmail: 'Copy email',
     copied: 'Email copied',
     sendEmail: 'Send an email',
@@ -107,9 +108,9 @@ export const en: Dict = {
     summary:
       'The exercise library behind Gym Zong, now live: 1,257 exercises with images and SVG animations, filters by muscle, equipment and family, and a documented public read API.',
     role: [
-      'Wrote the instructions on how to build it',
-      'Generated the animated SVGs',
-      'Wrote the exercise information',
+      'Programmed the exercise SVG animations',
+      'Translated all of the content',
+      'Helped build a large part of the API',
     ],
     highlights: [
       'Live: 1,257 exercises with images and SVG animations.',

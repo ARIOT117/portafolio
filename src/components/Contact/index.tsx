@@ -45,7 +45,7 @@ export default function Contact() {
     <section id="contacto" className={styles.root} aria-labelledby="contacto-titulo">
       <div className={styles.inner}>
         <h2 id="contacto-titulo" className={styles.title}>{t.contact.title}</h2>
-        <p className={styles.lead}>{hasEmail ? t.contact.leadEmail : t.contact.leadLinkedin}</p>
+        <p className={styles.lead}>{hasEmail ? t.contact.leadEmail : hasWhatsapp ? t.contact.leadWhatsapp : t.contact.leadLinkedin}</p>
         <div className={styles.actions}>
           <a className={styles.primary} href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
             {t.contact.linkedin}
