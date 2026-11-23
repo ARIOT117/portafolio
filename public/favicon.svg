@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .bg { fill: #f8f6f1; }
+    .a { fill: none; stroke: #16150f; stroke-width: 6; stroke-linecap: square; stroke-linejoin: miter; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #16150f; }
+      .a { stroke: #f8f6f1; }
+    }
+  </style>
+  <rect class="bg" width="64" height="64" rx="14"/>
+  <path class="a" d="M16 49 32 14l16 35M22.5 37h19"/>
+</svg>

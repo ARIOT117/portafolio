@@ -2,6 +2,7 @@ import { AnimatePresence } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { Route, Routes, useLocation, useMatch, useNavigationType } from 'react-router'
 import Contact from './components/Contact'
+import Footer from './components/Footer'
 import FolderGrid from './components/FolderGrid'
 import Hero from './components/Hero'
 import Intro from './components/Intro'
@@ -11,11 +12,14 @@ import { OpenProjectContext } from './components/ProjectView/context'
 
 function Home() {
   return (
-    <main>
-      <Hero />
-      <FolderGrid />
-      <Contact />
-    </main>
+    <>
+      <main>
+        <Hero />
+        <FolderGrid />
+        <Contact />
+      </main>
+      <Footer />
+    </>
   )
 }
 
