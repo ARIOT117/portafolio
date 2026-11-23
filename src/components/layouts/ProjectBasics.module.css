@@ -179,3 +179,12 @@
 .secondary:active {
   transform: scale(0.98);
 }
+
+.credits {
+  margin-block-start: var(--space-3);
+  max-width: var(--measure);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--pb-ink-3);
+  text-wrap: pretty;
+}

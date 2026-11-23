@@ -10,6 +10,8 @@ export interface ProjectText {
   highlights: readonly string[]
   award?: string
   awardSub?: string
+  /** Créditos opcionales (se muestran bajo «Mi rol»). */
+  credits?: string
 }
 
 export function useProjectText(project: Project): ProjectText {

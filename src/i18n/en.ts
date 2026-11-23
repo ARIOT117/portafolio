@@ -32,7 +32,7 @@ export const en: Dict = {
   },
   projects: {
     title: 'Projects',
-    intro: 'Four projects I took part in.',
+    intro: "A selection of things I've built, from games to APIs.",
     open: 'Open',
     close: 'Close',
     back: 'Back',
@@ -84,6 +84,8 @@ export const en: Dict = {
     summary:
       'You open the app, know what is on today, log your workout and see your progress. It is in Spanish and works offline with SQLite. It has streaks with freezes, stats, a calendar and a history. It has its own identity: a flower, warm white and mint.',
     role: ['Product', 'Design', 'Development'],
+    credits:
+      'My project end to end. Ideas, QA and design proposals: Irvin Chavez and Diego Soto.',
     highlights: [
       'Works offline: your data lives on the phone in SQLite.',
       'Streaks with freezes, stats, calendar and history.',

@@ -1,9 +1,11 @@
-import { motion, useIsPresent } from 'motion/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { animate, motion, usePresence } from 'motion/react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { getProject, type Project } from '../../content/projects'
 import { useT } from '../../i18n/LangProvider'
-import { duration, easeOutExpo, spring, useReducedMotionSafe } from '../../styles/motion'
+import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
+import { CoverArt, useCover } from '../Folder/cover'
+import folderStyles from '../Folder/Folder.module.css'
 import { layouts } from '../layouts'
 import { projectTitleId } from '../layouts/ProjectBasics'
 import styles from './ProjectView.module.css'
@@ -28,32 +30,124 @@ function NotFound() {
   )
 }
 
+/** Curva de la hoja: arranque decidido, aterrizaje suave. */
+const FLIGHT_EASE = [0.32, 0.72, 0, 1] as const
+const FLIGHT_S = 0.78
+const LAND_S = 0.62
+
+interface Rect {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+interface Flight {
+  from: Rect
+  /** Píxeles de la hoja que tapa el panel frontal de la carpeta */
+  covered: number
+  lift: boolean
+}
+
+const folderEl = (slug: string) =>
+  document.querySelector<HTMLElement>(`[data-folder-slug="${slug}"]`)
+
+const sheetRect = (el: HTMLElement | null): Rect | null => {
+  const r = el?.querySelector('[data-folder-sheet]')?.getBoundingClientRect()
+  return r ? { left: r.left, top: r.top, width: r.width, height: r.height } : null
+}
+
+/** Mide la hoja de la carpeta y cuánto tapa el panel frontal. Null si no hay carpeta visible. */
+function measureFlight(slug: string): Flight | null {
+  const card = folderEl(slug)
+  const from = sheetRect(card)
+  if (!card || !from || from.width === 0) return null
+  const front = card.querySelector('[data-folder-front]')?.getBoundingClientRect()
+  const covered = front ? Math.max(0, Math.min(from.height, from.top + from.height - front.top)) : 0
+  return { from, covered, lift: card.matches(':hover, :focus-visible') }
+}
+
+const rectStyle = (r: Rect) => ({ left: r.left, top: r.top, width: r.width, height: r.height })
+const insetBottom = (px: number) => `inset(0px 0px ${Math.round(px)}px 0px)`
+
 function ProjectDialog({ project }: { project: Project }) {
   const { t } = useT()
   const location = useLocation()
   const navigate = useNavigate()
   const reduced = useReducedMotionSafe()
-  const isPresent = useIsPresent()
+  const [isPresent, safeToRemove] = usePresence()
   const dialogRef = useRef<HTMLDivElement>(null)
+  const bgRef = useRef<HTMLDivElement>(null)
+  const flyerRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const keyboardClose = useRef(false)
+  const enter = useRef<{ stop: () => void }[]>([])
+  const bgTimer = useRef(0)
   const { slug } = project
   const Layout = layouts[slug]
+  const srcs = useCover(project)
 
-  // Se decide al montar: con la home debajo hay vuelo; entrando directo, un fade corto.
+  // Se decide al montar: con la home debajo y movimiento normal hay vuelo; si no, un fade corto.
   const [fromHome] = useState(() => Boolean((location.state as { backgroundLocation?: unknown } | null)?.backgroundLocation))
-  const flight = fromHome && !reduced
+  const [flight] = useState<Flight | null>(() => (fromHome && !reduced ? measureFlight(slug) : null))
   const [ready, setReady] = useState(!flight)
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const [scrolled, setScrolled] = useState(false)
+  const [chromeBg, setChromeBg] = useState<string>()
 
-  // Respaldo por si onLayoutAnimationComplete no llega
+  const close = useCallback(
+    (byKeyboard = false) => {
+      keyboardClose.current = byKeyboard
+      if (fromHome) navigate(-1)
+      else navigate('/', { replace: true })
+    },
+    [fromHome, navigate],
+  )
+
+  // La carpeta se congela con su pose actual mientras la hoja vuela. La hoja de la
+  // carpeta solo se oculta cuando las imágenes de la que vuela ya están pintables
+  // (si no, habría un hueco de un frame).
+  useLayoutEffect(() => {
+    if (!flight) return
+    const card = folderEl(slug)
+    const flyer = flyerRef.current
+    card?.setAttribute('data-flying', '')
+    if (flight.lift) card?.setAttribute('data-lift', '')
+    // Se muestra la hoja que vuela cuando sus imágenes ya están decodificadas; solo
+    // entonces (y un par de frames después) se oculta la hoja de la carpeta.
+    let alive = true
+    const imgs = Array.from(flyer?.querySelectorAll('img') ?? [])
+    Promise.all(imgs.map((i) => i.decode().catch(() => undefined))).then(() => {
+      if (!alive) return
+      if (flyer) flyer.style.visibility = 'visible'
+      requestAnimationFrame(() => requestAnimationFrame(() => alive && card?.setAttribute('data-hide', '')))
+    })
+    return () => {
+      alive = false
+      card?.removeAttribute('data-flying')
+      card?.removeAttribute('data-lift')
+      card?.removeAttribute('data-hide')
+    }
+  }, [flight, slug])
+
+  // Barra superior: aparece al hacer scroll y toma el fondo del layout (claro u oscuro)
   useEffect(() => {
-    if (ready) return
-    const id = window.setTimeout(() => setReady(true), 1100)
-    return () => window.clearTimeout(id)
-  }, [ready])
-
-  const close = useCallback(() => {
-    if (fromHome) navigate(-1)
-    else navigate('/', { replace: true })
-  }, [fromHome, navigate])
+    const sc = scrollerRef.current
+    if (!sc) return
+    const onScroll = () => setScrolled(sc.scrollTop > 8)
+    sc.addEventListener('scroll', onScroll, { passive: true })
+    const id = requestAnimationFrame(() => {
+      const el = sc.firstElementChild
+      const bg = el ? getComputedStyle(el).backgroundColor : ''
+      if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+        setChromeBg(`color-mix(in srgb, ${bg} 78%, transparent)`)
+      }
+    })
+    return () => {
+      sc.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(id)
+    }
+  }, [])
 
   // Bloqueo de scroll del body
   useEffect(() => {
@@ -77,13 +171,76 @@ function ProjectDialog({ project }: { project: Project }) {
     return () => cancelAnimationFrame(id)
   }, [slug])
 
-  // Foco de vuelta a la carpeta al empezar a cerrar
+  // Entrada: la hoja sale de la carpeta y crece hasta ser la página
+  useEffect(() => {
+    const flyer = flyerRef.current
+    const bg = bgRef.current
+    if (!flight || !flyer || !bg) return
+    const full = { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight }
+    const fly = animate(flyer, { ...full, borderRadius: 0 }, { duration: FLIGHT_S, ease: FLIGHT_EASE })
+    // La hoja termina de salir del panel mientras empieza a crecer
+    const reveal = animate(flyer, { clipPath: insetBottom(0) }, { duration: 0.34, ease: easeOutExpo })
+    enter.current = [fly, reveal]
+    // Crossfade al fondo de la vista cuando la imagen ya casi cubre la pantalla
+    bgTimer.current = window.setTimeout(() => {
+      enter.current.push(animate(bg, { opacity: 1 }, { duration: 0.32, ease: 'easeOut' }))
+    }, 440)
+    let alive = true
+    fly.then(() => {
+      if (!alive) return
+      setReady(true)
+      enter.current = [animate(flyer, { opacity: 0 }, { duration: 0.28, ease: 'easeOut' })]
+    })
+    return () => {
+      alive = false
+      window.clearTimeout(bgTimer.current)
+    }
+  }, [flight])
+
+  // Salida: el contenido se apaga, la hoja se encoge a la carpeta y el dibujo reaparece
   useEffect(() => {
     if (isPresent) return
-    document
-      .querySelector<HTMLElement>(`[data-folder-slug="${slug}"]`)
-      ?.focus({ preventScroll: true })
-  }, [isPresent, slug])
+    // Foco de vuelta a la carpeta. Con ratón no se dibuja el anillo; con teclado sí.
+    const card = folderEl(slug)
+    if (card) {
+      card.focus(
+        keyboardClose.current
+          ? { preventScroll: true }
+          : ({ preventScroll: true, focusVisible: false } as FocusOptions),
+      )
+    }
+
+    const flyer = flyerRef.current
+    const bg = bgRef.current
+    const root = dialogRef.current
+    if (!flight || !flyer || !bg || !root) {
+      if (!root) return safeToRemove?.()
+      const fade = animate(root, { opacity: 0 }, { duration: reduced ? 0.15 : 0.2, ease: 'easeOut' })
+      fade.then(() => safeToRemove?.())
+      return () => fade.stop()
+    }
+
+    window.clearTimeout(bgTimer.current)
+    enter.current.forEach((c) => c.stop())
+    let alive = true
+    const target = sheetRect(card) ?? flight.from
+    const run = async () => {
+      await animate(flyer, { opacity: 1 }, { duration: 0.16, ease: 'easeOut' })
+      if (!alive) return
+      animate(bg, { opacity: 0 }, { duration: 0 })
+      await Promise.all([
+        animate(flyer, { ...rectStyle(target), borderRadius: 8 }, { duration: LAND_S, ease: FLIGHT_EASE }),
+        animate(flyer, { clipPath: insetBottom(flight.covered) }, { duration: 0.3, delay: LAND_S - 0.3, ease: 'easeIn' }),
+      ])
+      if (alive) safeToRemove?.()
+    }
+    run()
+    const guard = window.setTimeout(() => safeToRemove?.(), 1600)
+    return () => {
+      alive = false
+      window.clearTimeout(guard)
+    }
+  }, [isPresent]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Escape y focus trap básico
   useEffect(() => {
@@ -91,7 +248,7 @@ function ProjectDialog({ project }: { project: Project }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault()
-        close()
+        close(true)
         return
       }
       if (e.key !== 'Tab') return
@@ -113,37 +270,54 @@ function ProjectDialog({ project }: { project: Project }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [isPresent, close])
 
-  const fadeOnly = !flight
   const fadeTime = reduced ? 0.15 : duration.base
   const surface = `color-mix(in srgb, ${project.accent} 6%, var(--color-bg))`
-  // Durante el vuelo la vista tiene el color de la carpeta y pasa a papel al llegar
-  const folderTint = `color-mix(in srgb, ${project.accent} 20%, #d8d3c6)`
+  const dark = Boolean(project.assets.manifest)
 
   return (
     <motion.div
       ref={dialogRef}
-      layoutId={flight ? `folder-${slug}` : undefined}
-      transition={flight ? spring.layout : undefined}
-      onLayoutAnimationComplete={() => setReady(true)}
-      initial={fadeOnly ? { opacity: 0, scale: reduced ? 1 : 0.985 } : undefined}
-      animate={fadeOnly ? { opacity: 1, scale: 1, transition: { duration: fadeTime, ease: easeOutExpo } } : undefined}
-      exit={fadeOnly ? { opacity: 0, scale: reduced ? 1 : 0.985, transition: { duration: reduced ? 0.15 : 0.2 } } : undefined}
+      initial={flight ? false : { opacity: 0, scale: reduced ? 1 : 0.985 }}
+      animate={flight ? undefined : { opacity: 1, scale: 1, transition: { duration: fadeTime, ease: easeOutExpo } }}
       role="dialog"
       aria-modal="true"
       aria-labelledby={projectTitleId(slug)}
       className={styles.view}
-      style={{ borderRadius: 0, background: ready && isPresent ? surface : folderTint }}
     >
+      <div ref={bgRef} className={styles.bg} style={{ background: surface, opacity: flight ? 0 : 1 }} />
+      {flight && (
+        <div
+          ref={flyerRef}
+          aria-hidden
+          className={`${styles.flyer} ${dark ? folderStyles.sheetDark : styles.flyerLight}`}
+          style={{
+            ...rectStyle(flight.from),
+            borderRadius: 8,
+            visibility: 'hidden',
+            clipPath: insetBottom(flight.covered),
+            ['--accent' as string]: project.accent,
+          }}
+        >
+          <CoverArt project={project} srcs={srcs} eager />
+        </div>
+      )}
       <motion.div
+        ref={contentRef}
         className={styles.content}
         initial={false}
         animate={{ opacity: ready && isPresent ? 1 : 0 }}
-        transition={{ duration: isPresent ? (reduced ? 0.15 : 0.35) : 0.12, ease: 'easeOut' }}
+        transition={{ duration: isPresent ? (reduced ? 0.15 : 0.35) : 0.12, delay: isPresent && flight ? 0.16 : 0, ease: 'easeOut' }}
       >
-        <div className={styles.scroller}>
+        <div ref={scrollerRef} className={styles.scroller}>
           <Layout project={project} />
         </div>
-        <button type="button" className={styles.close} onClick={close} aria-label={t.projects.backLabel}>
+        <div
+          aria-hidden
+          className={styles.bar}
+          data-visible={scrolled || undefined}
+          style={chromeBg ? ({ '--view-chrome-bg': chromeBg } as React.CSSProperties) : undefined}
+        />
+        <button type="button" className={styles.close} onClick={(e) => close(e.detail === 0)} aria-label={t.projects.backLabel}>
           <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M10 3.5 5.5 8l4.5 4.5" />
           </svg>

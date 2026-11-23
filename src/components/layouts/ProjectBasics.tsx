@@ -87,6 +87,7 @@ export default function ProjectBasics({ project, className, tone = 'light', styl
               <li key={r}>{r}</li>
             ))}
           </ul>
+          {text.credits && <p className={styles.credits}>{text.credits}</p>}
           {project.team && (
             <p className={styles.team}>
               <span className={styles.teamLabel}>{t.projects.team}</span> {project.team}

@@ -32,7 +32,7 @@ export const es = {
   },
   projects: {
     title: 'Proyectos',
-    intro: 'Cuatro proyectos en los que participé.',
+    intro: 'Una selección de lo que he construido, de juegos a APIs.',
     open: 'Abrir',
     close: 'Cerrar',
     back: 'Volver',
@@ -84,6 +84,8 @@ export const es = {
     summary:
       'Abres la app, sabes qué toca, registras el entrenamiento y ves tu progreso. Está en español y funciona sin conexión con SQLite. Tiene rachas con congelaciones, estadísticas, calendario e historial. Tiene identidad propia: una flor, blanco cálido y menta.',
     role: ['Producto', 'Diseño', 'Desarrollo'],
+    credits:
+      'Proyecto mío de principio a fin. Ideas, QA y propuestas de diseño: Irvin Chavez y Diego Soto.',
     highlights: [
       'Funciona sin conexión: tus datos viven en el teléfono con SQLite.',
       'Rachas con congelaciones, estadísticas, calendario e historial.',

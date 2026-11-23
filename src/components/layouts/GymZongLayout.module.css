@@ -1,0 +1,413 @@
+/*
+ * Gym Zong: "Calm Performance". Blanco cálido, tinta verde petróleo, menta
+ * como único color de marca y ámbar solo para la racha.
+ */
+.page {
+  --gz-bg: #faf8f4;
+  --gz-surface: #fffdf9;
+  --gz-ink: #0f2e36;
+  --gz-body: #2e4a51;
+  --gz-soft: #4a6168;
+  --gz-line: #e0d9cc;
+  --gz-mint: #3dd9b8;
+  --gz-mint-ink: #0b7a66;
+  --gz-wash: #e9f8f3;
+  --gz-phone: 18rem;
+  --font-mono: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [content-start] auto
+    [mid] minmax(0, 60rem)
+    [content-end] minmax(var(--gutter), 1fr)
+    [full-end];
+  align-content: start;
+  min-height: 100%;
+  padding-block: 6.5rem 7rem;
+  background: var(--gz-bg);
+  color: var(--gz-body);
+  font-family: 'Inter Variable', var(--font-sans);
+}
+
+.page > * {
+  grid-column: content-start / content-end;
+  /* Solo enlaces y nota definen el ancho de la columna auto */
+  contain: inline-size;
+}
+
+.page :focus-visible:not([tabindex='-1']) {
+  outline: 2px solid var(--gz-mint-ink);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ---------- Hero (cabecera y enlaces de ProjectBasics) ---------- */
+
+.pb {
+  display: contents;
+}
+
+.logo {
+  order: 0;
+  height: 2.25rem;
+  width: auto;
+  margin-block-end: 1.5rem;
+  justify-self: start;
+}
+
+.pb > * {
+  order: 8;
+  grid-column: content-start / content-end;
+  contain: inline-size;
+}
+
+.pb > header {
+  order: 1;
+  gap: 1rem;
+}
+
+.pb h1 {
+  max-width: none;
+  font-family: 'Manrope Variable', var(--font-sans);
+  font-size: clamp(2.75rem, 2rem + 3.6vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  color: var(--gz-ink);
+}
+
+.pb header > p:not(:has(+ *)) {
+  max-width: 54ch;
+}
+
+.pb header > p:nth-of-type(1) {
+  max-width: 44ch;
+  color: var(--gz-body);
+  font-size: clamp(1.125rem, 1.05rem + 0.4vw, 1.3125rem);
+}
+
+.pb header > p:nth-of-type(2) {
+  color: var(--gz-soft);
+}
+
+/* Botón de vitrina en menta; la nota privada va a su lado */
+.pb > :has(a[data-kind]) {
+  order: 2;
+  grid-column: content-start / mid;
+  contain: none;
+  margin-block-start: 2rem;
+}
+
+.note {
+  order: 3;
+  grid-column: mid / content-end;
+  contain: none;
+  align-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  color: var(--gz-soft);
+}
+
+.page .pb a[data-kind] {
+  background: var(--gz-mint);
+  border-color: var(--gz-mint);
+  color: #05302a;
+  font-weight: 600;
+}
+
+.page .pb a[data-kind]:hover {
+  background: #2fc7a7;
+  border-color: #2fc7a7;
+}
+
+.note svg {
+  flex: none;
+  color: var(--gz-mint-ink);
+}
+
+/* ---------- Carrusel ---------- */
+
+.band {
+  order: 4;
+  grid-column: full-start / full-end;
+  margin-block: 3rem 0;
+  padding-block: 3rem 1.5rem;
+  background: var(--gz-wash);
+}
+
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  margin: 0;
+  padding: 1.5rem calc(50% - var(--gz-phone) / 2) 0.5rem;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+  touch-action: pan-x pan-y;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.track:focus-visible {
+  outline-offset: -4px;
+  border-radius: 12px;
+}
+
+.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.slide {
+  flex: none;
+  width: var(--gz-phone);
+  scroll-snap-align: center;
+}
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.phone {
+  width: 100%;
+  padding: 6px;
+  border-radius: 2.25rem;
+  background: var(--gz-ink);
+  box-shadow:
+    0 1px 2px rgb(15 46 54 / 0.14),
+    0 24px 40px -20px rgb(15 46 54 / 0.35);
+}
+
+.phone img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 20;
+  border-radius: calc(2.25rem - 6px);
+  background: var(--gz-surface);
+  object-fit: cover;
+}
+
+.caption {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  color: var(--gz-body);
+  text-align: center;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--gz-mint-ink);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.counter {
+  font-size: 0.875rem;
+  color: var(--gz-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.counter span {
+  color: var(--gz-ink);
+  font-weight: 600;
+}
+
+.arrows {
+  display: none;
+  gap: 0.5rem;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid rgb(15 46 54 / 0.24);
+  background: var(--gz-surface);
+  color: var(--gz-ink);
+  transition:
+    background-color var(--duration-fast) var(--ease-out-quart),
+    border-color var(--duration-fast) var(--ease-out-quart),
+    transform var(--duration-fast) var(--ease-out-quart);
+}
+
+.arrow:hover:not(:disabled) {
+  border-color: var(--gz-ink);
+}
+
+.arrow:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+@media (min-width: 720px) {
+  .controls {
+    justify-content: space-between;
+    width: min(100%, 60rem);
+    padding-inline: var(--gutter);
+    margin-inline: auto;
+  }
+
+  .arrows {
+    display: flex;
+  }
+
+  .slide {
+    transform: scale(0.9);
+    transform-origin: 50% 100%;
+    transition: transform var(--duration-base) var(--ease-out-quart);
+  }
+
+  .slide[data-active='true'] {
+    transform: scale(1);
+  }
+}
+
+@media (min-width: 720px) and (prefers-reduced-motion: reduce) {
+  .slide {
+    transition: none;
+  }
+}
+
+@media (max-width: 719px) {
+  .page {
+    --gz-phone: min(68vw, 16rem);
+  }
+}
+
+/* ---------- Rasgos ---------- */
+
+.features {
+  order: 5;
+  display: grid;
+  gap: 2rem 2.5rem;
+  margin: 4rem 0 0;
+  padding: 0 0 4rem;
+  list-style: none;
+  border-block-end: 1px solid var(--gz-line);
+}
+
+@media (min-width: 640px) {
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1080px) {
+  .features {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-block-end: 0.5rem;
+  border-radius: 0.875rem;
+  background: var(--gz-wash);
+  color: var(--gz-mint-ink);
+}
+
+.streak {
+  background: #fdf0e2;
+  color: #9a5a12;
+}
+
+.featureTitle {
+  font-family: 'Manrope Variable', var(--font-sans);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--gz-ink);
+}
+
+.featureText {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--gz-soft);
+  max-width: 28ch;
+}
+
+/* ---------- ProjectBasics inferior (rol, stack, créditos) ---------- */
+
+.page .pb {
+  --pb-ink: var(--gz-ink);
+  --pb-ink-2: var(--gz-body);
+  --pb-ink-3: #5c7075;
+  --pb-line: var(--gz-line);
+  --pb-bg: var(--gz-bg);
+  --pb-chip: var(--gz-wash);
+}
+
+.pb > :not(header):not(:has(a[data-kind])) {
+  order: 6;
+  margin-block-start: 3rem;
+}
+
+.pb > :not(header):not(:has(a[data-kind])) ~ :not(header):not(:has(a[data-kind])) {
+  margin-block-start: 3rem;
+}
+
+.pb h2 {
+  font-family: 'Manrope Variable', var(--font-sans);
+  font-weight: 700;
+  color: var(--gz-ink);
+}
+
+@media (max-width: 639px) {
+  .pb > :has(a[data-kind]) {
+    grid-column: content-start / content-end;
+  }
+
+  .note {
+    grid-column: content-start / content-end;
+    align-self: start;
+    margin: 1rem 0 0;
+  }
+}

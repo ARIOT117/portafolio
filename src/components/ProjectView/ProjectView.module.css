@@ -3,7 +3,23 @@
   inset: 0;
   z-index: var(--z-view);
   overflow: hidden;
-  transition: background-color 0.4s var(--ease-out-quart);
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+}
+
+/* La hoja que vuela: lleva la portada con object-fit, sin deformarse al crecer */
+.flyer {
+  position: fixed;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgb(22 21 15 / 0.12);
+  will-change: left, top, width, height;
+}
+
+.flyerLight {
+  background: var(--color-surface-sunken);
 }
 
 .content {
@@ -16,6 +32,24 @@
   inset: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+}
+
+.bar {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 4.5rem;
+  background: var(--view-chrome-bg, color-mix(in srgb, var(--color-bg) 78%, transparent));
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border-block-end: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out-quart);
+}
+
+.bar[data-visible] {
+  opacity: 1;
 }
 
 .close {
@@ -35,6 +69,7 @@
   color: var(--color-ink);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.14);
   transition:
     background-color var(--duration-fast) var(--ease-out-quart),
     transform var(--duration-fast) var(--ease-out-quart);
@@ -66,4 +101,16 @@
 .homeLink {
   color: var(--color-accent);
   text-underline-offset: 4px;
+}
+
+@media (max-width: 639px) {
+  .bar {
+    block-size: 3.75rem;
+  }
+
+  .close {
+    inset-block-start: var(--space-3);
+    min-height: 2.5rem;
+    padding-inline: var(--space-3) var(--space-4);
+  }
 }

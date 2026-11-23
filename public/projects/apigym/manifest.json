@@ -31,7 +31,7 @@
   },
   {
     "id": "0652",
-    "name": "Dominadas con agarre prono",
+    "name": "Dominadas",
     "nameEn": "pull-up",
     "frames": [
       "/projects/apigym/0652/frame-00.svg",
@@ -61,7 +61,7 @@
   },
   {
     "id": "0091",
-    "name": "Press militar con barra",
+    "name": "Press militar sentado con barra",
     "nameEn": "barbell seated overhead press",
     "frames": [
       "/projects/apigym/0091/frame-00.svg",
