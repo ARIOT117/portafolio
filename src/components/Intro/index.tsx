@@ -4,6 +4,7 @@ import { useT } from '../../i18n/context'
 import Scramble from './Scramble'
 import { easeInOutQuart, easeOutExpo, easeOutQuart } from '../../styles/motion'
 import styles from './Intro.module.css'
+import { useIntroFavicon } from './useIntroFavicon'
 import {
   FLY_MS,
   TYPE_MS,
@@ -25,6 +26,7 @@ export const brandFlight = { duration: FLY_MS / 1000, ease: easeInOutQuart }
 export default function Intro() {
   const phase = useIntroPhase()
   const { t } = useT()
+  useIntroFavicon(phase === 'type')
 
   // Temporizadores de fase
   useEffect(() => {
