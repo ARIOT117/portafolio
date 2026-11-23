@@ -9,11 +9,20 @@ import Intro from './components/Intro'
 import Nav from './components/Nav'
 import ProjectView from './components/ProjectView'
 import { OpenProjectContext } from './components/ProjectView/context'
+import { useT } from './i18n/context'
+
+/** El hash de la URL lo gestiona el router; aquí solo se mueve el foco al contenido. */
+function skipToMain(e: React.MouseEvent<HTMLAnchorElement>) {
+  e.preventDefault()
+  const main = document.getElementById('contenido')
+  main?.focus({ preventScroll: true })
+  main?.scrollIntoView()
+}
 
 function Home() {
   return (
     <>
-      <main>
+      <main id="contenido" tabIndex={-1}>
         <Hero />
         <FolderGrid />
         <Contact />
@@ -24,6 +33,7 @@ function Home() {
 }
 
 export default function App() {
+  const { lang } = useT()
   const location = useLocation()
   const navType = useNavigationType()
   const match = useMatch('/p/:slug')
@@ -45,6 +55,9 @@ export default function App() {
   return (
     <OpenProjectContext.Provider value={slug}>
       <Intro />
+      <a href="#contenido" className="skip-link" onClick={skipToMain}>
+        {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+      </a>
       <Nav />
       {/* Una sola ruta comodín: la home no se desmonta al abrir ni cerrar un proyecto */}
       <Routes location={backgroundLocation ?? location}>

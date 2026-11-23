@@ -174,3 +174,27 @@ textarea {
     scroll-behavior: auto !important;
   }
 }
+
+/* Enlace "saltar al contenido": invisible hasta recibir el foco */
+.skip-link {
+  position: fixed;
+  inset-block-start: var(--space-3);
+  inset-inline-start: var(--gutter);
+  z-index: calc(var(--z-intro) + 10);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+main:focus {
+  outline: none;
+}

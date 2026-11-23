@@ -2,6 +2,7 @@ import { animate, motion, usePresence } from 'motion/react'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { getProject, type Project } from '../../content/projects'
+import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
 import { CoverArt, useCover } from '../Folder/cover'
@@ -9,6 +10,9 @@ import folderStyles from '../Folder/Folder.module.css'
 import { layouts } from '../layouts'
 import { projectTitleId } from '../layouts/ProjectBasics'
 import styles from './ProjectView.module.css'
+
+/** Vistas oscuras: la barra y el botón Volver toman su fondo y tinta. */
+const DARK_SLUGS: readonly string[] = ['eclipse-rojo', 'apigym']
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -72,6 +76,8 @@ const insetBottom = (px: number) => `inset(0px 0px ${Math.round(px)}px 0px)`
 
 function ProjectDialog({ project }: { project: Project }) {
   const { t } = useT()
+  const baseTitle = useRef(t.meta.title)
+  baseTitle.current = t.meta.title
   const location = useLocation()
   const navigate = useNavigate()
   const reduced = useReducedMotionSafe()
@@ -84,6 +90,8 @@ function ProjectDialog({ project }: { project: Project }) {
   const enter = useRef<{ stop: () => void }[]>([])
   const bgTimer = useRef(0)
   const { slug } = project
+  const text = useProjectText(project)
+  const tone = DARK_SLUGS.includes(slug) ? 'dark' : 'light'
   const Layout = layouts[slug]
   const srcs = useCover(project)
 
@@ -93,7 +101,7 @@ function ProjectDialog({ project }: { project: Project }) {
   const [ready, setReady] = useState(!flight)
   const scrollerRef = useRef<HTMLDivElement>(null)
   const [scrolled, setScrolled] = useState(false)
-  const [chromeBg, setChromeBg] = useState<string>()
+  const [viewBg, setViewBg] = useState<string>()
 
   const close = useCallback(
     (byKeyboard = false) => {
@@ -140,7 +148,7 @@ function ProjectDialog({ project }: { project: Project }) {
       const el = sc.firstElementChild
       const bg = el ? getComputedStyle(el).backgroundColor : ''
       if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-        setChromeBg(`color-mix(in srgb, ${bg} 78%, transparent)`)
+        setViewBg(bg)
       }
     })
     return () => {
@@ -148,6 +156,24 @@ function ProjectDialog({ project }: { project: Project }) {
       cancelAnimationFrame(id)
     }
   }, [])
+
+  // Título de la pestaña: "<proyecto> · Diego Esparza"; al cerrar vuelve al título base
+  // (LangProvider fija el título base en su efecto, que corre después del de este hijo:
+  // por eso se reaplica en el siguiente frame al cambiar de idioma.)
+  useEffect(() => {
+    const set = () => {
+      document.title = `${text.name} · Diego Esparza`
+    }
+    set()
+    const id = requestAnimationFrame(set)
+    return () => cancelAnimationFrame(id)
+  }, [text.name])
+  useEffect(
+    () => () => {
+      document.title = baseTitle.current
+    },
+    [],
+  )
 
   // Bloqueo de scroll del body
   useEffect(() => {
@@ -315,9 +341,10 @@ function ProjectDialog({ project }: { project: Project }) {
           aria-hidden
           className={styles.bar}
           data-visible={scrolled || undefined}
-          style={chromeBg ? ({ '--view-chrome-bg': chromeBg } as React.CSSProperties) : undefined}
+          data-tone={tone}
+          style={viewBg ? ({ '--view-bg': viewBg } as React.CSSProperties) : undefined}
         />
-        <button type="button" className={styles.close} onClick={(e) => close(e.detail === 0)} aria-label={t.projects.backLabel}>
+        <button type="button" className={styles.close} data-tone={tone} style={viewBg ? ({ '--view-bg': viewBg } as React.CSSProperties) : undefined} onClick={(e) => close(e.detail === 0)} aria-label={t.projects.backLabel}>
           <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M10 3.5 5.5 8l4.5 4.5" />
           </svg>

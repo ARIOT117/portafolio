@@ -9,8 +9,8 @@ import { useSyncExternalStore } from 'react'
 export type IntroPhase = 'type' | 'fly' | 'done'
 
 export const INTRO_STORAGE_KEY = 'intro-seen'
-/** Tiempo que dura la fase `type` antes de volar (decodificado, golpe, nombre; total con vuelo ~3.1 s). */
-export const TYPE_MS = 2350
+/** Tiempo que dura la fase `type` antes de volar (decodificado, golpe, nombre; total con vuelo ~2.75 s). */
+export const TYPE_MS = 1950
 /** Duración del vuelo; coincide con el layout transition de la Nav. */
 export const FLY_MS = 800
 

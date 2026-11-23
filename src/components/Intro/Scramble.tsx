@@ -23,7 +23,9 @@ interface Props {
  */
 export default function Scramble({ text, start, step, cycle }: Props) {
   const chars = text.split('')
-  const [shown, setShown] = useState<(string | null)[]>(() => chars.map(() => null))
+  const [shown, setShown] = useState<(string | null)[]>(() =>
+    chars.map((c, i) => (c !== ' ' && start + i * step <= 0 ? randomGlyph() : null)),
+  )
 
   useEffect(() => {
     const t0 = performance.now()

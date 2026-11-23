@@ -1,7 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
-import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL } from '../../content/contact'
+import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, WHATSAPP_NUMBER } from '../../content/contact'
 import { useT } from '../../i18n/context'
 import styles from './Contact.module.css'
+
+const WHATSAPP_TEXT = {
+  es: 'Hola Diego, vi tu portafolio y me gustaría platicar contigo.',
+  en: "Hi Diego, I saw your portfolio and I'd like to talk.",
+}
+const WHATSAPP_LABEL = { es: 'WhatsApp', en: 'WhatsApp' }
+
+const whatsappGlyph = (
+  <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M2.5 13.5 3.4 10.6A5.6 5.6 0 1 1 5.4 12.6L2.5 13.5Z" />
+  </svg>
+)
 
 const arrow = (
   <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -10,8 +22,9 @@ const arrow = (
 )
 
 export default function Contact() {
-  const { t } = useT()
+  const { t, lang } = useT()
   const hasEmail = CONTACT_EMAIL !== ''
+  const hasWhatsapp = WHATSAPP_NUMBER !== ''
   const [copied, setCopied] = useState(false)
   const timer = useRef<number>(undefined)
 
@@ -42,6 +55,17 @@ export default function Contact() {
             {t.contact.github}
             {arrow}
           </a>
+          {hasWhatsapp && (
+            <a
+              className={styles.secondary}
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_TEXT[lang])}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {whatsappGlyph}
+              {WHATSAPP_LABEL[lang]}
+            </a>
+          )}
           {hasEmail && (
             <>
               <button type="button" className={styles.secondary} onClick={copy}>

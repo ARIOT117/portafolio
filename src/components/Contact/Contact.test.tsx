@@ -1,9 +1,10 @@
 import { render, screen } from '@testing-library/react'
 
-async function renderContact(email: string) {
+async function renderContact(email: string, whatsapp = '') {
   vi.resetModules()
   vi.doMock('../../content/contact', () => ({
     CONTACT_EMAIL: email,
+    WHATSAPP_NUMBER: whatsapp,
     LINKEDIN_URL: 'https://example.com/in/x',
     GITHUB_URL: 'https://example.com/gh',
   }))
@@ -34,5 +35,17 @@ describe('Contact', () => {
     expect(screen.getByRole('button', { name: 'Copiar correo' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Escribir por correo' })).toHaveAttribute('href', 'mailto:hola@ejemplo.test')
     expect(screen.queryByText(/por LinkedIn/)).not.toBeInTheDocument()
+  })
+
+  it('WhatsApp solo aparece con número y lleva el saludo codificado', async () => {
+    await renderContact('')
+    expect(screen.queryByRole('link', { name: /WhatsApp/ })).not.toBeInTheDocument()
+  })
+
+  it('con número muestra el enlace wa.me', async () => {
+    await renderContact('', '5215500000000')
+    const a = screen.getByRole('link', { name: /WhatsApp/ })
+    expect(a.getAttribute('href')).toMatch(/^https:\/\/wa\.me\/5215500000000\?text=Hola%20Diego/)
+    expect(a).toHaveAttribute('target', '_blank')
   })
 })

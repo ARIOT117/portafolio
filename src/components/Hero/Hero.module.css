@@ -44,8 +44,31 @@
   color: var(--color-ink-2);
 }
 
+.proof {
+  margin-block-start: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out-quart);
+}
+
+.proof:hover {
+  color: var(--color-accent-hover);
+}
+
+.proofArrow {
+  transition: transform var(--duration-fast) var(--ease-out-quart);
+}
+
+.proof:hover .proofArrow {
+  transform: translateX(3px);
+}
+
 .actions {
-  margin-block-start: var(--space-7);
+  margin-block-start: var(--space-6);
   display: flex;
   flex-wrap: wrap;
   align-items: center;

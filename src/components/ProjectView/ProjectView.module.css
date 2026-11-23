@@ -39,7 +39,7 @@
   inset-block-start: 0;
   inset-inline: 0;
   block-size: 4.5rem;
-  background: var(--view-chrome-bg, color-mix(in srgb, var(--color-bg) 78%, transparent));
+  background: color-mix(in srgb, var(--view-bg, var(--color-bg)) 78%, transparent);
   -webkit-backdrop-filter: blur(16px) saturate(1.4);
   backdrop-filter: blur(16px) saturate(1.4);
   border-block-end: 1px solid color-mix(in srgb, currentColor 10%, transparent);
@@ -113,4 +113,21 @@
     min-height: 2.5rem;
     padding-inline: var(--space-3) var(--space-4);
   }
+}
+
+/* Vistas oscuras: barra y botón translúcidos del color de la vista, tinta clara */
+.bar[data-tone='dark'] {
+  background: color-mix(in srgb, var(--view-bg, #0d141d) 72%, transparent);
+  border-block-end-color: rgb(255 255 255 / 0.1);
+}
+
+.close[data-tone='dark'] {
+  background: color-mix(in srgb, var(--view-bg, #0d141d) 72%, transparent);
+  border-color: rgb(255 255 255 / 0.16);
+  color: rgb(255 255 255 / 0.92);
+  box-shadow: none;
+}
+
+.close[data-tone='dark']:hover {
+  background: color-mix(in srgb, var(--view-bg, #0d141d) 88%, white 6%);
 }

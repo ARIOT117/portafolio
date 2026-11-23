@@ -16,8 +16,8 @@ import {
 const WORD = 'ARIOT117'
 const NAME = 'Diego Esparza'
 /** Línea de tiempo (ms desde que arranca la intro). */
-const PUNCH_AT = 1000
-const NAME_AT = 1350
+const PUNCH_AT = 880
+const NAME_AT = 1060
 
 /** Transición de la palabra hacia la marca de la Nav (la lee también Nav). */
 export const brandFlight = { duration: FLY_MS / 1000, ease: easeInOutQuart }
@@ -83,8 +83,8 @@ export default function Intro() {
             className={styles.flash}
             aria-hidden
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.7, 0] }}
-            transition={{ duration: 0.55, delay: PUNCH_AT / 1000, times: [0, 0.3, 1], ease: easeOutQuart }}
+            animate={{ opacity: [0, 0.85, 0] }}
+            transition={{ duration: 0.7, delay: PUNCH_AT / 1000, times: [0, 0.3, 1], ease: easeOutQuart }}
           />
           <div className={styles.lockup}>
             <motion.div
@@ -98,7 +98,7 @@ export default function Intro() {
                 transition={{ duration: 0.45, delay: PUNCH_AT / 1000, times: [0, 0.4, 1], ease: easeOutExpo }}
               >
                 <span className="sr-only">{WORD}</span>
-                <Scramble text={WORD} start={80} step={85} cycle={260} />
+                <Scramble text={WORD} start={0} step={85} cycle={260} />
                 <motion.span
                   aria-hidden
                   className={styles.sweep}
@@ -112,10 +112,10 @@ export default function Intro() {
               className={styles.name}
               initial={{ opacity: 0, y: 10, filter: 'blur(8px)' }}
               animate={{ opacity: [0, 1, 1, 0], y: [10, 0, 0, -6], filter: ['blur(8px)', 'blur(0px)', 'blur(0px)', 'blur(4px)'] }}
-              transition={{ duration: (TYPE_MS - NAME_AT) / 1000, delay: NAME_AT / 1000, times: [0, 0.25, 0.85, 1], ease: easeOutExpo }}
+              transition={{ duration: (TYPE_MS - NAME_AT) / 1000, delay: NAME_AT / 1000, times: [0, 0.22, 0.93, 1], ease: easeOutExpo }}
             >
               <span className="sr-only">{NAME}</span>
-              <Scramble text={NAME} start={40} step={28} cycle={160} />
+              <Scramble text={NAME} start={0} step={26} cycle={150} />
             </motion.p>
           </div>
           <button

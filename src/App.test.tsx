@@ -91,6 +91,6 @@ describe('carpetas y vista de proyecto', () => {
 
   it('Eclipse Rojo muestra el premio', async () => {
     renderAt('/p/eclipse-rojo')
-    expect(await screen.findByText(/1er lugar local/)).toBeInTheDocument()
+    expect((await screen.findAllByText(/1er lugar local/)).length).toBeGreaterThan(0)
   })
 })
