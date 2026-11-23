@@ -1,6 +1,6 @@
 import { useContext, useRef, type PointerEvent } from 'react'
 import { Link, useLocation } from 'react-router'
-import type { Project } from '../../content/projects'
+import { projects, type Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { useReducedMotionSafe } from '../../styles/motion'
@@ -18,7 +18,7 @@ export default function Folder({ project, caption = true }: { project: Project; 
   const active = useContext(OpenProjectContext) === project.slug
   const srcs = useCover(project)
   const cardRef = useRef<HTMLAnchorElement>(null)
-  const dark = Boolean(project.assets.manifest)
+  const index = Math.max(0, projects.findIndex((p) => p.slug === project.slug))
 
   const setOffset = (x: number, y: number) => {
     cardRef.current?.style.setProperty('--mx', `${x}px`)
@@ -47,20 +47,30 @@ export default function Folder({ project, caption = true }: { project: Project; 
       data-active={active || undefined}
       aria-label={`${t.projects.open} ${text.name}`}
       className={styles.card}
-      style={{ '--accent': project.accent } as React.CSSProperties}
+      style={
+        {
+          '--accent': project.accent,
+          '--fg': project.folderGradient,
+          '--bob-delay': `${-index * 0.95}s`,
+        } as React.CSSProperties
+      }
       onPointerMove={onPointerMove}
       onPointerLeave={() => !frozen() && setOffset(0, 0)}
     >
       <span className={styles.art}>
         <span className={styles.inner} aria-hidden>
-          <span className={styles.tab} />
           <span className={styles.back} />
-          <span className={`${styles.sheet} ${dark ? styles.sheetDark : ''}`} data-folder-sheet>
+          <span className={styles.tab}>
+            <span className={styles.num}>{String(index + 1).padStart(2, '0')}</span>
+          </span>
+          <span className={styles.paper} />
+          <span className={styles.sheet} data-folder-sheet>
             <CoverArt project={project} srcs={srcs} />
           </span>
           <span className={styles.front} data-folder-front />
         </span>
       </span>
+      <span className={styles.floor} aria-hidden />
       {caption && (
         <span className={styles.caption}>
           <span className={styles.name}>{text.name}</span>

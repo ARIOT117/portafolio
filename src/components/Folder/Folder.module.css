@@ -1,8 +1,5 @@
 .card {
-  --back: color-mix(in srgb, var(--accent) 20%, #d8d3c6);
-  --front: color-mix(in srgb, var(--accent) 9%, rgb(253 252 249 / 0.26));
-  --front-edge: color-mix(in srgb, var(--accent) 22%, rgb(253 252 249 / 0.7));
-
+  position: relative;
   display: block;
   color: inherit;
   text-decoration: none;
@@ -12,11 +9,54 @@
   transition: transform var(--duration-base) var(--ease-out-quart);
 }
 
-/* Dibujo de la carpeta: nunca se apaga. La hoja que vuela vive en la vista. */
+/* Dibujo de la carpeta: flota y vuelve. La hoja que vuela vive en la vista. */
 .art {
   position: relative;
   display: block;
   aspect-ratio: 16 / 11;
+  animation: bob 3.6s ease-in-out var(--bob-delay, 0s) infinite;
+}
+
+/* Sombra en el suelo: se encoge y aclara cuando la carpeta sube */
+.floor {
+  position: absolute;
+  inset-inline: 12%;
+  inset-block-end: -14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(22 21 15 / 0.34), rgb(22 21 15 / 0));
+  animation: floor 3.6s ease-in-out var(--bob-delay, 0s) infinite;
+  pointer-events: none;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-0.6deg);
+  }
+}
+
+@keyframes floor {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(0.78);
+    opacity: 0.5;
+  }
+}
+
+/* Abierta o en vuelo: queda quieta para que la hoja despegue y aterrice en un punto fijo */
+.card[data-flying] .art,
+.card[data-flying] .floor,
+.card[data-active] .art,
+.card[data-active] .floor {
+  animation-play-state: paused;
 }
 
 .inner {
@@ -28,7 +68,8 @@
 /* Vista abierta o cerrándose: la carpeta se congela tal como se veía al hacer clic */
 .card[data-flying],
 .card[data-flying] .front,
-.card[data-flying] .sheet {
+.card[data-flying] .sheet,
+.card[data-flying] .paper {
   transition: none;
 }
 
@@ -38,10 +79,22 @@
 
 .tab,
 .back,
+.paper,
 .sheet,
 .front {
   position: absolute;
   display: block;
+}
+
+/* Fondo y pestaña comparten el degradado del proyecto (la pestaña lo continúa sin corte) */
+.back {
+  inset: 9% 0 0;
+  background: var(--fg);
+  border-radius: 0 16px 16px 16px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    0 22px 28px -16px rgb(22 21 15 / 0.4),
+    0 4px 10px rgb(22 21 15 / 0.12);
 }
 
 .tab {
@@ -49,15 +102,35 @@
   inset-inline-start: 0;
   width: 36%;
   height: 14%;
-  background: var(--back);
-  border-radius: 14px 14px 0 0;
+  background: var(--fg);
+  background-size: 277.78% 650%;
+  background-position: 0 -11.69%;
+  border-radius: 14px 22px 0 0;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35);
+  display: flex;
+  align-items: center;
+  padding-inline-start: 12px;
 }
 
-.back {
-  inset: 9% 0 0;
-  background: var(--back);
-  border-radius: 0 14px 14px 14px;
-  box-shadow: var(--shadow-md);
+.num {
+  font-family: var(--font-mono, 'Geist Mono Variable', ui-monospace, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: rgb(255 255 255 / 0.85);
+  mix-blend-mode: normal;
+  text-shadow: 0 1px 1px rgb(22 21 15 / 0.25);
+}
+
+/* Segunda hoja asomando detrás de la portada */
+.paper {
+  inset: 12.5% 8.5% 8%;
+  border-radius: 6px;
+  background: #ece7da;
+  box-shadow: 0 1px 2px rgb(22 21 15 / 0.18);
+  transform: rotate(-2.2deg);
+  transform-origin: 50% 100%;
+  transition: transform var(--duration-slow) var(--ease-out-expo);
 }
 
 .sheet {
@@ -65,57 +138,30 @@
   border-radius: 8px;
   overflow: hidden;
   background: var(--color-surface-sunken);
-  box-shadow: 0 1px 3px rgb(22 21 15 / 0.12);
+  box-shadow: 0 1px 3px rgb(22 21 15 / 0.18);
   transition: transform var(--duration-slow) var(--ease-out-expo);
 }
 
-.shot {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 14%;
-  display: block;
-}
-
-/* ApiGym: los SVG son claros, así que la hoja es oscura y lleva 4 frames */
-.sheetDark {
-  background: color-mix(in srgb, var(--accent) 38%, #0b0e1c);
-}
-
-.frames {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 2%;
-  padding: 3%;
-}
-
-.frames img {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  object-fit: contain;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--accent) 22%, #0b0e1c);
-}
-
-/* Panel frontal: translúcido y bajo, la portada se lee como contenido de la carpeta */
+/* Bolsillo frontal: brillo suave y filo de luz arriba */
 .front {
-  inset: 74% 0 0;
-  background: var(--front);
-  border: 1px solid var(--front-edge);
-  border-radius: 14px;
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  inset: 78% 0 0;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.3) 0%, rgb(255 255 255 / 0.08) 45%, rgb(22 21 15 / 0.1) 100%),
+    var(--fg);
+  background-size: 100% 100%, 100% 460%;
+  background-position: 0 0, 0 100%;
+  border-radius: 14px 14px 16px 16px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    0 -6px 14px -6px rgb(22 21 15 / 0.28);
   transform-origin: 50% 100%;
   transform: perspective(900px) rotateX(0deg);
   transition: transform var(--duration-slow) var(--ease-out-expo);
 }
 
 .card:focus-visible .front,
-.card:focus-visible .sheet {
+.card:focus-visible .sheet,
+.card:focus-visible .paper {
   transition-duration: var(--duration-base);
 }
 
@@ -129,6 +175,11 @@
   transform: translateY(-9%);
 }
 
+.card:focus-visible .paper,
+.card[data-lift] .paper {
+  transform: rotate(-2.2deg) translateY(-5%);
+}
+
 @media (hover: hover) {
   .card:hover .front {
     transform: perspective(900px) rotateX(-12deg);
@@ -136,6 +187,10 @@
 
   .card:hover .sheet {
     transform: translateY(-9%);
+  }
+
+  .card:hover .paper {
+    transform: rotate(-2.2deg) translateY(-5%);
   }
 }
 
@@ -163,7 +218,13 @@
 @media (prefers-reduced-motion: reduce) {
   .front,
   .sheet,
+  .paper,
   .card {
     transition-duration: 0.01ms;
+  }
+
+  .art,
+  .floor {
+    animation: none;
   }
 }

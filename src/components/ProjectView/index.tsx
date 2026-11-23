@@ -6,7 +6,6 @@ import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
 import { CoverArt, useCover } from '../Folder/cover'
-import folderStyles from '../Folder/Folder.module.css'
 import { layouts } from '../layouts'
 import { projectTitleId } from '../layouts/ProjectBasics'
 import styles from './ProjectView.module.css'
@@ -303,7 +302,6 @@ function ProjectDialog({ project }: { project: Project }) {
 
   const fadeTime = reduced ? 0.15 : duration.base
   const surface = `color-mix(in srgb, ${project.accent} 6%, var(--color-bg))`
-  const dark = Boolean(project.assets.manifest)
 
   return (
     <motion.div
@@ -320,7 +318,7 @@ function ProjectDialog({ project }: { project: Project }) {
         <div
           ref={flyerRef}
           aria-hidden
-          className={`${styles.flyer} ${dark ? folderStyles.sheetDark : styles.flyerLight}`}
+          className={`${styles.flyer} ${styles.flyerLight}`}
           style={{
             ...rectStyle(flight.from),
             borderRadius: 8,

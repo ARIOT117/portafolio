@@ -1,0 +1,516 @@
+/*
+ * Portadas diseñadas con el kit de marca de cada proyecto. La raíz es un contenedor
+ * (container-type: size) y todo se mide en cqw/cqh: la hoja de la carpeta (~190–290 px)
+ * y la hoja que vuela se ven idénticas. Ojo: el panel frontal tapa ~18% inferior de la
+ * hoja, así que lo importante vive en el 80% de arriba.
+ */
+.cover {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  container-type: size;
+  user-select: none;
+  --ease: cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.cover > *,
+.cover span,
+.cover img {
+  box-sizing: border-box;
+}
+
+.cover img {
+  display: block;
+  pointer-events: none;
+}
+
+/* Animaciones congeladas con la carpeta en vuelo y en la hoja que vuela */
+:global([data-flying]) .cover *,
+.cover[data-eager] * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover * {
+    animation: none !important;
+  }
+}
+
+/* ---------- Eclipse Rojo ---------- */
+.cover[data-cover='eclipse-rojo'] {
+  background: #04070d;
+  font-family: 'Rajdhani', sans-serif;
+  color: #f2ede4;
+}
+
+.erStars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, #cfe8ef 0 0.35cqw, transparent 0.45cqw),
+    radial-gradient(circle, #8fa3ad 0 0.25cqw, transparent 0.35cqw);
+  background-size: 23cqw 19cqw, 31cqw 27cqw;
+  background-position: 4cqw 7cqw, 15cqw 3cqw;
+  opacity: 0.7;
+}
+
+.erSphere {
+  position: absolute;
+  inset-block-start: 5cqh;
+  inset-inline-end: -9cqw;
+  width: 88cqh;
+  height: 88cqh;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #6e2a10;
+}
+
+.erMars {
+  position: absolute;
+  inset: 0;
+  width: 200%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  animation: erSpin 70s linear infinite;
+}
+
+@keyframes erSpin {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Terminador: la sombra cae desde la izquierda */
+.erShade {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 78% 42%, transparent 38%, rgb(4 7 13 / 0.55) 72%, rgb(4 7 13 / 0.92) 100%),
+    linear-gradient(100deg, rgb(4 7 13 / 0.85) 0%, rgb(4 7 13 / 0) 55%);
+}
+
+.erAnomaly {
+  position: absolute;
+  inset-block-start: 38%;
+  inset-inline-start: 58%;
+  width: 3cqw;
+  height: 3cqw;
+  border-radius: 50%;
+  background: #d4501a;
+  animation: erPulse 2.4s var(--ease) infinite;
+}
+
+@keyframes erPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(212 80 26 / 0.7);
+    transform: scale(0.85);
+  }
+  50% {
+    box-shadow: 0 0 0 1.6cqw rgb(212 80 26 / 0);
+    transform: scale(1.1);
+  }
+}
+
+.erReticle {
+  position: absolute;
+  inset-block-start: calc(5cqh - 3cqh);
+  inset-inline-end: calc(-9cqw - 3cqh);
+  width: 94cqh;
+  height: 94cqh;
+  fill: none;
+  stroke: #5cd0e8;
+  stroke-width: 0.5;
+  stroke-linecap: round;
+  opacity: 0.8;
+}
+
+.erReticle circle {
+  stroke-dasharray: 0.8 3.1;
+  opacity: 0.7;
+}
+
+.erReticle path {
+  stroke-width: 0.9;
+}
+
+.erTitle {
+  position: absolute;
+  inset-inline-start: 6.5cqw;
+  inset-block-start: 15cqh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.erKicker {
+  font-size: 5.6cqw;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: #5cd0e8;
+}
+
+.erName {
+  margin-block-start: 1.6cqw;
+  font-size: 11cqw;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-shadow: 0 0.4cqw 2cqw rgb(4 7 13 / 0.8);
+}
+
+.erTag {
+  position: absolute;
+  inset-inline-start: 6.5cqw;
+  inset-block-start: 56cqh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cqw;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 3.4cqw;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  color: #9fb4bd;
+  white-space: nowrap;
+}
+
+.erTag::before {
+  content: '';
+  width: 9cqw;
+  height: 0.5cqw;
+  margin-block-end: 1.4cqw;
+  background: #d4501a;
+}
+
+.erPlace {
+  color: #5cd0e8;
+  font-weight: 500;
+}
+
+/* ---------- Gym Zong ---------- */
+.cover[data-cover='gym-zong'] {
+  background: #faf8f4;
+  font-family: 'Manrope Variable', sans-serif;
+}
+
+.gzRoot {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.gzBlob {
+  position: absolute;
+  inset-inline-end: -8cqw;
+  inset-block-start: -28cqh;
+  width: 64cqw;
+  height: 64cqw;
+  background: var(--mint);
+  border-radius: 46% 54% 52% 48% / 52% 46% 54% 48%;
+  opacity: 0.38;
+}
+
+.gzBrand {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 15cqh;
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+}
+
+.gzBrand img {
+  width: 10cqw;
+  height: 10cqw;
+  border-radius: 2.2cqw;
+}
+
+.gzName {
+  font-size: 9cqw;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.gzLine {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 46cqh;
+  padding-block-start: 2.2cqw;
+  border-block-start: 0.5cqw solid var(--mint);
+  font-size: 3.7cqw;
+  font-weight: 700;
+  color: var(--mint-ink);
+  white-space: nowrap;
+}
+
+.gzPhone {
+  position: absolute;
+  inset-inline-end: 9cqw;
+  inset-block-start: 9cqh;
+  width: 27cqw;
+  height: 60cqw;
+  padding: 1.1cqw;
+  background: var(--ink);
+  border-radius: 4cqw;
+  transform: rotate(8deg);
+  transform-origin: 50% 80%;
+  box-shadow: 0 2cqw 4cqw rgb(15 46 54 / 0.22);
+  animation: gzSway 5s var(--ease) infinite;
+}
+
+.gzPhone img {
+  width: 100%;
+  height: 100%;
+  border-radius: 3cqw;
+  object-fit: cover;
+  object-position: top;
+}
+
+@keyframes gzSway {
+  0%,
+  100% {
+    transform: rotate(8deg);
+  }
+  50% {
+    transform: rotate(5.5deg) translateY(-1cqw);
+  }
+}
+
+.gzStreak {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 62cqh;
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  padding: 1.5cqw 2.8cqw;
+  background: #fdf0e2;
+  border-radius: 99cqw;
+  font-size: 3.6cqw;
+  font-weight: 800;
+  color: #9a5a12;
+  white-space: nowrap;
+  box-shadow: 0 1cqw 2.4cqw rgb(15 46 54 / 0.14);
+  animation: gzChip 5s var(--ease) infinite;
+}
+
+.gzDot {
+  width: 2.2cqw;
+  height: 2.2cqw;
+  border-radius: 50%;
+  background: var(--streak);
+}
+
+@keyframes gzChip {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.2cqw);
+  }
+}
+
+/* ---------- ApiGym ---------- */
+.cover[data-cover='apigym'] {
+  background: #0b1b20;
+  font-family: 'Manrope Variable', sans-serif;
+  color: #e6f4f0;
+}
+
+.agRoot {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background:
+    linear-gradient(rgb(61 217 184 / 0.07) 0.25cqw, transparent 0.25cqw) 0 0 / 100% 7cqw,
+    linear-gradient(90deg, rgb(61 217 184 / 0.07) 0.25cqw, transparent 0.25cqw) 0 0 / 7cqw 100%;
+}
+
+.agLogo {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 6cqh;
+  width: 9cqw;
+  height: 8cqw;
+}
+
+.agCount {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 21cqh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.agNum {
+  font-size: 15cqw;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  color: #3dd9b8;
+  font-variant-numeric: tabular-nums;
+}
+
+.agLabel {
+  margin-block-start: 1.2cqw;
+  font-size: 5.4cqw;
+  font-weight: 600;
+  color: #b7ccc8;
+}
+
+.agStage {
+  position: absolute;
+  inset-inline-end: 6cqw;
+  inset-block-start: 13cqh;
+  width: 38cqw;
+  height: 38cqw;
+  border-radius: 3cqw;
+  background: #12272d;
+  border: 0.4cqw solid rgb(61 217 184 / 0.28);
+  overflow: hidden;
+}
+
+.agStage img {
+  position: absolute;
+  inset: 2cqw;
+  width: calc(100% - 4cqw);
+  height: calc(100% - 4cqw);
+  object-fit: contain;
+  opacity: 0;
+  animation: agCycle 1.8s steps(1, end) infinite;
+  animation-delay: calc(var(--i) * 0.6s);
+}
+
+.agStage img:first-child {
+  opacity: 1;
+}
+
+/* 3 frames: cada uno visible un tercio del ciclo */
+@keyframes agCycle {
+  0% {
+    opacity: 1;
+  }
+  33.33% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.agChip {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  /* Arriba del bolsillo frontal, que tapa el ~18 % inferior de la hoja */
+  inset-block-start: 60cqh;
+  padding: 1.5cqw 2.6cqw;
+  border-radius: 1.4cqw;
+  background: rgb(61 217 184 / 0.14);
+  border: 0.3cqw solid rgb(61 217 184 / 0.4);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 3.2cqw;
+  font-weight: 500;
+  color: #3dd9b8;
+  white-space: nowrap;
+}
+
+/* ---------- CATSTORE ---------- */
+.cover[data-cover='catstore'] {
+  background: #f8f3e9;
+  font-family: 'Fraunces Variable', serif;
+  color: #322f25;
+}
+
+.csRoot {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.csSun {
+  position: absolute;
+  inset-inline-end: 4cqw;
+  inset-block-start: 9cqh;
+  width: 6cqw;
+  height: 6cqw;
+  background: conic-gradient(from 0deg, #b04a2c 0 4%, transparent 4% 12.5%, #b04a2c 12.5% 16.5%, transparent 16.5% 25%, #b04a2c 25% 29%, transparent 29% 37.5%, #b04a2c 37.5% 41.5%, transparent 41.5% 50%, #b04a2c 50% 54%, transparent 54% 62.5%, #b04a2c 62.5% 66.5%, transparent 66.5% 75%, #b04a2c 75% 79%, transparent 79% 87.5%, #b04a2c 87.5% 91.5%, transparent 91.5%);
+  -webkit-mask: radial-gradient(circle, transparent 18%, #000 20%);
+  mask: radial-gradient(circle, transparent 18%, #000 20%);
+  animation: csTurn 24s linear infinite;
+}
+
+@keyframes csTurn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.csArch {
+  position: absolute;
+  inset-inline-end: 9cqw;
+  inset-block-start: 8cqh;
+  width: 30cqw;
+  height: 70cqh;
+  border-radius: 15cqw 15cqw 1.5cqw 1.5cqw;
+  overflow: hidden;
+  background: #ecc9ad;
+  animation: csBreathe 6s var(--ease) infinite;
+  transform-origin: 50% 100%;
+}
+
+/* Recorte del gato dentro de home.webp (1440x900): x 65–82%, y 32–70% */
+.csArch img {
+  position: absolute;
+  width: 581%;
+  height: 260%;
+  max-width: none;
+  inset-inline-start: -378%;
+  /* Baja la foto para dejar fuera la tarjeta con corazón de la captura */
+  inset-block-start: -73%;
+}
+
+@keyframes csBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.015);
+  }
+}
+
+.csTitle {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 16cqh;
+  font-size: 9.6cqw;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.csTitle em {
+  font-style: italic;
+  font-weight: 400;
+  color: #b04a2c;
+}
+
+.csPill {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 56cqh;
+  padding: 1.6cqw 3.2cqw;
+  border-radius: 99cqw;
+  background: #b04a2c;
+  color: #f8f3e9;
+  font-family: 'Manrope Variable', sans-serif;
+  font-size: 3.1cqw;
+  font-weight: 700;
+  white-space: nowrap;
+}
