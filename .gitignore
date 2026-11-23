@@ -25,3 +25,5 @@ dist-ssr
 
 # temporales de agentes
 tmp/
+.vercel
+.env*
