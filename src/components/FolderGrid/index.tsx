@@ -6,6 +6,7 @@ import { useT } from '../../i18n/context'
 import { easeOutExpo, reducedTransition, useReducedMotionSafe } from '../../styles/motion'
 import Folder from '../Folder'
 import { OpenProjectContext } from '../ProjectView/context'
+import { Build, ScrollScene } from '../motion/ScrollScene'
 import styles from './FolderGrid.module.css'
 
 const N = projects.length
@@ -352,14 +353,14 @@ export default function FolderGrid() {
 
   const head = (
     <header className={styles.head}>
-      <h2 id="proyectos-titulo" className={styles.title}>{t.projects.title}</h2>
-      <p className={styles.intro}>{t.projects.intro}</p>
+      <Build as="h2" id="proyectos-titulo" className={styles.title}>{t.projects.title}</Build>
+      <Build as="p" i={1} className={styles.intro}>{t.projects.intro}</Build>
     </header>
   )
 
   if (reduced) {
     return (
-      <section id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
+      <ScrollScene as="section" blur={false} id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
         <div className={styles.inner}>
           {head}
           <ul className={styles.row}>
@@ -370,14 +371,14 @@ export default function FolderGrid() {
             ))}
           </ul>
         </div>
-      </section>
+      </ScrollScene>
     )
   }
 
   return (
-    <section id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
+    <ScrollScene as="section" blur={false} id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
       <div className={styles.inner}>{head}</div>
-      <div className={styles.clip}>
+      <Build i={2} blur={false} className={styles.clip}>
         <div
           ref={stageRef}
           className={styles.stage}
@@ -436,8 +437,8 @@ export default function FolderGrid() {
             ))}
           </motion.ul>
         </div>
-      </div>
-      <div className={styles.controls}>
+      </Build>
+      <Build i={3} className={styles.controls}>
         <div className={`${styles.cluster} ${styles.clusterStart}`}>
           <button type="button" className={styles.nav} aria-label={l.prev} onClick={() => step(-1)}>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -469,8 +470,8 @@ export default function FolderGrid() {
             )}
           </button>
         </div>
-      </div>
-      <ul className={styles.chips} aria-label={l.pick}>
+      </Build>
+      <Build as="ul" i={4} className={styles.chips} aria-label={l.pick}>
         {projects.map((p, i) => (
           <li key={p.slug}>
             <button
@@ -483,7 +484,7 @@ export default function FolderGrid() {
             </button>
           </li>
         ))}
-      </ul>
-    </section>
+      </Build>
+    </ScrollScene>
   )
 }

@@ -1,8 +1,10 @@
+import { motion } from 'motion/react'
 import type { CSSProperties } from 'react'
 import { Link, useLocation } from 'react-router'
 import { projects, type LinkKind, type Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
+import { Build, ScrollScene, useBuildStyle } from '../motion/ScrollScene'
 import styles from './ProjectBasics.module.css'
 
 /** Id del h1 del proyecto: lo usa la vista para aria-labelledby y para el foco. */
@@ -19,13 +21,16 @@ const linkLabelKey = {
 export interface ProjectLinksProps {
   project: Project
   className?: string
+  /** Si se indica, los botones se construyen con el scroll en esa posición de la secuencia. */
+  build?: number
 }
 
 /** Botones de enlaces externos (el primero es el principal). */
-export function ProjectLinks({ project, className }: ProjectLinksProps) {
+export function ProjectLinks({ project, className, build }: ProjectLinksProps) {
   const { t } = useT()
+  const Wrap = build === undefined ? 'div' : Build
   return (
-    <div className={[styles.links, className].filter(Boolean).join(' ')}>
+    <Wrap className={[styles.links, className].filter(Boolean).join(' ')} {...(build === undefined ? null : { i: build })}>
       {project.links.map((link, i) => (
         <a
           key={link.kind}
@@ -42,9 +47,11 @@ export function ProjectLinks({ project, className }: ProjectLinksProps) {
           <span className="sr-only">({t.projects.externalLink})</span>
         </a>
       ))}
-    </div>
+    </Wrap>
   )
 }
+
+const MotionLink = motion.create(Link)
 
 export interface ProjectBasicsProps {
   project: Project
@@ -134,46 +141,58 @@ export interface ProjectClosingProps {
  * --pc-ink, --pc-ink-2, --pc-line, --pc-card, --pc-accent, --pc-font y
  * --pc-radius, que cada layout define con su propio kit.
  */
-export function ProjectClosing({ project, className, linksClassName }: ProjectClosingProps) {
+/** Tarjeta del proyecto siguiente; vive dentro de la escena para construirse con el scroll. */
+function NextCard({ next }: { next: Project }) {
   const { t } = useT()
   const location = useLocation()
   const backgroundLocation = (location.state as { backgroundLocation?: unknown } | null)?.backgroundLocation
-  const index = projects.findIndex((p) => p.slug === project.slug)
-  const next = projects[(index + 1) % projects.length]!
   const nextText = useProjectText(next)
   const thumb = thumbOf(next)
+  const style = useBuildStyle(1)
+  return (
+    <MotionLink
+      style={style}
+      to={`/p/${next.slug}`}
+      // replace: «Volver» sigue llevando a la home aunque se salte de caso en caso
+      replace={Boolean(backgroundLocation)}
+      state={backgroundLocation ? { backgroundLocation } : undefined}
+      className={styles.next}
+    >
+      <img
+        className={styles.nextThumb}
+        src={thumb.src}
+        width={thumb.width}
+        height={thumb.height}
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+      <span className={styles.nextBody}>
+        <span className={styles.nextLabel}>
+          {t.projects.next} <span aria-hidden>→</span>
+        </span>
+        <span className={styles.nextName}>{nextText.name}</span>
+        <span className={styles.nextKicker}>{nextText.kicker}</span>
+      </span>
+    </MotionLink>
+  )
+}
+
+export function ProjectClosing({ project, className, linksClassName }: ProjectClosingProps) {
+  const { t } = useT()
+  const index = projects.findIndex((p) => p.slug === project.slug)
+  const next = projects[(index + 1) % projects.length]!
 
   return (
-    <section
+    <ScrollScene
+      as="section"
+      erase={false}
       className={[styles.closing, className].filter(Boolean).join(' ')}
       aria-label={t.projects.next}
       style={{ '--pb-accent': project.accent } as CSSProperties}
     >
-      <ProjectLinks project={project} className={[styles.closingLinks, linksClassName].filter(Boolean).join(' ')} />
-      <Link
-        to={`/p/${next.slug}`}
-        // replace: «Volver» sigue llevando a la home aunque se salte de caso en caso
-        replace={Boolean(backgroundLocation)}
-        state={backgroundLocation ? { backgroundLocation } : undefined}
-        className={styles.next}
-      >
-        <img
-          className={styles.nextThumb}
-          src={thumb.src}
-          width={thumb.width}
-          height={thumb.height}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-        <span className={styles.nextBody}>
-          <span className={styles.nextLabel}>
-            {t.projects.next} <span aria-hidden>→</span>
-          </span>
-          <span className={styles.nextName}>{nextText.name}</span>
-          <span className={styles.nextKicker}>{nextText.kicker}</span>
-        </span>
-      </Link>
-    </section>
+      <ProjectLinks project={project} build={0} className={[styles.closingLinks, linksClassName].filter(Boolean).join(' ')} />
+      <NextCard next={next} />
+    </ScrollScene>
   )
 }

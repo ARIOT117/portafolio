@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState, type PointerEvent, type Keybo
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
-import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
+import { easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
+import { Build, ScrollScene } from '../motion/ScrollScene'
 import ProjectBasics, { ProjectClosing } from './ProjectBasics'
 import styles from './GymZongLayout.module.css'
 
@@ -266,14 +267,6 @@ function Screens({ images }: { images: string[] }) {
 export default function GymZongLayout({ project }: { project: Project }) {
   const { t, lang } = useT()
   const text = useProjectText(project)
-  const reduced = useReducedMotionSafe()
-  const reveal = (delay = 0) => ({
-    initial: { opacity: 0, y: reduced ? 0 : 16 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.15 },
-    transition: { duration: reduced ? 0.12 : duration.slow, ease: easeOutExpo, delay: reduced ? 0 : delay },
-  })
-
   return (
     <div className={styles.page}>
       {/* ProjectBasics usa display: contents; su CSS reparte cabecera, enlaces y datos en la rejilla */}
@@ -295,25 +288,25 @@ export default function GymZongLayout({ project }: { project: Project }) {
         {t.projects.privateRepo} · {L.privateNote[lang]}
       </p>
 
-      <motion.section className={styles.band} aria-label={text.name} {...reveal(0.05)}>
+      <ScrollScene as="section" build={false} blur={false} className={styles.band} aria-label={text.name}>
         <Screens images={project.assets.images} />
-      </motion.section>
+      </ScrollScene>
 
-      <section className={styles.features} aria-labelledby="gz-features">
-        <motion.div {...reveal(0)}>
+      <ScrollScene as="section" className={styles.features} aria-labelledby="gz-features">
+        <Build>
           <h2 id="gz-features" className={styles.featuresTitle}>{L.features[lang]}</h2>
-        </motion.div>
+        </Build>
         <div className={styles.featuresBody}>
           <ol className={styles.featureList}>
             {features.map((f, i) => (
-              <motion.li key={f.title.en} className={styles.feature} {...reveal(i * 0.06)}>
+              <Build as="li" key={f.title.en} i={i + 1} className={styles.feature}>
                 <span className={styles.featureNum} aria-hidden>{String(i + 1).padStart(2, '0')}</span>
                 <h3 className={styles.featureTitle}>{f.title[lang]}</h3>
                 <p className={styles.featureText}>{f.text[lang]}</p>
-              </motion.li>
+              </Build>
             ))}
           </ol>
-          <motion.figure className={styles.details} {...reveal(0.1)}>
+          <Build as="figure" i={3} className={styles.details}>
             <div className={styles.crops}>
               <div className={styles.crop} data-shot="stats">
                 <img src="/projects/gym-zong/screen-05.webp" width={1080} height={2400} alt={L.statsAlt[lang]} loading="lazy" decoding="async" />
@@ -326,9 +319,9 @@ export default function GymZongLayout({ project }: { project: Project }) {
               <span className={styles.featureNum} aria-hidden>03</span>
               {L.detailCaption[lang]}
             </figcaption>
-          </motion.figure>
+          </Build>
         </div>
-      </section>
+      </ScrollScene>
 
       <ProjectClosing project={project} className={styles.closing} />
 

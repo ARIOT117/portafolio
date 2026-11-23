@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { CONTACT_EMAIL, GITHUB_URL, LINKEDIN_URL, WHATSAPP_NUMBER } from '../../content/contact'
 import { useT } from '../../i18n/context'
+import { Build, ScrollScene } from '../motion/ScrollScene'
 import styles from './Contact.module.css'
 
 const WHATSAPP_TEXT = {
@@ -42,11 +43,11 @@ export default function Contact() {
   }
 
   return (
-    <section id="contacto" className={styles.root} aria-labelledby="contacto-titulo">
+    <ScrollScene as="section" id="contacto" className={styles.root} aria-labelledby="contacto-titulo">
       <div className={styles.inner}>
-        <h2 id="contacto-titulo" className={styles.title}>{t.contact.title}</h2>
-        <p className={styles.lead}>{hasEmail ? t.contact.leadEmail : hasWhatsapp ? t.contact.leadWhatsapp : t.contact.leadLinkedin}</p>
-        <div className={styles.actions}>
+        <Build as="h2" id="contacto-titulo" className={styles.title}>{t.contact.title}</Build>
+        <Build as="p" i={1} className={styles.lead}>{hasEmail ? t.contact.leadEmail : hasWhatsapp ? t.contact.leadWhatsapp : t.contact.leadLinkedin}</Build>
+        <Build i={2} className={styles.actions}>
           <a className={styles.primary} href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
             {t.contact.linkedin}
             {arrow}
@@ -76,11 +77,11 @@ export default function Contact() {
               </a>
             </>
           )}
-        </div>
+        </Build>
         <p className={styles.status} role="status" aria-live="polite">
           {copied ? t.contact.copied : ''}
         </p>
       </div>
-    </section>
+    </ScrollScene>
   )
 }

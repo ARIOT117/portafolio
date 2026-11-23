@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from 'motion/react'
-import { useLayoutEffect, useRef, useState, type CSSProperties, type RefObject } from 'react'
+import { useRef, useState, type CSSProperties } from 'react'
 import '@fontsource/rajdhani/500.css'
 import '@fontsource/rajdhani/600.css'
 import '@fontsource/barlow/400.css'
@@ -8,8 +8,10 @@ import '@fontsource/ibm-plex-mono/400.css'
 import '@fontsource/ibm-plex-mono/500.css'
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
+import { useScroller } from '../../hooks/useScroller'
 import { useT, type Lang } from '../../i18n/context'
-import { easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
+import { useReducedMotionSafe } from '../../styles/motion'
+import { Build, ScrollScene } from '../motion/ScrollScene'
 import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import EclipseRojoPlanet from './EclipseRojoPlanet'
 import styles from './EclipseRojoLayout.module.css'
@@ -120,23 +122,6 @@ const evidence: { src: string; name: Bi; caption: Bi; alt: Bi }[] = [
   },
 ]
 
-/* El visor es un overlay con su propio contenedor de scroll: lo localizamos
-   subiendo por el DOM para que useScroll lea ese elemento y no la ventana. */
-function useScroller(anchor: RefObject<HTMLElement | null>): { container?: RefObject<HTMLElement> } {
-  const [scroller, setScroller] = useState<RefObject<HTMLElement> | null>(null)
-  useLayoutEffect(() => {
-    let el = anchor.current?.parentElement ?? null
-    while (el) {
-      const oy = getComputedStyle(el).overflowY
-      if (oy === 'auto' || oy === 'scroll') break
-      el = el.parentElement
-    }
-    // Sin contenedor propio (p. ej. en tests) se usa el scroll de la ventana.
-    if (el) setScroller({ current: el })
-  }, [anchor])
-  return scroller ? { container: scroller } : {}
-}
-
 function Timeline({ reduced, lang }: { reduced: boolean; lang: Lang }) {
   const ref = useRef<HTMLOListElement>(null)
   const scrollOpts = useScroller(ref)
@@ -232,22 +217,6 @@ const bars: { label: Bi; value: number; warn?: boolean }[] = [
   { label: { es: 'Costo', en: 'Cost' }, value: 94, warn: true },
 ]
 
-function Reveal({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const reduced = useReducedMotionSafe()
-  if (reduced) return <div className={className}>{children}</div>
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -8% 0px' }}
-      transition={{ duration: 0.6, ease: easeOutExpo, delay }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
 export default function EclipseRojoLayout({ project }: { project: Project }) {
   const { lang } = useT()
   const { t } = useT()
@@ -302,19 +271,21 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
       </section>
 
       <div className={styles.body}>
-        <section aria-labelledby="er-hud">
-          <Reveal>
+        <ScrollScene as="section" aria-labelledby="er-hud">
+          <Build>
             <h2 id="er-hud" className={styles.h2}>{pick(L.hudTitle, lang)}</h2>
-          </Reveal>
-          <Timeline reduced={reduced} lang={lang} />
-        </section>
+          </Build>
+          <Build i={1}>
+            <Timeline reduced={reduced} lang={lang} />
+          </Build>
+        </ScrollScene>
 
-        <section aria-labelledby="er-setup">
-          <Reveal>
+        <ScrollScene as="section" aria-labelledby="er-setup">
+          <Build>
             <h2 id="er-setup" className={styles.h2}>{pick(L.setupTitle, lang)}</h2>
-          </Reveal>
-          <Reveal className={styles.setupGrid} delay={0.05}>
-            <div className={styles.panel}>
+          </Build>
+          <div className={styles.setupGrid}>
+            <Build i={1} className={styles.panel}>
               <div className={styles.panelHead}>
                 <h3 className={styles.panelTitle}>{pick(L.panelTitle, lang)}</h3>
                 <span className={styles.panelNote}>{pick(L.panelNote, lang)}</span>
@@ -326,19 +297,9 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
                       <span>{pick(b.label, lang)}</span>
                       <span className={styles.barVal}>{b.value}%</span>
                     </div>
-                    <motion.div
-                      className={styles.track}
-                      initial={reduced ? false : 'out'}
-                      whileInView="in"
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.1, ease: easeOutExpo, delay: 0.25 + i * 0.12 }}
-                    >
-                      <motion.span
-                        className={styles.fill}
-                        style={{ width: `${b.value}%`, transformOrigin: 'left' }}
-                        variants={{ out: { scaleX: 0 }, in: { scaleX: 1 } }}
-                      />
-                    </motion.div>
+                    <div className={styles.track}>
+                      <Build as="span" line i={2 + i} className={styles.fill} style={{ width: `${b.value}%` }} />
+                    </div>
                     <span className={styles.status}>
                       <span className={styles.dot} aria-hidden />
                       {pick(b.warn ? L.near : L.ok, lang)}
@@ -346,29 +307,31 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
                   </li>
                 ))}
               </ul>
-            </div>
-            <figure className={styles.shot}>
+            </Build>
+            <Build as="figure" i={2} className={styles.shot}>
               <img src={project.assets.cover} alt={pick(L.screenAlt, lang)} loading="lazy" width={1440} height={900} />
-            </figure>
-          </Reveal>
-        </section>
+            </Build>
+          </div>
+        </ScrollScene>
 
-        <section aria-labelledby="er-scan">
-          <Reveal>
+        <ScrollScene as="section" aria-labelledby="er-scan">
+          <Build>
             <h2 id="er-scan" className={styles.h2}>{pick(L.scanTitle, lang)}</h2>
-            <p className={styles.lead}>{pick(L.scanIntro, lang)}</p>
-          </Reveal>
-          <ScanFrame reduced={reduced} lang={lang} />
-        </section>
+          </Build>
+          <Build as="p" i={1} className={styles.lead}>{pick(L.scanIntro, lang)}</Build>
+          <Build i={2}>
+            <ScanFrame reduced={reduced} lang={lang} />
+          </Build>
+        </ScrollScene>
 
-        <section aria-labelledby="er-ev">
-          <Reveal>
+        <ScrollScene as="section" aria-labelledby="er-ev">
+          <Build>
             <h2 id="er-ev" className={styles.h2}>{pick(L.evTitle, lang)}</h2>
-          </Reveal>
+          </Build>
           <ul className={styles.board}>
             {evidence.map((e, i) => (
-              <li key={e.src}>
-                <Reveal delay={reduced ? 0 : (i % 3) * 0.08}>
+              <ScrollScene as="li" key={e.src} erase={false}>
+                <Build i={i % 3}>
                   <figure className={styles.card}>
                     <div className={styles.cardMedia}>
                       <img
@@ -386,43 +349,39 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
                       <span className={styles.cardText}>{pick(e.caption, lang)}</span>
                     </figcaption>
                   </figure>
-                </Reveal>
-              </li>
+                </Build>
+              </ScrollScene>
             ))}
           </ul>
-          <p className={styles.credit}>{pick(L.evCredit, lang)}</p>
-        </section>
+          <Build as="p" i={3} className={styles.credit}>{pick(L.evCredit, lang)}</Build>
+        </ScrollScene>
 
-        <Reveal>
-          <div className={styles.cols}>
-            <section aria-labelledby="er-role">
-              <h2 id="er-role" className={styles.label}>{t.projects.role}</h2>
-              <ul className={styles.list}>
-                {text.role.map((r) => (
-                  <li key={r}>{r}</li>
-                ))}
-              </ul>
-            </section>
-            <section aria-labelledby="er-stack">
-              <h2 id="er-stack" className={styles.label}>{t.projects.stack}</h2>
-              <ul className={styles.chips}>
-                {project.stack.map((s) => (
-                  <li key={s} className={styles.chip}>{s}</li>
-                ))}
-              </ul>
-              {project.team && (
-                <p className={styles.team}>
-                  <span className={styles.teamLabel}>{t.projects.team}</span>
-                  <span className={styles.teamName}>{project.team}</span>
-                </p>
-              )}
-            </section>
-          </div>
-        </Reveal>
+        <ScrollScene className={styles.cols}>
+          <Build as="section" aria-labelledby="er-role">
+            <h2 id="er-role" className={styles.label}>{t.projects.role}</h2>
+            <ul className={styles.list}>
+              {text.role.map((r) => (
+                <li key={r}>{r}</li>
+              ))}
+            </ul>
+          </Build>
+          <Build as="section" i={1} aria-labelledby="er-stack">
+            <h2 id="er-stack" className={styles.label}>{t.projects.stack}</h2>
+            <ul className={styles.chips}>
+              {project.stack.map((s) => (
+                <li key={s} className={styles.chip}>{s}</li>
+              ))}
+            </ul>
+            {project.team && (
+              <p className={styles.team}>
+                <span className={styles.teamLabel}>{t.projects.team}</span>
+                <span className={styles.teamName}>{project.team}</span>
+              </p>
+            )}
+          </Build>
+        </ScrollScene>
 
-        <Reveal>
-          <ProjectClosing project={project} linksClassName={styles.actions} />
-        </Reveal>
+        <ProjectClosing project={project} linksClassName={styles.actions} />
 
         <p className={styles.honest}>{pick(L.honest, lang)}</p>
       </div>

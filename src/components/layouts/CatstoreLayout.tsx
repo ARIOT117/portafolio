@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties } from 'react'
 import '@fontsource-variable/fraunces/wght.css'
 import '@fontsource-variable/fraunces/wght-italic.css'
 import '@fontsource-variable/inter'
@@ -8,6 +8,7 @@ import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
+import { Build, ScrollScene } from '../motion/ScrollScene'
 import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './CatstoreLayout.module.css'
 
@@ -96,22 +97,6 @@ const local = {
 
 const URL_TEXT = 'web-production-1899fab5.up.railway.app'
 
-function Reveal({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
-  const reduced = useReducedMotionSafe()
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: reduced ? 0 : 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      /* margen positivo: dispara antes de entrar, para que la banda bajo el hero no se vea vacía */
-      viewport={{ once: true, margin: '0px 0px 25% 0px' }}
-      transition={{ duration: reduced ? 0.12 : duration.slow, ease: easeOutExpo, delay: reduced ? 0 : delay }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
 export default function CatstoreLayout({ project }: { project: Project }) {
   const { t, lang } = useT()
   const text = useProjectText(project)
@@ -136,7 +121,7 @@ export default function CatstoreLayout({ project }: { project: Project }) {
       className={styles.page}
       style={{ '--pb-ink': '#322f25', '--pb-ink-2': '#55513f', '--pb-ink-3': '#6b6753', '--pb-line': '#ddd3c0', '--pb-bg': '#f8f3e9', '--pb-accent': '#b04a2c' } as CSSProperties}
     >
-      <section className={styles.hero}>
+      <ScrollScene as="section" build={false} className={styles.hero}>
         <div className={styles.heroText}>
           <p className={styles.kicker}>{text.kicker}</p>
           <h1 id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
@@ -214,51 +199,51 @@ export default function CatstoreLayout({ project }: { project: Project }) {
             <img src={mobile!} alt={pick(lang, local.mobile)} width={780} height={1688} loading="lazy" decoding="async" />
           </figure>
         </motion.div>
-      </section>
+      </ScrollScene>
 
-      <section className={styles.features} aria-labelledby="catstore-features">
+      <ScrollScene as="section" className={styles.features} aria-labelledby="catstore-features">
         <div className={styles.featuresInner}>
-          <Reveal className={styles.featuresHead}>
+          <Build className={styles.featuresHead}>
             <h2 id="catstore-features" className={styles.h2}>{pick(lang, local.featuresTitle)}</h2>
             <p className={styles.lead}>{pick(lang, local.featuresLead)}</p>
-          </Reveal>
+          </Build>
           <ol className={styles.featureList}>
             {local.features.map((f, i) => (
-              <li key={f.t.es}>
-                <Reveal className={styles.feature} delay={Math.min(i, 4) * 0.04}>
+              <ScrollScene as="li" key={f.t.es} erase={false}>
+                <Build className={styles.feature}>
                   <span className={styles.num} aria-hidden>{String(i + 1).padStart(2, '0')}</span>
                   <span className={styles.fTitle}>{pick(lang, f.t)}</span>
                   <span className={styles.fDesc}>{pick(lang, f.d)}</span>
-                </Reveal>
-              </li>
+                </Build>
+              </ScrollScene>
             ))}
           </ol>
         </div>
-      </section>
+      </ScrollScene>
 
-      <section className={styles.basics}>
-        <Reveal className={styles.basicsInner}>
-          <div>
+      <ScrollScene as="section" className={styles.basics} erase={false}>
+        <div className={styles.basicsInner}>
+          <Build>
             <h2 className={styles.label}>{t.projects.role}</h2>
             <ul className={styles.roles}>
               {text.role.map((r) => (
                 <li key={r}>{r}</li>
               ))}
             </ul>
-          </div>
-          <div>
+          </Build>
+          <Build i={1}>
             <h2 className={styles.label}>{t.projects.stack}</h2>
             <ul className={styles.chips}>
               {project.stack.map((s) => (
                 <li key={s} className={styles.chip}>{s}</li>
               ))}
             </ul>
-          </div>
-        </Reveal>
-        <Reveal className={styles.closingWrap}>
+          </Build>
+        </div>
+        <div className={styles.closingWrap}>
           <ProjectClosing project={project} />
-        </Reveal>
-      </section>
+        </div>
+      </ScrollScene>
     </div>
   )
 }

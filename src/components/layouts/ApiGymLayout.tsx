@@ -5,6 +5,7 @@ import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { tween, useReducedMotionSafe } from '../../styles/motion'
+import { Build, ScrollScene } from '../motion/ScrollScene'
 import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './ApiGymLayout.module.css'
 
@@ -323,15 +324,6 @@ export default function ApiGymLayout({ project }: { project: Project }) {
     return () => ctrl.abort()
   }, [project.assets.manifest])
 
-  const reveal = reduced
-    ? {}
-    : {
-        initial: { opacity: 0, y: 18 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: '0px 0px -8% 0px' },
-        transition: tween(0.7),
-      }
-
   const facts = [
     { k: ui.factKey, v: ui.factKeyBody },
     { k: ui.factPage, v: ui.factPageBody },
@@ -340,7 +332,7 @@ export default function ApiGymLayout({ project }: { project: Project }) {
 
   return (
     <div className={styles.root} style={{ '--ag-accent': project.accent } as CSSProperties}>
-      <header className={styles.hero}>
+      <ScrollScene as="header" build={false} className={styles.hero}>
         <div className={styles.heroText}>
           <p className={styles.kicker}>
             <img src="/projects/apigym/logo-b-menta.svg" alt="" width={36} height={32} className={styles.symbol} />
@@ -356,28 +348,27 @@ export default function ApiGymLayout({ project }: { project: Project }) {
           <Counter to={1257} reduced={reduced} />
           <span className={styles.countLabel}>{ui.countLabel}</span>
         </div>
-      </header>
+      </ScrollScene>
 
       {exercises.length > 0 && (
-        <section className={styles.block} aria-labelledby="apigym-explorer">
-          <motion.div {...reveal}>
-            <h2 id="apigym-explorer" className={styles.h2}>
-              {ui.explorerTitle}
-            </h2>
-            <p className={styles.lead}>{ui.explorerLead}</p>
+        <ScrollScene as="section" className={styles.block} aria-labelledby="apigym-explorer">
+          <Build as="h2" id="apigym-explorer" className={styles.h2}>
+            {ui.explorerTitle}
+          </Build>
+          <Build as="p" i={1} className={styles.lead}>{ui.explorerLead}</Build>
+          <Build i={2}>
             <Explorer exercises={exercises} lang={lang} reduced={reduced} />
-          </motion.div>
-        </section>
+          </Build>
+        </ScrollScene>
       )}
 
-      <section className={styles.block} aria-labelledby="apigym-api">
-        <motion.div {...reveal}>
-          <h2 id="apigym-api" className={styles.h2}>
-            {ui.apiTitle}
-          </h2>
-          <p className={styles.lead}>{ui.apiLead}</p>
-          <div className={styles.apiGrid}>
-            <figure className={styles.code}>
+      <ScrollScene as="section" className={styles.block} aria-labelledby="apigym-api">
+        <Build as="h2" id="apigym-api" className={styles.h2}>
+          {ui.apiTitle}
+        </Build>
+        <Build as="p" i={1} className={styles.lead}>{ui.apiLead}</Build>
+        <div className={styles.apiGrid}>
+            <Build as="figure" i={2} className={styles.code}>
               <div className={styles.request}>
                 <span className={styles.verb}>GET</span>
                 <code>
@@ -392,8 +383,8 @@ export default function ApiGymLayout({ project }: { project: Project }) {
                 <code>{renderJson(SAMPLE)}</code>
               </pre>
               <figcaption className={styles.codeCap}>{ui.apiCaption}</figcaption>
-            </figure>
-            <div className={styles.factsCol}>
+            </Build>
+            <Build i={3} className={styles.factsCol}>
               <ul className={styles.facts}>
                 {facts.map((f) => (
                   <li key={f.k}>
@@ -409,32 +400,31 @@ export default function ApiGymLayout({ project }: { project: Project }) {
                 </svg>
                 <span className="sr-only">({t.projects.externalLink})</span>
               </a>
-            </div>
-          </div>
-        </motion.div>
-      </section>
+            </Build>
+        </div>
+      </ScrollScene>
 
-      <section className={styles.block} aria-labelledby="apigym-site">
-        <motion.div {...reveal}>
-          <h2 id="apigym-site" className={styles.h2}>
-            {ui.siteTitle}
-          </h2>
-          <p className={styles.lead}>{ui.siteLead}</p>
+      <ScrollScene as="section" className={styles.block} aria-labelledby="apigym-site">
+        <Build as="h2" id="apigym-site" className={styles.h2}>
+          {ui.siteTitle}
+        </Build>
+        <Build as="p" i={1} className={styles.lead}>{ui.siteLead}</Build>
+        <Build i={2}>
           <BrowserShots reduced={reduced} />
-        </motion.div>
-      </section>
+        </Build>
+      </ScrollScene>
 
-      <section className={styles.block} aria-labelledby={`${project.slug}-role`}>
-        <motion.div className={styles.cols} {...reveal}>
-          <div>
+      <ScrollScene as="section" className={styles.block} aria-labelledby={`${project.slug}-role`}>
+        <div className={styles.cols}>
+          <Build>
             <h2 id={`${project.slug}-role`} className={styles.label}>{t.projects.role}</h2>
             <ul className={styles.list}>
               {text.role.map((r) => (
                 <li key={r}>{r}</li>
               ))}
             </ul>
-          </div>
-          <div>
+          </Build>
+          <Build i={1}>
             <h2 id={`${project.slug}-stack`} className={styles.label}>{t.projects.stack}</h2>
             <ul className={styles.stack}>
               {project.stack.map((s) => (
@@ -446,14 +436,12 @@ export default function ApiGymLayout({ project }: { project: Project }) {
                 <span>{t.projects.team}</span> {project.team}
               </p>
             )}
-          </div>
-        </motion.div>
-      </section>
+          </Build>
+        </div>
+      </ScrollScene>
 
       <section className={styles.block}>
-        <motion.div {...reveal}>
-          <ProjectClosing project={project} linksClassName={styles.links} />
-        </motion.div>
+        <ProjectClosing project={project} linksClassName={styles.links} />
       </section>
     </div>
   )

@@ -2,6 +2,7 @@ import { motion, type Variants } from 'motion/react'
 import { Link, useLocation } from 'react-router'
 import { useT } from '../../i18n/context'
 import { easeOutExpo, reducedTransition, useReducedMotionSafe } from '../../styles/motion'
+import { ScrollScene } from '../motion/ScrollScene'
 import { useIntroPhase } from '../Intro/introStore'
 import styles from './Hero.module.css'
 
@@ -29,7 +30,7 @@ export default function Hero() {
   const state = phase === 'type' ? 'hidden' : 'show'
 
   return (
-    <section id="inicio" className={styles.hero}>
+    <ScrollScene as="section" build={false} id="inicio" className={styles.hero}>
       <div className={styles.inner}>
         <div className={styles.head}>
           <motion.p className={styles.greeting} variants={item} custom={0} initial="hidden" animate={state}>
@@ -68,6 +69,6 @@ export default function Hero() {
           <p className={styles.about}>{t.hero.about}</p>
         </motion.div>
       </div>
-    </section>
+    </ScrollScene>
   )
 }
