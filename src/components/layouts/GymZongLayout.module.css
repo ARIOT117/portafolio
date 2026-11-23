@@ -12,7 +12,7 @@
   --gz-mint: #3dd9b8;
   --gz-mint-ink: #0b7a66;
   --gz-wash: #e9f8f3;
-  --gz-phone: 18rem;
+  --gz-phone: 16rem;
   --font-mono: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
   display: grid;
@@ -142,43 +142,46 @@
 .carousel {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1.25rem;
+  min-width: 0;
 }
 
-.track {
+.stage {
   position: relative;
-  display: flex;
-  gap: clamp(1rem, 2.5vw, 2.5rem);
-  margin: 0;
-  padding: 1.5rem calc(50% - var(--gz-phone) / 2) 0.5rem;
-  list-style: none;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  cursor: grab;
-  touch-action: pan-x pan-y;
-}
-
-.track::-webkit-scrollbar {
-  display: none;
-}
-
-.track:focus-visible {
-  outline-offset: -4px;
-  border-radius: 12px;
-}
-
-.dragging {
-  cursor: grabbing;
-  scroll-snap-type: none;
+  width: 100%;
+  height: calc(var(--gz-phone) * 1.89 + 4.5rem);
+  overflow: clip;
+  perspective: 1400px;
+  touch-action: pan-y;
   user-select: none;
 }
 
+.deck {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform-style: preserve-3d;
+}
+
 .slide {
-  flex: none;
+  position: absolute;
+  top: 1.5rem;
+  left: 50%;
   width: var(--gz-phone);
-  scroll-snap-align: center;
+  margin-left: calc(var(--gz-phone) / -2);
+  will-change: transform, opacity;
+}
+
+.float {
+  will-change: transform;
+}
+
+.slide[data-pos='-1'] .float,
+.slide[data-pos='1'] .float {
+  animation: gz-float 5s ease-in-out infinite alternate;
 }
 
 .figure {
@@ -196,31 +199,46 @@
   background: var(--gz-ink);
   box-shadow:
     0 1px 2px rgb(15 46 54 / 0.14),
-    0 24px 40px -20px rgb(15 46 54 / 0.35);
+    0 30px 50px -24px rgb(15 46 54 / 0.45);
 }
 
-.phone img {
+.screen {
+  overflow: hidden;
+  aspect-ratio: 9 / 17;
+  border-radius: calc(2.25rem - 6px);
+  background: var(--gz-surface);
+}
+
+.screen img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 9 / 20;
-  border-radius: calc(2.25rem - 6px);
-  background: var(--gz-surface);
-  object-fit: cover;
+}
+
+/* La captura activa se desplaza sola, como si alguien usara la app */
+.slide[data-pos='0'] .screen img {
+  animation: gz-scroll 3.5s cubic-bezier(0.65, 0, 0.35, 1) both;
 }
 
 .caption {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  min-height: 2.5rem;
-  font-size: 0.9375rem;
-  line-height: 1.3;
-  color: var(--gz-body);
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  font-family: 'Manrope Variable', var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--gz-ink);
   text-align: center;
 }
 
+.captionText {
+  margin: 0;
+}
+
 .num {
+  margin-inline-end: 0.5rem;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   color: var(--gz-mint-ink);
@@ -230,26 +248,53 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
-.counter {
-  font-size: 0.875rem;
-  color: var(--gz-soft);
-  font-variant-numeric: tabular-nums;
+.bars {
+  display: flex;
+  gap: 0.25rem;
 }
 
-.counter span {
-  color: var(--gz-ink);
-  font-weight: 600;
+.bar {
+  display: grid;
+  align-items: center;
+  width: clamp(1.75rem, 8vw, 2.75rem);
+  height: 2.75rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
 
-.arrows {
-  display: none;
-  gap: 0.5rem;
+.fill {
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(15 46 54 / 0.16);
+  position: relative;
+  overflow: hidden;
 }
 
-.arrow {
+.fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gz-mint-ink);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.fillDone::after {
+  transform: scaleX(1);
+}
+
+.fillActive::after {
+  animation: gz-fill linear both;
+  animation-duration: inherit;
+}
+
+.toggle {
   display: grid;
   place-items: center;
   width: 2.75rem;
@@ -258,57 +303,78 @@
   border: 1px solid rgb(15 46 54 / 0.24);
   background: var(--gz-surface);
   color: var(--gz-ink);
-  transition:
-    background-color var(--duration-fast) var(--ease-out-quart),
-    border-color var(--duration-fast) var(--ease-out-quart),
-    transform var(--duration-fast) var(--ease-out-quart);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out-quart);
 }
 
-.arrow:hover:not(:disabled) {
+.toggle:hover {
   border-color: var(--gz-ink);
 }
 
-.arrow:active:not(:disabled) {
-  transform: scale(0.96);
+/* Pausa por hover, foco, fuera de pantalla, pestaña oculta o botón */
+.carousel[data-paused='true'] *,
+.carousel[data-paused='true'] *::after,
+.carousel:hover .stage *,
+.carousel:hover .fillActive::after,
+.carousel:hover .fillActive,
+.carousel:focus-within .stage *,
+.carousel:focus-within .fillActive::after,
+.carousel:focus-within .fillActive {
+  animation-play-state: paused;
 }
 
-.arrow:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-
-@media (min-width: 720px) {
-  .controls {
-    justify-content: space-between;
-    width: min(100%, 60rem);
-    padding-inline: var(--gutter);
-    margin-inline: auto;
+@keyframes gz-float {
+  from {
+    transform: translateY(0);
   }
-
-  .arrows {
-    display: flex;
-  }
-
-  .slide {
-    transform: scale(0.9);
-    transform-origin: 50% 100%;
-    transition: transform var(--duration-base) var(--ease-out-quart);
-  }
-
-  .slide[data-active='true'] {
-    transform: scale(1);
+  to {
+    transform: translateY(-10px);
   }
 }
 
-@media (min-width: 720px) and (prefers-reduced-motion: reduce) {
-  .slide {
-    transition: none;
+@keyframes gz-scroll {
+  0%,
+  12% {
+    transform: translateY(0);
   }
+  62%,
+  100% {
+    transform: translateY(-15%);
+  }
+}
+
+@keyframes gz-fill {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Galería estática (movimiento reducido) */
+.gallery {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 1.5rem var(--gutter) 0.5rem;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+}
+
+.galleryItem {
+  flex: none;
+  width: var(--gz-phone);
+  scroll-snap-align: center;
+}
+
+.gallery .caption {
+  font-size: 0.9375rem;
 }
 
 @media (max-width: 719px) {
   .page {
-    --gz-phone: min(68vw, 16rem);
+    --gz-phone: min(62vw, 15rem);
   }
 }
 

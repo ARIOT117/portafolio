@@ -1,6 +1,6 @@
 import '@fontsource-variable/manrope'
 import '@fontsource-variable/inter'
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useRef, useState, type PointerEvent, type KeyboardEvent, type ReactNode } from 'react'
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
@@ -16,8 +16,8 @@ const L = {
   privateNote: { es: 'vitrina pública', en: 'public showcase' },
   carousel: { es: 'Capturas de la app', en: 'App screenshots' },
   slide: { es: 'Pantalla', en: 'Screen' },
-  prev: { es: 'Pantalla anterior', en: 'Previous screen' },
-  next: { es: 'Pantalla siguiente', en: 'Next screen' },
+  pause: { es: 'Pausar animación de pantallas', en: 'Pause screen animation' },
+  play: { es: 'Reanudar animación de pantallas', en: 'Play screen animation' },
   features: { es: 'Rasgos clave', en: 'Key features' },
 } satisfies Record<string, Bi>
 
@@ -85,10 +85,27 @@ const features: { icon: ReactNode; tone?: 'streak'; title: Bi; text: Bi }[] = [
   },
 ]
 
-function Chevron({ dir }: { dir: 'left' | 'right' }) {
+const SLOT_MS = 3500
+
+/** Posición de cada teléfono según su distancia circular a la pantalla activa. */
+const slotFor = (rel: number) => {
+  const side = Math.sign(rel)
+  if (rel === 0) return { x: '0%', scale: 1, rotateY: 0, opacity: 1, zIndex: 3 }
+  if (Math.abs(rel) === 1) return { x: `${side * 74}%`, scale: 0.8, rotateY: -side * 26, opacity: 0.62, zIndex: 2 }
+  return { x: `${side * 118}%`, scale: 0.62, rotateY: -side * 34, opacity: 0, zIndex: 1 }
+}
+
+function PauseIcon({ playing }: { playing: boolean }) {
   return (
-    <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d={dir === 'left' ? 'M10 3.5 5.5 8l4.5 4.5' : 'M6 3.5 10.5 8 6 12.5'} />
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden>
+      {playing ? (
+        <>
+          <rect x="3.5" y="3" width="3" height="10" rx="1" />
+          <rect x="9.5" y="3" width="3" height="10" rx="1" />
+        </>
+      ) : (
+        <path d="M4.5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.4 2.7a.6.6 0 0 0-.9.5Z" />
+      )}
     </svg>
   )
 }
@@ -96,130 +113,172 @@ function Chevron({ dir }: { dir: 'left' | 'right' }) {
 function Screens({ images }: { images: string[] }) {
   const { lang } = useT()
   const reduced = useReducedMotionSafe()
-  const trackRef = useRef<HTMLUListElement>(null)
-  const [active, setActive] = useState(0)
-  const [dragging, setDragging] = useState(false)
-  const drag = useRef({ x: 0, left: 0 })
-  const raf = useRef(0)
   const total = images.length
+  const [active, setActive] = useState(0)
+  const [userPaused, setUserPaused] = useState(false)
+  const [inView, setInView] = useState(true)
+  const [tabHidden, setTabHidden] = useState(false)
+  const stageRef = useRef<HTMLDivElement>(null)
+  const swipe = useRef<{ x: number; id: number } | null>(null)
 
-  const nearest = useCallback(() => {
-    const track = trackRef.current
-    if (!track) return 0
-    const mid = track.scrollLeft + track.clientWidth / 2
-    let best = 0
-    let bestDist = Infinity
-    Array.from(track.children).forEach((el, i) => {
-      const c = el as HTMLElement
-      const d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid)
-      if (d < bestDist) {
-        bestDist = d
-        best = i
-      }
-    })
-    return best
-  }, [])
+  const paused = userPaused || !inView || tabHidden
+  const alt = (i: number) => `Gym Zong, ${captions[i]?.[lang] ?? `${L.slide[lang]} ${i + 1}`}`
+  const go = useCallback((i: number) => setActive(((i % total) + total) % total), [total])
 
-  const goTo = useCallback(
-    (i: number) => {
-      const track = trackRef.current
-      const el = track?.children[Math.max(0, Math.min(total - 1, i))] as HTMLElement | undefined
-      if (!track || !el) return
-      track.scrollTo({
-        left: el.offsetLeft + el.offsetWidth / 2 - track.clientWidth / 2,
-        behavior: reduced ? 'auto' : 'smooth',
-      })
-    },
-    [reduced, total],
-  )
-
-  useEffect(() => () => cancelAnimationFrame(raf.current), [])
-
-  const onScroll = () => {
-    cancelAnimationFrame(raf.current)
-    raf.current = requestAnimationFrame(() => setActive(nearest()))
-  }
-
-  const onPointerDown = (e: PointerEvent<HTMLUListElement>) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0 || !trackRef.current) return
-    drag.current = { x: e.clientX, left: trackRef.current.scrollLeft }
-    e.currentTarget.setPointerCapture(e.pointerId)
-    setDragging(true)
-  }
-  const onPointerMove = (e: PointerEvent<HTMLUListElement>) => {
-    if (!dragging || !trackRef.current) return
-    trackRef.current.scrollLeft = drag.current.left - (e.clientX - drag.current.x)
-  }
-  const endDrag = (e: PointerEvent<HTMLUListElement>) => {
-    if (!dragging) return
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId)
-    setDragging(false)
-    goTo(nearest())
-  }
-
-  const onKeyDown = (e: KeyboardEvent<HTMLUListElement>) => {
-    if (e.key === 'ArrowRight') {
-      e.preventDefault()
-      goTo(active + 1)
-    } else if (e.key === 'ArrowLeft') {
-      e.preventDefault()
-      goTo(active - 1)
+  useEffect(() => {
+    if (reduced) return
+    const onVis = () => setTabHidden(document.hidden)
+    onVis()
+    document.addEventListener('visibilitychange', onVis)
+    let io: IntersectionObserver | undefined
+    if (stageRef.current && typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver((entries) => setInView(entries[0]?.isIntersecting ?? true), { threshold: 0.25 })
+      io.observe(stageRef.current)
     }
+    return () => {
+      document.removeEventListener('visibilitychange', onVis)
+      io?.disconnect()
+    }
+  }, [reduced])
+
+  if (reduced) {
+    return (
+      <div className={styles.carousel} role="region" aria-roledescription="carousel" aria-label={L.carousel[lang]}>
+        <ul className={styles.gallery} tabIndex={0} aria-label={L.carousel[lang]}>
+          {images.map((src, i) => (
+            <li key={src} className={styles.galleryItem}>
+              <figure className={styles.figure}>
+                <div className={styles.phone}>
+                  <div className={styles.screen}>
+                    <img src={src} width={1080} height={2400} alt={alt(i)} loading={i < 3 ? 'eager' : 'lazy'} draggable={false} />
+                  </div>
+                </div>
+                <figcaption className={styles.caption}>
+                  <span className={styles.num}>{i + 1}</span>
+                  {captions[i]?.[lang]}
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return
+    swipe.current = { x: e.clientX, id: e.pointerId }
+  }
+  const onPointerUp = (e: PointerEvent<HTMLDivElement>) => {
+    const start = swipe.current
+    swipe.current = null
+    if (!start || start.id !== e.pointerId) return
+    const dx = e.clientX - start.x
+    if (Math.abs(dx) > 40) go(active + (dx < 0 ? 1 : -1))
+  }
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'ArrowRight') go(active + 1)
+    else if (e.key === 'ArrowLeft') go(active - 1)
   }
 
   return (
-    <div className={styles.carousel} role="region" aria-roledescription="carousel" aria-label={L.carousel[lang]}>
-      <ul
-        ref={trackRef}
-        className={[styles.track, dragging ? styles.dragging : ''].filter(Boolean).join(' ')}
-        tabIndex={0}
-        onScroll={onScroll}
-        onKeyDown={onKeyDown}
+    <div
+      className={styles.carousel}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={L.carousel[lang]}
+      data-paused={paused}
+    >
+      <div
+        ref={stageRef}
+        className={styles.stage}
         onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => (swipe.current = null)}
+        onKeyDown={onKeyDown}
       >
-        {images.map((src, i) => (
-          <li
-            key={src}
-            className={styles.slide}
-            data-active={i === active}
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${i + 1} / ${total}`}
+        <ul className={styles.deck}>
+          {images.map((src, i) => {
+            let rel = (((i - active) % total) + total) % total
+            if (rel > total / 2) rel -= total
+            const isActive = rel === 0
+            return (
+              <motion.li
+                key={src}
+                className={styles.slide}
+                data-pos={Math.abs(rel) > 1 ? 'far' : rel}
+                initial={false}
+                animate={slotFor(rel)}
+                transition={{ type: 'spring', stiffness: 105, damping: 17, mass: 1 }}
+                aria-hidden={isActive ? undefined : true}
+              >
+                <div className={styles.float} style={{ animationDelay: `${-i * 0.9}s` }}>
+                  <div className={styles.phone}>
+                    <div className={styles.screen}>
+                      <img
+                        src={src}
+                        width={1080}
+                        height={2400}
+                        alt={alt(i)}
+                        loading={i < 3 ? 'eager' : 'lazy'}
+                        draggable={false}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </motion.li>
+            )
+          })}
+        </ul>
+      </div>
+
+      <div className={styles.caption} aria-live={paused && userPaused ? 'polite' : 'off'} aria-atomic="true">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.p
+            key={active}
+            className={styles.captionText}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28, ease: easeOutExpo }}
           >
-            <figure className={styles.figure}>
-              <div className={styles.phone}>
-                <img
-                  src={src}
-                  width={1080}
-                  height={2400}
-                  alt={`Gym Zong, ${captions[i]?.[lang] ?? `${L.slide[lang]} ${i + 1}`}`}
-                  loading={i < 3 ? 'eager' : 'lazy'}
-                  draggable={false}
-                />
-              </div>
-              <figcaption className={styles.caption}>
-                <span className={styles.num}>{i + 1}</span>
-                {captions[i]?.[lang]}
-              </figcaption>
-            </figure>
-          </li>
-        ))}
-      </ul>
+            {captions[active]?.[lang]}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
       <div className={styles.controls}>
-        <p className={styles.counter}>
-          <span>{active + 1}</span> / {total}
-        </p>
-        <div className={styles.arrows}>
-          <button type="button" className={styles.arrow} onClick={() => goTo(active - 1)} disabled={active === 0} aria-label={L.prev[lang]}>
-            <Chevron dir="left" />
-          </button>
-          <button type="button" className={styles.arrow} onClick={() => goTo(active + 1)} disabled={active === total - 1} aria-label={L.next[lang]}>
-            <Chevron dir="right" />
-          </button>
+        <div className={styles.bars} role="group" aria-label={L.slide[lang]}>
+          {images.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              className={styles.bar}
+              aria-label={`${L.slide[lang]} ${i + 1}: ${captions[i]?.[lang] ?? ''}`}
+              aria-current={i === active ? 'true' : undefined}
+              onClick={() => go(i)}
+            >
+              <span
+                className={[styles.fill, i === active ? styles.fillActive : '', i < active ? styles.fillDone : '']
+                  .filter(Boolean)
+                  .join(' ')}
+                style={{ animationDuration: `${SLOT_MS}ms` }}
+                onAnimationEnd={(e) => {
+                  if (i === active && e.target === e.currentTarget) go(active + 1)
+                }}
+              />
+            </button>
+          ))}
         </div>
+        <button
+          type="button"
+          className={styles.toggle}
+          onClick={() => setUserPaused((v) => !v)}
+          aria-pressed={userPaused}
+          aria-label={userPaused ? L.play[lang] : L.pause[lang]}
+        >
+          <PauseIcon playing={!userPaused} />
+        </button>
       </div>
     </div>
   )
