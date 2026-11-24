@@ -36,6 +36,10 @@ describe('certificates', () => {
     }
   })
 
+  it('cada constancia tiene su logo oficial en public/', () => {
+    for (const c of certificates) expect(publicFiles).toContain(`/public${c.logo}`)
+  })
+
   it('los enlaces son https o un caso interno del portafolio', () => {
     for (const c of certificates) {
       expect(c.links.length).toBeGreaterThan(0)

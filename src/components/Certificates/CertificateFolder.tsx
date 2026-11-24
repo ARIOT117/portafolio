@@ -94,8 +94,7 @@ export default function CertificateFolder({
         },
     {
       label: text.markLabel,
-      node: <span className={styles.mark}>{cert.mark}</span>,
-      background: 'color-mix(in oklab, var(--accent) 10%, var(--color-surface))',
+      node: <img src={cert.logo} alt="" width={404} height={404} draggable={false} loading="lazy" decoding="async" className={styles.cover} />,
     },
   ]
 

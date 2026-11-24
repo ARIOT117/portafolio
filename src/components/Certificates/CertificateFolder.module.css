@@ -66,8 +66,8 @@
   display: block;
   background: linear-gradient(
     180deg,
-    color-mix(in oklab, var(--accent) 16%, transparent),
-    color-mix(in oklab, var(--accent) 5%, transparent) 60%
+    color-mix(in oklab, var(--accent) 30%, var(--color-surface)),
+    color-mix(in oklab, var(--accent) 16%, var(--color-surface)) 60%
   );
 }
 
@@ -175,19 +175,6 @@
   text-wrap: balance;
 }
 
-.mark {
-  padding-inline: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: var(--weight-medium);
-  line-height: 1.2;
-  letter-spacing: 0;
-  text-align: center;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 70%, var(--color-ink));
-  text-wrap: balance;
-}
-
 /* Etiqueta sobre la hoja señalada */
 .label {
   position: absolute;
@@ -227,8 +214,8 @@
   height: 180px;
   overflow: hidden;
   background:
-    linear-gradient(160deg, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.55) 55%),
-    rgb(240 240 238 / 0.7);
+    linear-gradient(160deg, rgb(255 255 255 / 0.97), rgb(255 255 255 / 0.88) 55%),
+    rgb(246 245 242 / 0.96);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   backdrop-filter: blur(18px) saturate(150%);
   transition: transform 0.6s var(--ease);
@@ -311,8 +298,7 @@
   background: var(--color-surface);
 }
 
-.miniFace .word,
-.miniFace .mark {
+.miniFace .word {
   display: none;
 }
 

@@ -25,8 +25,8 @@ export interface Certificate {
   links: CertificateLink[]
   /** Imagen del proyecto para la segunda hoja de la carpeta; sin ella se usa una hoja tipográfica. */
   projectImage?: string
-  /** Marca tipográfica del evento (tercera hoja de la carpeta). */
-  mark: string
+  /** Logo oficial del evento, recortado cuadrado de la constancia (tercera hoja de la carpeta). */
+  logo: string
   /** Proyecto del portafolio hecho en ese evento, si existe. */
   projectSlug?: ProjectSlug
   /** Clave de texto bajo `certificates` en i18n. */
@@ -48,7 +48,7 @@ export const certificates: Certificate[] = [
       { kind: 'team', href: 'https://www.spaceappschallenge.org/2026/find-a-team/gangbangers/' },
     ],
     projectImage: '/projects/eclipse-rojo/menu.webp',
-    mark: 'NASA Space Apps',
+    logo: '/certificates/space-apps-logo.webp',
     projectSlug: 'eclipse-rojo',
     i18nKey: 'spaceApps',
   },
@@ -65,7 +65,7 @@ export const certificates: Certificate[] = [
       { kind: 'repo', href: 'https://github.com/Gangbangers-Evolution/Zumek' },
       { kind: 'site', href: 'https://innovathon.innovacuu.xyz/' },
     ],
-    mark: 'INNOVA',
+    logo: '/certificates/innova-logo.webp',
     i18nKey: 'innovathon',
   },
 ]

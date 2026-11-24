@@ -36,10 +36,10 @@
 }
 
 .stage {
-  --fw: clamp(190px, 52vw, 290px);
+  --fw: clamp(220px, 64vw, 350px);
   position: relative;
-  /* Carpeta 321:270 (0.84 del ancho) + holgura para las hojas que suben + pie */
-  height: calc(var(--fw) * 0.84 + 4rem);
+  /* Carpeta 360:270 (0.75 del ancho) + holgura para las hojas que suben + pie */
+  height: calc(var(--fw) * 0.75 + 4rem);
   perspective: 1500px;
   perspective-origin: 50% 45%;
   touch-action: pan-y;
@@ -190,7 +190,7 @@
 }
 
 .rowItem {
-  width: min(100%, 15rem);
+  width: min(100%, 18rem);
   flex: 0 0 auto;
 }
 

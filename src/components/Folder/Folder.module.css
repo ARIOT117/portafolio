@@ -1,6 +1,6 @@
 /*
  * Carpeta de vidrio: port de FolderComponent de RareUI. El dibujo vive en una base de
- * 321 × 270; --u es 1 px de esa base (ancho del contenedor / 321), así todo escala sin JS.
+ * 360 × 270 (321 de carpeta, ampliada a lo ancho); --u es 1 px de esa base (ancho / 360), así todo escala sin JS.
  * La carpeta se abre con --k (0 cerrada, 1 abierta): hover, foco por teclado o [data-lift]
  * (la vista de proyecto lo pone al volar la hoja). Las posiciones salen de --k para que
  * una sola transición mueva abanico y solapa.
@@ -39,14 +39,14 @@
 .art {
   position: relative;
   display: block;
-  aspect-ratio: 321 / 270;
+  aspect-ratio: 360 / 270;
   container-type: inline-size;
   animation: bob 3.6s ease-in-out var(--bob-delay, 0s) infinite;
 }
 
 /* Base de dibujo: perspectiva como en la referencia (800 px base) */
 .base {
-  --u: calc(100cqw / 321);
+  --u: calc(100cqw / 360);
   position: absolute;
   inset: 0;
   display: block;
@@ -130,7 +130,7 @@
   display: block;
   width: calc(var(--w) * var(--u));
   height: calc(var(--h) * var(--u));
-  inset-inline-start: calc((160.5 - var(--w) / 2) * var(--u));
+  inset-inline-start: calc((180 - var(--w) / 2) * var(--u));
   inset-block-start: calc((135 - var(--h) / 2) * var(--u));
   transform: translate(
       calc((var(--x0) + (var(--x1) - var(--x0)) * var(--k)) * var(--u)),
@@ -192,7 +192,7 @@
   inset-inline-start: 0;
   inset-block-start: calc(30.5 * var(--u));
   display: block;
-  width: calc(321 * var(--u));
+  width: calc(360 * var(--u));
   height: calc(241 * var(--u));
   transform-origin: bottom center;
   transform-style: preserve-3d;
@@ -205,8 +205,8 @@
   inset: 0;
   display: block;
   /* El prefijo va primero: el minificador se queda con la última declaración */
-  -webkit-backdrop-filter: blur(calc(6 * var(--u)));
-  backdrop-filter: blur(calc(6 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(10 * var(--u)));
+  backdrop-filter: blur(calc(10 * var(--u)));
   transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -224,7 +224,7 @@
 
 .flapFill {
   fill: var(--accent);
-  fill-opacity: 0.4;
+  fill-opacity: 0.78;
 }
 
 .flapStroke {
@@ -243,7 +243,7 @@
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .flapFill {
-    fill-opacity: 0.7;
+    fill-opacity: 0.9;
   }
 }
 
