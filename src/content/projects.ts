@@ -1,6 +1,6 @@
-export type ProjectSlug = 'eclipse-rojo' | 'gym-zong' | 'apigym' | 'catstore'
+export type ProjectSlug = 'eclipse-rojo' | 'gym-zong' | 'apigym' | 'imoney' | 'catstore'
 
-export type LinkKind = 'live' | 'repo' | 'play' | 'showcase' | 'instagram'
+export type LinkKind = 'live' | 'demo' | 'repo' | 'play' | 'showcase' | 'instagram'
 
 export interface ProjectLink {
   kind: LinkKind
@@ -32,6 +32,10 @@ export interface Project {
 
 const gymZongScreens = [1, 2, 3, 4, 5, 6].map(
   (n) => `/projects/gym-zong/screen-0${n}.webp`,
+)
+
+const imoneyScreens = [1, 2, 3, 4, 5, 6].map(
+  (n) => `/projects/imoney/screen-0${n}.webp`,
 )
 
 export const projects: Project[] = [
@@ -87,6 +91,21 @@ export const projects: Project[] = [
     i18nKey: 'apigym',
   },
   {
+    slug: 'imoney',
+    accent: '#FF8A3D',
+    accent2: '#111112',
+    folderGradient: 'linear-gradient(160deg, #4A3223 0%, #231B16 55%, #111112 100%)',
+    // El repositorio es privado: solo se enlaza la demo web pública.
+    links: [{ kind: 'demo', href: 'https://imoney-demo.vercel.app' }],
+    stack: ['React Native', 'Expo', 'Node.js', 'Express', 'Firestore'],
+    assets: {
+      cover: imoneyScreens[0] ?? '/projects/imoney/screen-01.webp',
+      images: imoneyScreens,
+      logo: '/projects/imoney/ajolote-perfil.webp',
+    },
+    i18nKey: 'imoney',
+  },
+  {
     slug: 'catstore',
     accent: '#C98A4B',
     folderGradient: 'linear-gradient(160deg, #EBC48F 0%, #C98A4B 55%, #9A6530 100%)',
@@ -118,4 +137,16 @@ export const gymZongKit = {
   primary: '#3DD9B8',
   accentText: '#0B7A66',
   chartStreak: '#F2A65A',
+} as const
+
+/** Kit de marca de iMoney («cuaderno oscuro»), tomado de los tokens de la app. */
+export const imoneyKit = {
+  background: '#111112',
+  surface: '#19191A',
+  surfaceMuted: '#232324',
+  text: '#F3F1EE',
+  textSecondary: '#A29E98',
+  primary: '#FF8A3D',
+  border: '#2A2927',
+  income: '#6FD39A',
 } as const

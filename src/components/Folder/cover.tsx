@@ -2,8 +2,10 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import '@fontsource-variable/fraunces/wght.css'
 import '@fontsource-variable/fraunces/wght-italic.css'
 import '@fontsource-variable/manrope'
+import '@fontsource-variable/figtree'
 import '@fontsource/ibm-plex-mono/400.css'
 import '@fontsource/ibm-plex-mono/500.css'
+import '@fontsource/jetbrains-mono/400.css'
 import '@fontsource/rajdhani/600.css'
 import { gymZongKit, type Project } from '../../content/projects'
 import { useT } from '../../i18n/context'
@@ -42,6 +44,8 @@ const L = {
   gym: { es: 'Rutinas · sin conexión', en: 'Workouts · offline' } satisfies Bi,
   streak: { es: '12 días', en: '12 days' } satisfies Bi,
   exercises: { es: 'ejercicios', en: 'exercises' } satisfies Bi,
+  ticketTotal: { es: 'TOTAL', en: 'TOTAL' } satisfies Bi,
+  ticketFood: { es: 'Comida', en: 'Food' } satisfies Bi,
   cafe: { es: 'Cat café · Chihuahua', en: 'Cat café · Chihuahua' } satisfies Bi,
 }
 
@@ -140,6 +144,63 @@ function ApiGymCover({ srcs, eager }: Pick<Props, 'srcs' | 'eager'>) {
   )
 }
 
+/** Un día del mes = una barra; la última (hoy) lleva el acento. Alturas en cqh. */
+const DAYS = [3, 5, 4, 9, 4, 3, 6, 5, 11, 4, 3, 5, 7, 4, 6, 3, 10, 5, 4, 6, 8, 5, 14, 0, 0, 0, 0, 0, 0, 0]
+
+function ImoneyCover({ eager }: Pick<Props, 'eager'>) {
+  const { lang } = useT()
+  return (
+    <span className={styles.imRoot}>
+      <span className={styles.imBrand}>
+        <img
+          src="/projects/imoney/ajolote-perfil.webp"
+          alt=""
+          draggable={false}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding={eager ? 'sync' : 'async'}
+        />
+        <span className={styles.imName}>iMoney</span>
+      </span>
+      <span className={styles.imDays}>
+        {DAYS.map((h, i) => (
+          <span
+            key={i}
+            className={styles.imDay}
+            data-today={i === 22 || undefined}
+            data-future={h === 0 || undefined}
+            style={{ '--h': `${h || 2}cqh` } as CSSProperties}
+          />
+        ))}
+      </span>
+      <span className={styles.imChip}>
+        <span className={styles.imDot} />
+        $ 87.50 · {L.ticketFood[lang]}
+      </span>
+      <span className={styles.imSlot}>
+        <span className={styles.imPaper}>
+          <span className={styles.imShop}>ABARROTES</span>
+          <span className={styles.imLine}>
+            <span>TACOS x3</span>
+            <span>60.00</span>
+          </span>
+          <span className={styles.imLine}>
+            <span>HORCHATA</span>
+            <span>17.50</span>
+          </span>
+          <span className={styles.imLine}>
+            <span>REFRESCO</span>
+            <span>10.00</span>
+          </span>
+          <span className={styles.imTotal}>
+            <span>{L.ticketTotal[lang]}</span>
+            <span>87.50</span>
+          </span>
+        </span>
+      </span>
+    </span>
+  )
+}
+
 function CatstoreCover({ eager }: Pick<Props, 'eager'>) {
   const { lang } = useT()
   return (
@@ -175,6 +236,7 @@ export function CoverArt({ project, srcs, eager }: Props) {
       {project.slug === 'eclipse-rojo' && <EclipseCover eager={eager} />}
       {project.slug === 'gym-zong' && <GymZongCover eager={eager} />}
       {project.slug === 'apigym' && <ApiGymCover srcs={srcs} eager={eager} />}
+      {project.slug === 'imoney' && <ImoneyCover eager={eager} />}
       {project.slug === 'catstore' && <CatstoreCover eager={eager} />}
     </span>
   )

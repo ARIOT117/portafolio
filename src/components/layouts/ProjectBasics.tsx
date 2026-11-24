@@ -12,6 +12,7 @@ export const projectTitleId = (slug: string) => `project-title-${slug}`
 
 const linkLabelKey = {
   live: 'viewSite',
+  demo: 'viewDemo',
   repo: 'viewRepo',
   play: 'play',
   showcase: 'showcase',
@@ -123,6 +124,7 @@ export default function ProjectBasics({ project, className, tone = 'light', styl
 /** Miniatura del proyecto siguiente, con su tamaño real. */
 function thumbOf(project: Project): { src: string; width: number; height: number } {
   if (project.assets.manifest) return { src: '/projects/apigym/site-home.webp', width: 1440, height: 900 }
+  if (project.slug === 'imoney') return { src: project.assets.cover, width: 585, height: 1266 }
   const portrait = project.slug === 'gym-zong'
   return { src: project.assets.cover, width: portrait ? 1080 : 1440, height: portrait ? 2400 : 900 }
 }

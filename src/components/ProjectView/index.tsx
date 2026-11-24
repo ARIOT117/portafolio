@@ -11,7 +11,7 @@ import { projectTitleId } from '../layouts/ProjectBasics'
 import styles from './ProjectView.module.css'
 
 /** Vistas oscuras: la barra y el botón Volver toman su fondo y tinta. */
-const DARK_SLUGS: readonly string[] = ['eclipse-rojo', 'apigym']
+const DARK_SLUGS: readonly string[] = ['eclipse-rojo', 'apigym', 'imoney']
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'

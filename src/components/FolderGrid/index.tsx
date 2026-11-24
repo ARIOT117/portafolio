@@ -31,6 +31,7 @@ const chipNames: Record<string, { es: string; en: string }> = {
   'eclipse-rojo': { es: 'Eclipse Rojo', en: 'Red Eclipse' },
   'gym-zong': { es: 'Gym Zong', en: 'Gym Zong' },
   apigym: { es: 'ApiGym', en: 'ApiGym' },
+  imoney: { es: 'iMoney', en: 'iMoney' },
   catstore: { es: 'CATSTORE', en: 'CATSTORE' },
 }
 

@@ -74,7 +74,7 @@ describe('carpetas y vista de proyecto', () => {
     expect(screen.getAllByRole('link', { name: 'Ir al inicio' }).some((a) => a.getAttribute('href') === '/')).toBe(true)
   })
 
-  it.each(['eclipse-rojo', 'gym-zong', 'apigym', 'catstore'])(
+  it.each(['eclipse-rojo', 'gym-zong', 'apigym', 'imoney', 'catstore'])(
     'los enlaces externos de %s abren en pestaña nueva con rel seguro',
     async (slug) => {
       renderAt(`/p/${slug}`)
@@ -95,5 +95,22 @@ describe('carpetas y vista de proyecto', () => {
   it('Eclipse Rojo muestra el premio', async () => {
     renderAt('/p/eclipse-rojo')
     expect((await screen.findAllByText(/1er lugar local/)).length).toBeGreaterThan(0)
+  })
+
+  it('iMoney muestra mi rol, enlaza solo la demo y marca el repositorio como privado', async () => {
+    renderAt('/p/imoney')
+    const dialog = await screen.findByRole('dialog', { name: 'iMoney' })
+    expect(within(dialog).getByText('Programé la lectura de tickets con IA, con revisión antes de guardar')).toBeInTheDocument()
+    expect(
+      within(dialog).getByText('Programé los gastos hormiga, el alcance del dinero, los cambios de precio y dividir cuentas'),
+    ).toBeInTheDocument()
+    expect(within(dialog).getByText('Equipo: Adrian Robles, Jesús Castellanos y Diego Esparza')).toBeInTheDocument()
+    const external = within(dialog)
+      .getAllByRole('link')
+      .filter((a) => /^https?:\/\//.test(a.getAttribute('href') ?? ''))
+    expect(external.length).toBeGreaterThan(0)
+    for (const a of external) expect(a).toHaveAttribute('href', 'https://imoney-demo.vercel.app')
+    expect(within(dialog).queryByRole('link', { name: /github/i })).not.toBeInTheDocument()
+    expect(within(dialog).getByText(/Repositorio privado/)).toBeInTheDocument()
   })
 })

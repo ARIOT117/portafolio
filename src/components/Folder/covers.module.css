@@ -419,6 +419,174 @@
   white-space: nowrap;
 }
 
+/* ---------- iMoney ---------- */
+.cover[data-cover='imoney'] {
+  background: #111112;
+  font-family: 'Figtree Variable', sans-serif;
+  color: #f3f1ee;
+}
+
+.imRoot {
+  position: absolute;
+  inset: 0;
+  display: block;
+  font-variant-numeric: tabular-nums;
+}
+
+.imBrand {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 9cqh;
+  display: flex;
+  align-items: center;
+  gap: 2.4cqw;
+}
+
+.imBrand img {
+  width: 14cqw;
+  height: auto;
+  aspect-ratio: 480 / 408;
+}
+
+.imName {
+  font-size: 10cqw;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* El mes como una línea de días: una barra por día, hoy en naranja */
+.imDays {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 36cqh;
+  width: 49cqw;
+  height: 17cqh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-block-end: 0.3cqw solid #2a2927;
+}
+
+.imDay {
+  width: 0.75cqw;
+  height: var(--h);
+  border-radius: 0.3cqw 0.3cqw 0 0;
+  background: #5b5853;
+}
+
+.imDay[data-today] {
+  background: #ff8a3d;
+  width: 1cqw;
+}
+
+.imDay[data-future] {
+  background: #2a2927;
+}
+
+.imChip {
+  position: absolute;
+  inset-inline-start: 7cqw;
+  inset-block-start: 59cqh;
+  display: flex;
+  align-items: center;
+  gap: 1.6cqw;
+  padding: 1.5cqw 2.8cqw;
+  border-radius: 99cqw;
+  border: 0.3cqw solid #ff8a3d;
+  background: rgb(255 138 61 / 0.12);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 3.2cqw;
+  font-weight: 400;
+  color: #ff8a3d;
+  white-space: nowrap;
+}
+
+.imDot {
+  width: 1.9cqw;
+  height: 1.9cqw;
+  border-radius: 50%;
+  background: #ff8a3d;
+}
+
+/* Ranura de la que sale el ticket: el papel baja y se imprime línea a línea */
+.imSlot {
+  position: absolute;
+  inset-inline-end: 7cqw;
+  inset-block-start: 7cqh;
+  width: 31cqw;
+  height: 66cqh;
+  overflow: hidden;
+  border-block-start: 0.5cqw solid #ff8a3d;
+}
+
+.imPaper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5cqw;
+  height: 100%;
+  padding: 3cqw 2.6cqw 6cqw;
+  background: #f3f1ee;
+  color: #161412;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2.3cqw;
+  line-height: 1;
+  white-space: nowrap;
+  /* Borde inferior dentado, como un ticket cortado */
+  clip-path: polygon(0 0, 100% 0, 100% 96%, 94% 100%, 88% 96%, 82% 100%, 76% 96%, 70% 100%, 64% 96%, 58% 100%, 52% 96%, 46% 100%, 40% 96%, 34% 100%, 28% 96%, 22% 100%, 16% 96%, 10% 100%, 4% 96%, 0 100%);
+  /* El cuadro 0 es el ticket ya impreso: la hoja que vuela (congelada) se ve completa */
+  animation: imPrint 8s var(--ease) infinite;
+}
+
+.imShop {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding-block-end: 1.5cqw;
+  border-block-end: 0.3cqw dashed #9a958d;
+}
+
+.imLine,
+.imTotal {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqw;
+}
+
+.imTotal {
+  margin-block-start: auto;
+  padding-block-start: 1.5cqw;
+  border-block-start: 0.3cqw dashed #9a958d;
+  font-size: 3cqw;
+  font-weight: 700;
+  color: #b34700;
+}
+
+@keyframes imPrint {
+  0%,
+  58% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  64% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  65% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  66% {
+    transform: translateY(-100%);
+    opacity: 1;
+  }
+  92%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* ---------- CATSTORE ---------- */
 .cover[data-cover='catstore'] {
   background: #f8f3e9;

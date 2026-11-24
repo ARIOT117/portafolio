@@ -1,8 +1,8 @@
 import { projects } from './projects'
 
 describe('projects', () => {
-  it('tiene 4 proyectos en el orden esperado', () => {
-    expect(projects.map((p) => p.slug)).toEqual(['eclipse-rojo', 'gym-zong', 'apigym', 'catstore'])
+  it('tiene 5 proyectos en el orden esperado', () => {
+    expect(projects.map((p) => p.slug)).toEqual(['eclipse-rojo', 'gym-zong', 'apigym', 'imoney', 'catstore'])
   })
 
   it('cada proyecto tiene slug único y al menos un link https', () => {
