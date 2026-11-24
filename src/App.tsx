@@ -1,6 +1,7 @@
 import { AnimatePresence } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { Route, Routes, useLocation, useMatch, useNavigationType } from 'react-router'
+import Certificates from './components/Certificates'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import FolderGrid from './components/FolderGrid'
@@ -25,6 +26,7 @@ function Home() {
       <main id="contenido" tabIndex={-1}>
         <Hero />
         <FolderGrid />
+        <Certificates />
         <Contact />
       </main>
       <Footer />

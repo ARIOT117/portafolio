@@ -61,6 +61,7 @@ export default function Nav() {
         >
           <nav aria-label="Principal" className={styles.links}>
             <Link to={{ pathname: '/', hash: '#proyectos' }}>{t.nav.projects}</Link>
+            <Link to={{ pathname: '/', hash: '#constancias' }} className={styles.linkCerts}>{t.nav.certificates}</Link>
             <Link to={{ pathname: '/', hash: '#contacto' }}>{t.nav.contact}</Link>
           </nav>
           <div role="group" aria-label={t.nav.language} className={styles.lang}>

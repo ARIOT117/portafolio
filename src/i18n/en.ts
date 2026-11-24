@@ -2,13 +2,14 @@ import type { Dict } from './es'
 
 export const en: Dict = {
   meta: {
-    title: 'Diego Esparza (ARIOT117) · Full-stack developer',
+    title: 'Diego Esparza (ARIOT117) · Software developer',
     description:
-      'Portfolio of Diego Esparza, a full-stack developer in Chihuahua, Mexico. Databases and AI integration.',
+      'Portfolio of Diego Esparza, a software developer in Chihuahua, Mexico. Databases and AI integration.',
   },
   nav: {
     brand: 'ARIOT117',
     projects: 'Projects',
+    certificates: 'Certificates',
     contact: 'Contact',
     language: 'Language',
     langEs: 'ES',
@@ -24,7 +25,7 @@ export const en: Dict = {
   hero: {
     greeting: "Hi, I'm",
     name: 'Diego Esparza',
-    role: 'Full-stack developer focused on databases and AI integration.',
+    role: 'Software developer focused on databases and AI integration.',
     about: 'Software development student. Open to full-time roles and freelance projects.',
     location: 'Chihuahua, Mexico',
     ctaProjects: 'See projects',
@@ -62,6 +63,58 @@ export const en: Dict = {
     sendEmail: 'Send an email',
     linkedin: 'LinkedIn',
     github: 'GitHub',
+  },
+  certificates: {
+    title: 'Certificates',
+    intro: 'Hackathons I took part in, and what I built at each one.',
+    open: 'View the certificate for',
+    tileCert: 'Certificate',
+    whatIDid: 'What I did',
+    team: 'Team',
+    project: 'Project',
+    close: 'Close',
+    links: {
+      team: 'Team page',
+      site: 'Official site',
+      repo: 'View repository',
+      case: 'View the case study',
+    },
+    spaceApps: {
+      event: 'NASA Space Apps Challenge 2026',
+      org: 'NASA · Chihuahua',
+      kind: 'Galactic Problem Solver',
+      date: 'November 14–15, 2026',
+      distinction: '1st place locally',
+      projectShort: 'Red Eclipse',
+      markLabel: 'Space Apps',
+      project: 'Operation Red Eclipse',
+      summary:
+        "NASA's international hackathon. With team DualDynamics we took the Space Mission Design Game challenge and made Operation Red Eclipse, a Unity game where you design a mission to Mars. We won 1st place locally.",
+      did: [
+        'Designed and programmed the game mechanics: building the mission, flying the spacecraft and scanning Mars.',
+        'Did the visual design of the game.',
+        'Built the interface and the HUD.',
+      ],
+      alt: 'NASA Space Apps Challenge 2026 Galactic Problem Solver certificate for Diego Isai Esparza Barron.',
+    },
+    innovathon: {
+      event: 'Innovathon 2026',
+      org: 'INNOVA · Chihuahua Tech Week',
+      kind: 'Certificate of participation',
+      date: 'September 26, 2026',
+      distinction: '',
+      projectShort: 'Zumek',
+      markLabel: 'Innovathon',
+      project: 'Zumek',
+      summary:
+        'A 12-hour artificial intelligence hackathon run by INNOVA during Chihuahua Tech Week, at Parque Tecnológico Orión. With team Gangbangers we built Zumek, an app that plans the week\'s meals starting from the budget: budget first, plan second.',
+      did: [
+        'Came up with the idea and defined the product, with the budget as the starting point.',
+        'Designed the screens and the app experience.',
+        'Worked on the AI and data: the assistant, price collection and the Supabase database.',
+      ],
+      alt: 'Innovathon 2026 certificate of participation for Diego Isai Esparza Barron.',
+    },
   },
   footer: {
     copyright: '© 2026 Diego Esparza · ARIOT117',
@@ -207,7 +260,7 @@ export const en: Dict = {
     kicker: 'A cat cafe website in Chihuahua',
     summary:
       'A PHP website for a cat cafe in Chihuahua. It has a menu, a location page and a demo shop with accounts, a persistent cart and orders. Each account can upload a private profile photo. It is live on Railway.',
-    role: ['Full-stack development', 'Database'],
+    role: ['Software development', 'Database'],
     highlights: [
       'Menu, location and a demo shop.',
       'Accounts, persistent cart and orders.',

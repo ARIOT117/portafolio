@@ -1,13 +1,14 @@
 /** Diccionario en español: fuente de verdad. `en.ts` debe cubrir las mismas claves. */
 export const es = {
   meta: {
-    title: 'Diego Esparza (ARIOT117) · Desarrollador full-stack',
+    title: 'Diego Esparza (ARIOT117) · Desarrollador de software',
     description:
-      'Portafolio de Diego Esparza, desarrollador full-stack en Chihuahua, México. Bases de datos e integración de IA.',
+      'Portafolio de Diego Esparza, desarrollador de software en Chihuahua, México. Bases de datos e integración de IA.',
   },
   nav: {
     brand: 'ARIOT117',
     projects: 'Proyectos',
+    certificates: 'Constancias',
     contact: 'Contacto',
     language: 'Idioma',
     langEs: 'ES',
@@ -23,7 +24,7 @@ export const es = {
   hero: {
     greeting: 'Hola, soy',
     name: 'Diego Esparza',
-    role: 'Desarrollador full-stack, con foco en bases de datos e integración de IA.',
+    role: 'Desarrollador de software, con foco en bases de datos e integración de IA.',
     about:
       'Estudiante de desarrollo de software. Disponible para empleo y proyectos freelance.',
     location: 'Chihuahua, México',
@@ -62,6 +63,58 @@ export const es = {
     sendEmail: 'Escribir por correo',
     linkedin: 'LinkedIn',
     github: 'GitHub',
+  },
+  certificates: {
+    title: 'Constancias',
+    intro: 'Hackatones en los que participé y lo que construí en cada uno.',
+    open: 'Ver la constancia de',
+    tileCert: 'Constancia',
+    whatIDid: 'Lo que hice',
+    team: 'Equipo',
+    project: 'Proyecto',
+    close: 'Cerrar',
+    links: {
+      team: 'Página del equipo',
+      site: 'Sitio oficial',
+      repo: 'Ver repositorio',
+      case: 'Ver el caso',
+    },
+    spaceApps: {
+      event: 'NASA Space Apps Challenge 2026',
+      org: 'NASA · Chihuahua',
+      kind: 'Galactic Problem Solver',
+      date: '14–15 de noviembre de 2026',
+      distinction: '1er lugar local',
+      projectShort: 'Eclipse Rojo',
+      markLabel: 'Space Apps',
+      project: 'Operación Eclipse Rojo',
+      summary:
+        'El hackatón internacional de la NASA. Con el equipo DualDynamics tomamos el reto Space Mission Design Game e hicimos Operación Eclipse Rojo, un juego en Unity para diseñar una misión a Marte. Ganamos el 1er lugar local.',
+      did: [
+        'Diseñé y programé las mecánicas del juego: armar la misión, operar la nave y escanear Marte.',
+        'Hice el diseño visual del juego.',
+        'Construí la interfaz y el HUD.',
+      ],
+      alt: 'Constancia Galactic Problem Solver del NASA Space Apps Challenge 2026 a nombre de Diego Isai Esparza Barron.',
+    },
+    innovathon: {
+      event: 'Innovathon 2026',
+      org: 'INNOVA · Chihuahua Tech Week',
+      kind: 'Constancia de participación',
+      date: '26 de septiembre de 2026',
+      distinction: '',
+      projectShort: 'Zumek',
+      markLabel: 'Innovathon',
+      project: 'Zumek',
+      summary:
+        'Hackatón de inteligencia artificial de 12 horas, organizado por INNOVA en la Chihuahua Tech Week, en el Parque Tecnológico Orión. Con el equipo Gangbangers construimos Zumek, una app que planea las comidas de la semana a partir del presupuesto: primero el presupuesto, después el plan.',
+      did: [
+        'Propuse la idea y definí el producto: el presupuesto como punto de partida.',
+        'Diseñé las pantallas y la experiencia de la app.',
+        'Trabajé en la IA y los datos: el asistente, la obtención de precios y la base en Supabase.',
+      ],
+      alt: 'Constancia de participación en el Innovathon 2026 a nombre de Diego Isai Esparza Barron.',
+    },
   },
   footer: {
     copyright: '© 2026 Diego Esparza · ARIOT117',
@@ -207,7 +260,7 @@ export const es = {
     kicker: 'Sitio de una cafetería gatuna en Chihuahua',
     summary:
       'Sitio en PHP de una cafetería gatuna en Chihuahua. Tiene menú, ubicación y una tienda de demostración con cuentas, carrito persistente y pedidos. Cada cuenta puede subir una foto de perfil privada. Está en línea en Railway.',
-    role: ['Desarrollo full-stack', 'Base de datos'],
+    role: ['Desarrollo de software', 'Base de datos'],
     highlights: [
       'Menú, ubicación y tienda de demostración.',
       'Cuentas, carrito persistente y pedidos.',
