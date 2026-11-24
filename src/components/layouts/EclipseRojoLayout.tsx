@@ -253,20 +253,23 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
         <div className={styles.heroShade} aria-hidden />
         <p className={styles.heroCredit}>{lang === 'es' ? 'Textura de Marte' : 'Mars texture'}: Solar System Scope (CC BY 4.0)</p>
         <div className={styles.heroInner}>
-          {text.award &&
-            (postHref ? (
-              <a className={styles.award} href={postHref} target="_blank" rel="noopener noreferrer">
-                {awardBody}
-              </a>
-            ) : (
-              <p className={styles.award}>{awardBody}</p>
-            ))}
-          <h1 id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
+          {text.award && (
+            <Build>
+              {postHref ? (
+                <a className={styles.award} href={postHref} target="_blank" rel="noopener noreferrer">
+                  {awardBody}
+                </a>
+              ) : (
+                <p className={styles.award}>{awardBody}</p>
+              )}
+            </Build>
+          )}
+          <Build as="h1" i={1} id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
             {text.name}
-          </h1>
-          <p className={styles.kicker}>{text.kicker}</p>
-          <p className={styles.summary}>{text.summary}</p>
-          <ProjectLinks project={heroProject} className={styles.actions} />
+          </Build>
+          <Build as="p" i={2} className={styles.kicker}>{text.kicker}</Build>
+          <Build as="p" i={3} className={styles.summary}>{text.summary}</Build>
+          <ProjectLinks project={heroProject} className={styles.actions} build={4} />
         </div>
       </section>
 
@@ -308,7 +311,7 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
                 ))}
               </ul>
             </Build>
-            <Build as="figure" i={2} className={styles.shot}>
+            <Build as="figure" i={2} blur={false} className={styles.shot}>
               <img src={project.assets.cover} alt={pick(L.screenAlt, lang)} loading="lazy" width={1440} height={900} />
             </Build>
           </div>
@@ -319,7 +322,7 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
             <h2 id="er-scan" className={styles.h2}>{pick(L.scanTitle, lang)}</h2>
           </Build>
           <Build as="p" i={1} className={styles.lead}>{pick(L.scanIntro, lang)}</Build>
-          <Build i={2}>
+          <Build i={2} blur={false}>
             <ScanFrame reduced={reduced} lang={lang} />
           </Build>
         </ScrollScene>
@@ -330,8 +333,8 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
           </Build>
           <ul className={styles.board}>
             {evidence.map((e, i) => (
-              <ScrollScene as="li" key={e.src} erase={false}>
-                <Build i={i % 3}>
+              <ScrollScene as="li" key={e.src}>
+                <Build i={i % 3} blur={false}>
                   <figure className={styles.card}>
                     <div className={styles.cardMedia}>
                       <img
@@ -383,7 +386,7 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
 
         <ProjectClosing project={project} linksClassName={styles.actions} />
 
-        <p className={styles.honest}>{pick(L.honest, lang)}</p>
+        <Build as="p" className={styles.honest}>{pick(L.honest, lang)}</Build>
       </div>
     </div>
   )

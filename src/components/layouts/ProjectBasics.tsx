@@ -77,20 +77,20 @@ export default function ProjectBasics({ project, className, tone = 'light', styl
     <div className={rootClass} style={{ '--pb-accent': project.accent, ...style } as CSSProperties}>
       <header className={styles.head}>
         {text.award && (
-          <p className={styles.award}>
+          <Build as="p" className={styles.award}>
             <span>{text.award}</span>
             {text.awardSub && <span className={styles.awardSub}>{text.awardSub}</span>}
-          </p>
+          </Build>
         )}
-        <h1 id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
+        <Build as="h1" i={1} id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
           {text.name}
-        </h1>
-        <p className={styles.kicker}>{text.kicker}</p>
-        <p className={styles.summary}>{text.summary}</p>
+        </Build>
+        <Build as="p" i={2} className={styles.kicker}>{text.kicker}</Build>
+        <Build as="p" i={3} className={styles.summary}>{text.summary}</Build>
       </header>
 
       <div className={styles.cols}>
-        <section aria-labelledby={`${project.slug}-role`}>
+        <Build as="section" aria-labelledby={`${project.slug}-role`}>
           <h2 id={`${project.slug}-role`} className={styles.label}>{t.projects.role}</h2>
           <ul className={styles.list}>
             {text.role.map((r) => (
@@ -103,19 +103,19 @@ export default function ProjectBasics({ project, className, tone = 'light', styl
               <span className={styles.teamLabel}>{t.projects.team}</span> {project.team}
             </p>
           )}
-        </section>
+        </Build>
 
-        <section aria-labelledby={`${project.slug}-stack`}>
+        <Build as="section" i={1} aria-labelledby={`${project.slug}-stack`}>
           <h2 id={`${project.slug}-stack`} className={styles.label}>{t.projects.stack}</h2>
           <ul className={styles.chips}>
             {project.stack.map((s) => (
               <li key={s} className={styles.chip}>{s}</li>
             ))}
           </ul>
-        </section>
+        </Build>
       </div>
 
-      <ProjectLinks project={project} />
+      <ProjectLinks project={project} build={4} />
     </div>
   )
 }
@@ -148,9 +148,10 @@ function NextCard({ next }: { next: Project }) {
   const backgroundLocation = (location.state as { backgroundLocation?: unknown } | null)?.backgroundLocation
   const nextText = useProjectText(next)
   const thumb = thumbOf(next)
-  const style = useBuildStyle(1)
+  const { ref, style } = useBuildStyle({ i: 1 })
   return (
     <MotionLink
+      ref={ref as never}
       style={style}
       to={`/p/${next.slug}`}
       // replace: «Volver» sigue llevando a la home aunque se salte de caso en caso
@@ -186,7 +187,6 @@ export function ProjectClosing({ project, className, linksClassName }: ProjectCl
   return (
     <ScrollScene
       as="section"
-      erase={false}
       className={[styles.closing, className].filter(Boolean).join(' ')}
       aria-label={t.projects.next}
       style={{ '--pb-accent': project.accent } as CSSProperties}

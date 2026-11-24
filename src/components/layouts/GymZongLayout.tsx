@@ -67,11 +67,31 @@ const features: { title: Bi; text: Bi; detail?: boolean }[] = [
 const SLOT_MS = 2300
 
 /** Posición de cada teléfono según su distancia circular a la pantalla activa. */
-const slotFor = (rel: number) => {
+const slotFor = (rel: number, compact: boolean) => {
   const side = Math.sign(rel)
   if (rel === 0) return { x: '0%', scale: 1, rotateY: 0, opacity: 1, zIndex: 3 }
-  if (Math.abs(rel) === 1) return { x: `${side * 74}%`, scale: 0.8, rotateY: -side * 26, opacity: 0.62, zIndex: 2 }
-  return { x: `${side * 118}%`, scale: 0.62, rotateY: -side * 34, opacity: 0, zIndex: 1 }
+  // En la columna fija de escritorio los laterales se arriman al central
+  if (Math.abs(rel) === 1) {
+    return compact
+      ? { x: `${side * 60}%`, scale: 0.76, rotateY: -side * 24, opacity: 0.6, zIndex: 2 }
+      : { x: `${side * 74}%`, scale: 0.8, rotateY: -side * 26, opacity: 0.62, zIndex: 2 }
+  }
+  return { x: `${side * (compact ? 84 : 118)}%`, scale: 0.62, rotateY: -side * 34, opacity: 0, zIndex: 1 }
+}
+
+/** Columna fija de escritorio (la demo queda anclada junto al contenido). */
+const PINNED_QUERY = '(min-width: 960px)'
+
+function usePinned() {
+  const [pinned, setPinned] = useState(() => typeof window.matchMedia === 'function' && window.matchMedia(PINNED_QUERY).matches)
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return
+    const mq = window.matchMedia(PINNED_QUERY)
+    const on = () => setPinned(mq.matches)
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [])
+  return pinned
 }
 
 function PauseIcon({ playing }: { playing: boolean }) {
@@ -92,6 +112,7 @@ function PauseIcon({ playing }: { playing: boolean }) {
 function Screens({ images }: { images: string[] }) {
   const { lang } = useT()
   const reduced = useReducedMotionSafe()
+  const pinned = usePinned()
   const total = images.length
   const [active, setActive] = useState(0)
   const [userPaused, setUserPaused] = useState(false)
@@ -188,7 +209,7 @@ function Screens({ images }: { images: string[] }) {
                 className={styles.slide}
                 data-pos={Math.abs(rel) > 1 ? 'far' : rel}
                 initial={false}
-                animate={slotFor(rel)}
+                animate={slotFor(rel, pinned)}
                 transition={{ type: 'spring', stiffness: 170, damping: 20, mass: 1 }}
                 aria-hidden={isActive ? undefined : true}
               >
@@ -288,40 +309,42 @@ export default function GymZongLayout({ project }: { project: Project }) {
         {t.projects.privateRepo} · {L.privateNote[lang]}
       </p>
 
-      <ScrollScene as="section" build={false} blur={false} className={styles.band} aria-label={text.name}>
-        <Screens images={project.assets.images} />
-      </ScrollScene>
+      {/* Escritorio: la demo (sticky) queda anclada junto al contenido y sigue reproduciéndose mientras se baja.
+          Ningún ancestro de la columna fija lleva transform ni overflow. */}
+      <div className={styles.demo}>
+        <section className={styles.band} aria-label={text.name}>
+          <Screens images={project.assets.images} />
+        </section>
 
-      <ScrollScene as="section" className={styles.features} aria-labelledby="gz-features">
-        <Build>
-          <h2 id="gz-features" className={styles.featuresTitle}>{L.features[lang]}</h2>
-        </Build>
-        <div className={styles.featuresBody}>
-          <ol className={styles.featureList}>
-            {features.map((f, i) => (
-              <Build as="li" key={f.title.en} i={i + 1} className={styles.feature}>
-                <span className={styles.featureNum} aria-hidden>{String(i + 1).padStart(2, '0')}</span>
-                <h3 className={styles.featureTitle}>{f.title[lang]}</h3>
-                <p className={styles.featureText}>{f.text[lang]}</p>
-              </Build>
-            ))}
-          </ol>
-          <Build as="figure" i={3} className={styles.details}>
-            <div className={styles.crops}>
-              <div className={styles.crop} data-shot="stats">
-                <img src="/projects/gym-zong/screen-05.webp" width={1080} height={2400} alt={L.statsAlt[lang]} loading="lazy" decoding="async" />
+        <ScrollScene as="section" className={styles.features} aria-labelledby="gz-features">
+          <Build as="h2" id="gz-features" className={styles.featuresTitle}>{L.features[lang]}</Build>
+          <div className={styles.featuresBody}>
+            <ol className={styles.featureList}>
+              {features.map((f, i) => (
+                <Build as="li" key={f.title.en} i={i % 2} className={styles.feature}>
+                  <span className={styles.featureNum} aria-hidden>{String(i + 1).padStart(2, '0')}</span>
+                  <h3 className={styles.featureTitle}>{f.title[lang]}</h3>
+                  <p className={styles.featureText}>{f.text[lang]}</p>
+                </Build>
+              ))}
+            </ol>
+            <Build as="figure" i={1} className={styles.details}>
+              <div className={styles.crops}>
+                <div className={styles.crop} data-shot="stats">
+                  <img src="/projects/gym-zong/screen-05.webp" width={1080} height={2400} alt={L.statsAlt[lang]} loading="lazy" decoding="async" />
+                </div>
+                <div className={styles.crop} data-shot="records">
+                  <img src="/projects/gym-zong/screen-06.webp" width={1080} height={2400} alt={L.recordsAlt[lang]} loading="lazy" decoding="async" />
+                </div>
               </div>
-              <div className={styles.crop} data-shot="records">
-                <img src="/projects/gym-zong/screen-06.webp" width={1080} height={2400} alt={L.recordsAlt[lang]} loading="lazy" decoding="async" />
-              </div>
-            </div>
-            <figcaption className={styles.detailCap}>
-              <span className={styles.featureNum} aria-hidden>03</span>
-              {L.detailCaption[lang]}
-            </figcaption>
-          </Build>
-        </div>
-      </ScrollScene>
+              <figcaption className={styles.detailCap}>
+                <span className={styles.featureNum} aria-hidden>03</span>
+                {L.detailCaption[lang]}
+              </figcaption>
+            </Build>
+          </div>
+        </ScrollScene>
+      </div>
 
       <ProjectClosing project={project} className={styles.closing} />
 

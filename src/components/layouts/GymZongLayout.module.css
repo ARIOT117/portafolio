@@ -132,12 +132,46 @@
 
 /* ---------- Carrusel ---------- */
 
-.band {
+/* Demo + rasgos: en móvil se apilan (franja de ancho completo, luego el contenido) */
+.demo {
   order: 4;
   grid-column: full-start / full-end;
-  margin-block: 3rem 0;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin-block-start: 3rem;
+}
+
+.demo > * {
+  grid-column: content-start / content-end;
+  min-width: 0;
+}
+
+.band {
+  grid-column: full-start / full-end;
   padding-block: 3rem 1.5rem;
   background: var(--gz-wash);
+}
+
+/* Escritorio: columna de la demo anclada + contenido que pasa a su lado */
+@media (min-width: 960px) {
+  .demo {
+    grid-column: content-start / content-end;
+    grid-template-columns: minmax(0, 31rem) minmax(0, 1fr);
+    column-gap: 4rem;
+    align-items: start;
+  }
+
+  .demo > * {
+    grid-column: auto;
+  }
+
+  .band {
+    position: sticky;
+    inset-block-start: calc(4.5rem + 4vh);
+    padding: 1.5rem 1rem 1rem;
+    border-radius: 1.75rem;
+    --gz-phone: clamp(11rem, calc((100dvh - 24rem) / 1.89), 15rem);
+  }
 }
 
 .carousel {
@@ -382,10 +416,16 @@
 /* ---------- Rasgos: lista editorial numerada + detalle real de la app ---------- */
 
 .features {
-  order: 5;
   margin: 4rem 0 0;
   padding: 0 0 4rem;
   border-block-end: 1px solid var(--gz-line);
+}
+
+@media (min-width: 960px) {
+  .features {
+    margin-block-start: 1rem;
+    padding-block-end: 6rem;
+  }
 }
 
 .featuresTitle {
@@ -403,10 +443,10 @@
   gap: 2.5rem;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 640px) and (max-width: 959px) {
   .featuresBody {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: 4rem;
+    gap: 3rem;
     align-items: start;
   }
 }
@@ -428,6 +468,18 @@
   row-gap: 0.25rem;
   padding-block: 1.25rem;
   border-block-end: 1px solid var(--gz-line);
+}
+
+/* Escritorio: cada rasgo ocupa un buen tramo de scroll, así la demo anclada se ve a su lado mientras se baja */
+@media (min-width: 960px) {
+  .feature {
+    min-height: clamp(11rem, 32vh, 18rem);
+    align-content: center;
+  }
+
+  .details {
+    margin-block-start: 3rem;
+  }
 }
 
 .featureNum {

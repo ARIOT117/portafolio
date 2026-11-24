@@ -360,7 +360,7 @@ export default function FolderGrid() {
 
   if (reduced) {
     return (
-      <ScrollScene as="section" blur={false} id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
+      <ScrollScene as="section" id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
         <div className={styles.inner}>
           {head}
           <ul className={styles.row}>
@@ -376,7 +376,7 @@ export default function FolderGrid() {
   }
 
   return (
-    <ScrollScene as="section" blur={false} id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
+    <ScrollScene as="section" id="proyectos" className={styles.root} aria-labelledby="proyectos-titulo">
       <div className={styles.inner}>{head}</div>
       <Build i={2} blur={false} className={styles.clip}>
         <div

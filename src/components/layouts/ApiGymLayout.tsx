@@ -332,22 +332,22 @@ export default function ApiGymLayout({ project }: { project: Project }) {
 
   return (
     <div className={styles.root} style={{ '--ag-accent': project.accent } as CSSProperties}>
-      <ScrollScene as="header" build={false} className={styles.hero}>
+      <ScrollScene as="header" className={styles.hero}>
         <div className={styles.heroText}>
-          <p className={styles.kicker}>
+          <Build as="p" className={styles.kicker}>
             <img src="/projects/apigym/logo-b-menta.svg" alt="" width={36} height={32} className={styles.symbol} />
             <span>{text.kicker}</span>
-          </p>
-          <h1 id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
+          </Build>
+          <Build as="h1" i={1} id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
             {text.name}
-          </h1>
-          <p className={styles.summary}>{text.summary}</p>
-          <ProjectLinks project={project} className={styles.links} />
+          </Build>
+          <Build as="p" i={2} className={styles.summary}>{text.summary}</Build>
+          <ProjectLinks project={project} className={styles.links} build={3} />
         </div>
-        <div className={styles.heroCount}>
+        <Build i={2} className={styles.heroCount}>
           <Counter to={1257} reduced={reduced} />
           <span className={styles.countLabel}>{ui.countLabel}</span>
-        </div>
+        </Build>
       </ScrollScene>
 
       {exercises.length > 0 && (

@@ -121,10 +121,10 @@ export default function CatstoreLayout({ project }: { project: Project }) {
       className={styles.page}
       style={{ '--pb-ink': '#322f25', '--pb-ink-2': '#55513f', '--pb-ink-3': '#6b6753', '--pb-line': '#ddd3c0', '--pb-bg': '#f8f3e9', '--pb-accent': '#b04a2c' } as CSSProperties}
     >
-      <ScrollScene as="section" build={false} className={styles.hero}>
+      <ScrollScene as="section" className={styles.hero}>
         <div className={styles.heroText}>
-          <p className={styles.kicker}>{text.kicker}</p>
-          <h1 id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
+          <Build as="p" className={styles.kicker}>{text.kicker}</Build>
+          <Build as="h1" i={1} id={projectTitleId(project.slug)} tabIndex={-1} className={styles.title}>
             <span className={styles.brand}>{brand?.trim()}</span>
             {sub && (
               <>
@@ -134,11 +134,12 @@ export default function CatstoreLayout({ project }: { project: Project }) {
                 <span className={styles.sub}>{sub}</span>
               </>
             )}
-          </h1>
-          <p className={styles.summary}>{text.summary}</p>
-          <ProjectLinks project={project} />
+          </Build>
+          <Build as="p" i={2} className={styles.summary}>{text.summary}</Build>
+          <ProjectLinks project={project} build={3} />
         </div>
 
+        <Build i={2}>
         <motion.div
           className={styles.stage}
           role="group"
@@ -199,6 +200,7 @@ export default function CatstoreLayout({ project }: { project: Project }) {
             <img src={mobile!} alt={pick(lang, local.mobile)} width={780} height={1688} loading="lazy" decoding="async" />
           </figure>
         </motion.div>
+        </Build>
       </ScrollScene>
 
       <ScrollScene as="section" className={styles.features} aria-labelledby="catstore-features">
@@ -209,7 +211,7 @@ export default function CatstoreLayout({ project }: { project: Project }) {
           </Build>
           <ol className={styles.featureList}>
             {local.features.map((f, i) => (
-              <ScrollScene as="li" key={f.t.es} erase={false}>
+              <ScrollScene as="li" key={f.t.es}>
                 <Build className={styles.feature}>
                   <span className={styles.num} aria-hidden>{String(i + 1).padStart(2, '0')}</span>
                   <span className={styles.fTitle}>{pick(lang, f.t)}</span>
@@ -221,7 +223,7 @@ export default function CatstoreLayout({ project }: { project: Project }) {
         </div>
       </ScrollScene>
 
-      <ScrollScene as="section" className={styles.basics} erase={false}>
+      <ScrollScene as="section" className={styles.basics}>
         <div className={styles.basicsInner}>
           <Build>
             <h2 className={styles.label}>{t.projects.role}</h2>
