@@ -9,9 +9,9 @@
   display: block;
   width: 100%;
   max-width: 26rem;
-  height: 286px;
   margin-inline: auto;
-  padding: 0;
+  /* 106 px libres arriba para las hojas; el bolsillo mide lo que su contenido */
+  padding: 106px 0 0;
   border: 0;
   background: none;
   font: inherit;
@@ -162,17 +162,21 @@
   object-position: 50% 30%;
 }
 
-/* La hoja siguiente tapa ~36 px del lado derecho: la palabra se queda en la parte visible */
-.word {
-  justify-self: start;
-  padding-inline: 10px 40px;
-  font-size: 0.9375rem;
-  font-weight: var(--weight-semibold);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  text-align: start;
-  color: #fff;
-  text-wrap: balance;
+/* Logos: sobre blanco y con aire, nunca recortados */
+.face[data-fit='contain'],
+.miniFace[data-fit='contain'] {
+  background: #fff;
+}
+
+.face[data-fit='contain'] .cover {
+  object-fit: contain;
+  object-position: 50% 50%;
+  padding: 8px;
+}
+
+.miniFace[data-fit='contain'] .cover {
+  object-fit: contain;
+  padding: 3px;
 }
 
 /* Etiqueta sobre la hoja señalada */
@@ -207,11 +211,10 @@
 
 /* Bolsillo frontal de vidrio */
 .front {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
-  display: block;
-  height: 180px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-block-end: 14px;
   overflow: hidden;
   background:
     linear-gradient(160deg, rgb(255 255 255 / 0.97), rgb(255 255 255 / 0.88) 55%),
@@ -241,7 +244,6 @@
   flex-wrap: wrap;
   gap: 6px;
   margin: 14px 18px 0;
-  padding-inline-end: 96px;
 }
 
 .chip {
@@ -268,25 +270,26 @@
 
 /* Cápsula con las tres hojas en miniatura */
 .pill {
-  position: absolute;
-  inset-block-end: 14px;
-  inset-inline-end: 14px;
+  position: relative;
+  align-self: flex-end;
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 34px;
+  height: 40px;
+  margin: 12px 14px 0 18px;
   padding-inline: 6px;
-  border: 1px solid rgb(22 21 15 / 0.08);
+  border: 1px solid rgb(22 21 15 / 0.16);
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.8);
+  background: var(--color-surface-sunken);
 }
 
 .mini {
   display: block;
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   overflow: hidden;
-  border-radius: 7px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgb(22 21 15 / 0.12);
 }
 
 .miniFace {
@@ -296,10 +299,6 @@
   height: 100%;
   overflow: hidden;
   background: var(--color-surface);
-}
-
-.miniFace .word {
-  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

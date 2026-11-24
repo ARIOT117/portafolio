@@ -165,16 +165,35 @@
   --w: 244;
   --h: 164;
   --x0: 0;
-  --y0: -42;
+  --y0: -92;
   --r0: 0deg;
   --x1: 0;
-  --y1: -58;
+  --y1: -100;
   --r1: 0deg;
   --delay: 0.06s;
   overflow: hidden;
   border-radius: calc(11 * var(--u));
   background: var(--color-surface-sunken);
   box-shadow: 0 calc(4 * var(--u)) calc(10 * var(--u)) rgb(22 21 15 / 0.22);
+  /* Cerrada, solo se desvanece lo que queda tras el borde de la solapa (nunca lo visible, así el vuelo no salta) */
+  -webkit-mask-image: linear-gradient(to bottom, #000 66%, transparent 78%);
+  mask-image: linear-gradient(to bottom, #000 66%, transparent 78%);
+}
+
+/* Abierta (hover, foco, [data-lift]) la portada sube entera y opaca; con movimiento reducido la carpeta no se abre */
+@media (prefers-reduced-motion: no-preference) {
+  .card:focus-visible .pc2,
+  .card[data-lift] .pc2 {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card:hover .pc2 {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
 
 .paperSvg {
@@ -205,12 +224,11 @@
   inset: 0;
   display: block;
   /* El prefijo va primero: el minificador se queda con la última declaración */
-  -webkit-backdrop-filter: blur(calc(10 * var(--u)));
-  backdrop-filter: blur(calc(10 * var(--u)));
+  -webkit-backdrop-filter: blur(calc(8 * var(--u)));
+  backdrop-filter: blur(calc(8 * var(--u)));
   transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  will-change: transform;
 }
 
 .flapSvg {
@@ -224,12 +242,13 @@
 
 .flapFill {
   fill: var(--accent);
-  fill-opacity: 0.78;
+  fill-opacity: 0.88;
 }
 
 .flapStroke {
   stroke: rgb(255 255 255 / 0.65);
-  stroke-width: 1;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
 }
 
 /* Sin dibujo: marca el cuerpo de la solapa (bajo la pestaña) para medirlo */
@@ -243,7 +262,7 @@
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .flapFill {
-    fill-opacity: 0.9;
+    fill-opacity: 0.94;
   }
 }
 
@@ -280,4 +299,17 @@
   .floor {
     animation: none;
   }
+}
+
+/*
+ * Carrusel: solo la carpeta de frente desenfoca el fondo; las laterales llevan la solapa
+ * opaca (el desenfoque es lo caro con cinco carpetas en 3D; el vaivén es solo transform).
+ */
+:global([data-front='false']) .glass {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:global([data-front='false']) .flapFill {
+  fill-opacity: 0.94;
 }

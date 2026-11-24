@@ -6,13 +6,13 @@ import styles from './Folder.module.css'
  * 321 × 270 y se escala al ancho del contenedor (1 px base = 100cqw / 321, ver --u en el CSS).
  */
 
-/** Contorno de la solapa frontal (321 × 241, estirado a lo ancho), con la pestaña incluida. */
+/** Contorno de la solapa frontal (360 × 241), con la pestaña incluida. */
 const FLAP_PATH =
-  'M0 25C0 11.1929 11.1929 0 25 0H136.084C143.044 0 149.689 2.90139 154.42 8.00608L178.08 33.5343C182.811 38.639 189.456 41.5404 196.416 41.5404H296C309.807 41.5404 321 52.7333 321 66.5404V216C321 229.807 309.807 241 296 241H25C11.1929 241 0 229.807 0 216V25Z'
+  'M0 25C0 11.1929 11.1929 0 25 0H136.084C143.044 0 149.689 2.90139 154.42 8.00608L178.08 33.5343C182.811 38.639 189.456 41.5404 196.416 41.5404H335C348.807 41.5404 360 52.7333 360 66.5404V216C360 229.807 348.807 241 335 241H25C11.1929 241 0 229.807 0 216V25Z'
 
 /** Trazo interior de la solapa. */
 const FLAP_EDGE =
-  'M25 0.5H136.084C142.905 0.5 149.417 3.3431 154.054 8.3457L177.713 33.874C182.539 39.0808 189.317 42.04 196.416 42.04H296C309.531 42.04 320.5 53.0092 320.5 66.54V216C320.5 229.531 309.531 240.5 296 240.5H25C11.469 240.5 0.5 229.531 0.5 216V25C0.5 11.469 11.469 0.5 25 0.5Z'
+  'M25 0.5H136.084C142.905 0.5 149.417 3.3431 154.054 8.3457L177.713 33.874C182.539 39.0808 189.317 42.04 196.416 42.04H335C348.531 42.04 359.5 53.0092 359.5 66.54V216C359.5 229.531 348.531 240.5 335 240.5H25C11.469 240.5 0.5 229.531 0.5 216V25C0.5 11.469 11.469 0.5 25 0.5Z'
 
 /** Barras de la hoja: encabezado y dos columnas de nueve renglones. */
 const ROWS = Array.from({ length: 9 }, (_, i) => 61 + i * 14.1)
@@ -69,28 +69,28 @@ export default function FolderShell({ sheet }: Props) {
         <span className={styles.base} aria-hidden>
           <span className={styles.back} />
 
-          <span className={`${styles.pc} ${styles.pc1}`}>
+          <span className={`${styles.pc} ${styles.pc1}`} data-folder-part>
             <PaperCard filterId={`${paperId}-a`} />
           </span>
-          <span className={`${styles.pc} ${styles.pc3}`}>
+          <span className={`${styles.pc} ${styles.pc3}`} data-folder-part>
             <PaperCard filterId={`${paperId}-b`} />
           </span>
-          <span className={`${styles.pc} ${styles.pc2}`} data-folder-sheet>
+          <span className={`${styles.pc} ${styles.pc2}`} data-folder-sheet data-folder-part>
             {sheet}
           </span>
 
-          <span className={styles.flap}>
+          <span className={styles.flap} data-folder-part>
             <span className={styles.glass} style={{ clipPath: `url(#${clipId})` } as CSSProperties} />
-            <svg className={styles.flapSvg} viewBox="0 0 321 241" preserveAspectRatio="none" fill="none">
+            <svg className={styles.flapSvg} viewBox="0 0 360 241" preserveAspectRatio="none" fill="none">
               <clipPath id={clipId} clipPathUnits="objectBoundingBox">
-                <path d={FLAP_PATH} transform="scale(0.0031153 0.0041494)" />
+                <path d={FLAP_PATH} transform="scale(0.0027778 0.0041494)" />
               </clipPath>
               <g filter={`url(#${flapId})`}>
                 <path className={styles.flapFill} d={FLAP_PATH} />
                 <path className={styles.flapStroke} d={FLAP_EDGE} />
               </g>
               <defs>
-                <filter id={flapId} x="-25.4" y="-25.4" width="371.8" height="291.8" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                <filter id={flapId} x="-25.4" y="-25.4" width="410.8" height="291.8" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
                   <feFlood floodOpacity="0" result="bg" />
                   <feBlend in="SourceGraphic" in2="bg" result="shape" />
                   <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hard" />

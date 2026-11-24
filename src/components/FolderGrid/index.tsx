@@ -62,6 +62,8 @@ export default function FolderGrid() {
     const i = projects.findIndex((p) => p.slug === open)
     return i < 0 ? 0 : i
   })
+  // Carpeta más cercana al ángulo actual (no al pie): la que flota y desenfoca mientras gira el anillo.
+  const [near, setNear] = useState(front)
   const [userPaused, setUserPaused] = useState(false)
   // El lector de pantalla solo anuncia el pie tras una interacción; el avance automático es mudo.
   const [live, setLive] = useState(false)
@@ -81,6 +83,7 @@ export default function FolderGrid() {
     dwell: 0,
     userPaused: false,
     front: 0,
+    near: -1,
     open: null as string | null,
   })
 
@@ -110,6 +113,11 @@ export default function FolderGrid() {
         face.style.filter = `blur(${((1 - k) * 2.2).toFixed(2)}px)`
       }
       el.style.pointerEvents = cos < -0.2 ? 'none' : ''
+    }
+    const nearest = frontIndex(angle)
+    if (nearest !== s.near) {
+      s.near = nearest
+      setNear(nearest)
     }
     // El pie cambia al aterrizar: durante un vuelo animado sigue al destino cuando ya está cerca.
     let fi = frontIndex(angle)
@@ -430,6 +438,7 @@ export default function FolderGrid() {
                       faceRefs.current[i] = el
                     }}
                     className={styles.face}
+                    data-front={i === near ? 'true' : 'false'}
                   >
                     <Folder project={p} caption={false} />
                   </div>
@@ -439,7 +448,7 @@ export default function FolderGrid() {
           </motion.ul>
         </div>
       </Build>
-      <Build i={3} className={styles.controls}>
+      <Build i={3} enter={false} className={styles.controls}>
         <div className={`${styles.cluster} ${styles.clusterStart}`}>
           <button type="button" className={styles.nav} aria-label={l.prev} onClick={() => step(-1)}>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -472,7 +481,7 @@ export default function FolderGrid() {
           </button>
         </div>
       </Build>
-      <Build as="ul" i={4} className={styles.chips} aria-label={l.pick}>
+      <Build as="ul" i={4} enter={false} className={styles.chips} aria-label={l.pick}>
         {projects.map((p, i) => (
           <li key={p.slug}>
             <button

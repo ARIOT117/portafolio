@@ -50,6 +50,10 @@ interface Flight {
   /** Píxeles de la hoja que tapa el panel frontal de la carpeta */
   covered: number
   lift: boolean
+  /** Tamaño de la ventana y de la carpeta al medir: si cambian, el vuelo de vuelta ya no aterriza. */
+  vw: number
+  vh: number
+  fw: number
 }
 
 const folderEl = (slug: string) =>
@@ -67,7 +71,7 @@ function measureFlight(slug: string): Flight | null {
   if (!card || !from || from.width === 0) return null
   const front = card.querySelector('[data-folder-front]')?.getBoundingClientRect()
   const covered = front ? Math.max(0, Math.min(from.height, from.top + from.height - front.top)) : 0
-  return { from, covered, lift: card.matches(':hover, :focus-visible') }
+  return { from, covered, lift: card.matches(':hover, :focus-visible'), vw: window.innerWidth, vh: window.innerHeight, fw: card.getBoundingClientRect().width }
 }
 
 const rectStyle = (r: Rect) => ({ left: r.left, top: r.top, width: r.width, height: r.height })
@@ -118,6 +122,12 @@ function ProjectDialog({ project }: { project: Project }) {
     if (!flight) return
     const card = folderEl(slug)
     const flyer = flyerRef.current
+    // Congela la pose a mitad de transición (hover recién hecho) para que `transition: none` no la salte.
+    const parts = Array.from(card?.querySelectorAll<HTMLElement>('[data-folder-part]') ?? [])
+    const prevTransforms = parts.map((el) => el.style.transform)
+    parts.forEach((el) => {
+      el.style.transform = getComputedStyle(el).transform
+    })
     card?.setAttribute('data-flying', '')
     if (flight.lift) card?.setAttribute('data-lift', '')
     // Se muestra la hoja que vuela cuando sus imágenes ya están decodificadas; solo
@@ -134,6 +144,9 @@ function ProjectDialog({ project }: { project: Project }) {
       card?.removeAttribute('data-flying')
       card?.removeAttribute('data-lift')
       card?.removeAttribute('data-hide')
+      parts.forEach((el, i) => {
+        el.style.transform = prevTransforms[i] ?? ''
+      })
     }
   }, [flight, slug])
 
@@ -243,7 +256,12 @@ function ProjectDialog({ project }: { project: Project }) {
     const flyer = flyerRef.current
     const bg = bgRef.current
     const root = dialogRef.current
-    if (!flight || !flyer || !bg || !root) {
+    // Si la ventana o la carpeta cambiaron de tamaño, el destino medido ya no vale: salida con fundido.
+    const resized =
+      !!flight &&
+      !!card &&
+      (window.innerWidth !== flight.vw || window.innerHeight !== flight.vh || Math.abs(card.getBoundingClientRect().width - flight.fw) > 1)
+    if (!flight || !flyer || !bg || !root || !card || resized) {
       if (!root) return safeToRemove?.()
       const fade = animate(root, { opacity: 0 }, { duration: reduced ? 0.15 : 0.2, ease: 'easeOut' })
       fade.then(() => safeToRemove?.())

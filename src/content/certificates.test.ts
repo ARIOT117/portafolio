@@ -2,8 +2,8 @@ import { en } from '../i18n/en'
 import { es } from '../i18n/es'
 import { certificates } from './certificates'
 
-/** Archivos reales en public/certificates (Vite resuelve el glob en la prueba). */
-const publicFiles = Object.keys(import.meta.glob('/public/certificates/*'))
+/** Archivos reales de public/ (Vite resuelve el glob en la prueba). */
+const publicFiles = Object.keys(import.meta.glob('/public/**/*'))
 
 describe('certificates', () => {
   it('tiene Space Apps e Innovathon, en ese orden', () => {
@@ -12,7 +12,6 @@ describe('certificates', () => {
 
   it('cada constancia tiene su imagen en public/ y texto en ambos idiomas', () => {
     for (const c of certificates) {
-      expect(publicFiles).toContain(`/public${c.image}`)
       for (const dict of [es, en]) {
         const text = dict.certificates[c.i18nKey]
         expect(text.event.length).toBeGreaterThan(0)
@@ -30,14 +29,12 @@ describe('certificates', () => {
     expect(en.certificates.innovathon.distinction).toBe('')
   })
 
-  it('las imágenes de las hojas existen en public/', () => {
+  it('todas las imágenes de cada constancia existen en public/', () => {
     for (const c of certificates) {
-      if (c.projectImage) expect(Object.keys(import.meta.glob('/public/projects/eclipse-rojo/*'))).toContain(`/public${c.projectImage}`)
+      const files = [c.image, c.projectImage, c.logo, ...Object.values(c.minis)]
+      expect(files).toHaveLength(6)
+      for (const f of files) expect(publicFiles).toContain(`/public${f}`)
     }
-  })
-
-  it('cada constancia tiene su logo oficial en public/', () => {
-    for (const c of certificates) expect(publicFiles).toContain(`/public${c.logo}`)
   })
 
   it('los enlaces son https o un caso interno del portafolio', () => {

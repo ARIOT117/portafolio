@@ -76,13 +76,13 @@ function CertificateDialog({ cert, onClose }: { cert: Certificate; onClose: (res
         </figure>
         <div className={styles.body}>
           <div className={styles.dialogHead}>
-            <p className={styles.org}>
-              {text.org} · {text.kind} · {text.date}
-            </p>
             <h3 ref={titleRef} id={titleId} tabIndex={-1} className={styles.title}>
               {text.event}
             </h3>
             {text.distinction && <p className={styles.award}>{text.distinction}</p>}
+            <p className={styles.org}>
+              {text.org} · {text.kind} · {text.date}
+            </p>
           </div>
           <div className={styles.meta}>
             <dl className={styles.facts}>

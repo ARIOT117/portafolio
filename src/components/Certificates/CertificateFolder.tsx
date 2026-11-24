@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type RefObject } from 'react'
 import type { Certificate } from '../../content/certificates'
 import { useT } from '../../i18n/context'
 import { useReducedMotionSafe } from '../../styles/motion'
@@ -35,9 +35,13 @@ function useShape(ref: RefObject<HTMLElement | null>, make: (w: number, h: numbe
 
 interface Tile {
   label: string
-  node: ReactNode
-  /** Fondo cuando la hoja no es una imagen. */
-  background?: string
+  /** Imagen de la hoja (404 px) y su miniatura (88 px) para la cápsula. */
+  src: string
+  mini: string
+  /** `contain`: logos sobre blanco, con aire; `cover`: imagen a sangre. */
+  fit: 'cover' | 'contain'
+  width?: number
+  height?: number
 }
 
 const SPREAD = 70
@@ -78,24 +82,9 @@ export default function CertificateFolder({
   const backD = useShape(backRef, (w, h) => pathR(w, h, 24, 24, Math.round(w * 0.4), 46))
 
   const tiles: Tile[] = [
-    {
-      label: t.certificates.tileCert,
-      node: <img src={cert.image} alt="" width={cert.imageW} height={cert.imageH} draggable={false} loading="lazy" decoding="async" className={styles.cover} />,
-    },
-    cert.projectImage
-      ? {
-          label: text.projectShort,
-          node: <img src={cert.projectImage} alt="" draggable={false} loading="lazy" decoding="async" className={styles.cover} />,
-        }
-      : {
-          label: text.projectShort,
-          node: <span className={styles.word}>{text.projectShort}</span>,
-          background: 'var(--accent)',
-        },
-    {
-      label: text.markLabel,
-      node: <img src={cert.logo} alt="" width={404} height={404} draggable={false} loading="lazy" decoding="async" className={styles.cover} />,
-    },
+    { label: t.certificates.tileCert, src: cert.image, mini: cert.minis.cert, fit: 'cover', width: cert.imageW, height: cert.imageH },
+    { label: text.projectShort, src: cert.projectImage, mini: cert.minis.project, fit: cert.projectFit, width: 404, height: 404 },
+    { label: text.markLabel, src: cert.logo, mini: cert.minis.logo, fit: cert.logoFit, width: 404, height: 404 },
   ]
 
   // Etiquetas que se iluminan al pasar por su hoja: la constancia (distinción) y el proyecto.
@@ -168,8 +157,8 @@ export default function CertificateFolder({
                 onPointerEnter={(e) => e.pointerType === 'mouse' && setHi(i)}
                 onPointerLeave={() => setHi((h) => (h === i ? null : h))}
               >
-                <span className={styles.face} style={{ background: tile.background }}>
-                  {tile.node}
+                <span className={styles.face} data-fit={tile.fit}>
+                  <img src={tile.src} alt="" width={tile.width} height={tile.height} draggable={false} loading="lazy" decoding="async" className={styles.cover} />
                 </span>
                 <span className={styles.label}>{tile.label}</span>
               </span>
@@ -204,8 +193,8 @@ export default function CertificateFolder({
         <span className={styles.pill} aria-hidden>
           {tiles.map((tile) => (
             <span key={tile.label} className={styles.mini}>
-              <span className={styles.miniFace} style={{ background: tile.background }}>
-                {tile.node}
+              <span className={styles.miniFace} data-fit={tile.fit}>
+                <img src={tile.mini} alt="" width={88} height={88} draggable={false} loading="lazy" decoding="async" className={styles.cover} />
               </span>
             </span>
           ))}

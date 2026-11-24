@@ -23,10 +23,14 @@ export interface Certificate {
   /** Año del evento (igual en todos los idiomas). */
   year: string
   links: CertificateLink[]
-  /** Imagen del proyecto para la segunda hoja de la carpeta; sin ella se usa una hoja tipográfica. */
-  projectImage?: string
-  /** Logo oficial del evento, recortado cuadrado de la constancia (tercera hoja de la carpeta). */
+  /** Imagen del proyecto para la segunda hoja de la carpeta (404 px) y cómo encaja en ella. */
+  projectImage: string
+  projectFit: 'cover' | 'contain'
+  /** Logo oficial del evento, recortado cuadrado de la constancia (tercera hoja), y cómo encaja. */
   logo: string
+  logoFit: 'cover' | 'contain'
+  /** Miniaturas de 88 px (se pintan a 28 px, con margen para pantallas 3x): constancia, proyecto y logo. */
+  minis: { cert: string; project: string; logo: string }
   /** Proyecto del portafolio hecho en ese evento, si existe. */
   projectSlug?: ProjectSlug
   /** Clave de texto bajo `certificates` en i18n. */
@@ -47,8 +51,15 @@ export const certificates: Certificate[] = [
       { kind: 'case', href: '/p/eclipse-rojo' },
       { kind: 'team', href: 'https://www.spaceappschallenge.org/2026/find-a-team/gangbangers/' },
     ],
-    projectImage: '/projects/eclipse-rojo/menu.webp',
+    projectImage: '/certificates/eclipse-rojo-tile.webp',
+    projectFit: 'cover',
     logo: '/certificates/space-apps-logo.webp',
+    logoFit: 'cover',
+    minis: {
+      cert: '/certificates/space-apps-cert-mini.webp',
+      project: '/certificates/eclipse-rojo-mini.webp',
+      logo: '/certificates/space-apps-logo-mini.webp',
+    },
     projectSlug: 'eclipse-rojo',
     i18nKey: 'spaceApps',
   },
@@ -65,7 +76,15 @@ export const certificates: Certificate[] = [
       { kind: 'repo', href: 'https://github.com/Gangbangers-Evolution/Zumek' },
       { kind: 'site', href: 'https://innovathon.innovacuu.xyz/' },
     ],
+    projectImage: '/certificates/zumek-icon.webp',
+    projectFit: 'contain',
     logo: '/certificates/innova-logo.webp',
+    logoFit: 'contain',
+    minis: {
+      cert: '/certificates/innovathon-cert-mini.webp',
+      project: '/certificates/zumek-mini.webp',
+      logo: '/certificates/innova-logo-mini.webp',
+    },
     i18nKey: 'innovathon',
   },
 ]
