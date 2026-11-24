@@ -13,8 +13,9 @@
 
 .scrolled {
   background: color-mix(in srgb, var(--color-bg) 78%, transparent);
-  backdrop-filter: blur(14px) saturate(1.1);
+  /* El prefijo va primero: el minificador se queda con la última declaración */
   -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
   border-bottom-color: var(--color-line);
 }
 
@@ -94,7 +95,12 @@
   background: var(--color-surface-sunken);
 }
 
+/* En pantallas angostas el enlace a Constancias cede su lugar al selector de idioma */
 @media (max-width: 480px) {
+  .linkCerts {
+    display: none;
+  }
+
   .right,
   .links {
     gap: var(--space-4);

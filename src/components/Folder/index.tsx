@@ -6,6 +6,7 @@ import { useT } from '../../i18n/context'
 import { useReducedMotionSafe } from '../../styles/motion'
 import { OpenProjectContext } from '../ProjectView/context'
 import { CoverArt, useCover } from './cover'
+import FolderShell from './FolderShell'
 import styles from './Folder.module.css'
 
 const MAGNET_PX = 6
@@ -57,20 +58,7 @@ export default function Folder({ project, caption = true }: { project: Project; 
       onPointerMove={onPointerMove}
       onPointerLeave={() => !frozen() && setOffset(0, 0)}
     >
-      <span className={styles.art}>
-        <span className={styles.inner} aria-hidden>
-          <span className={styles.back} />
-          <span className={styles.tab}>
-            <span className={styles.num}>{String(index + 1).padStart(2, '0')}</span>
-          </span>
-          <span className={styles.paper} />
-          <span className={styles.sheet} data-folder-sheet>
-            <CoverArt project={project} srcs={srcs} />
-          </span>
-          <span className={styles.front} data-folder-front />
-        </span>
-      </span>
-      <span className={styles.floor} aria-hidden />
+      <FolderShell sheet={<CoverArt project={project} srcs={srcs} />} />
       {caption && (
         <span className={styles.caption}>
           <span className={styles.name}>{text.name}</span>
