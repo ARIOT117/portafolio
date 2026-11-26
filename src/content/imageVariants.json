@@ -1,0 +1,407 @@
+{
+  "/projects/apigym/site-catalog.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/apigym/site-detail.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/apigym/site-home.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/catstore/extra-01.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/catstore/home.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/catstore/menu.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/catstore/mobile.webp": {
+    "width": 780,
+    "webp": [
+      360,
+      540
+    ],
+    "avif": [
+      360,
+      540,
+      780
+    ]
+  },
+  "/projects/catstore/tiendita.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/eclipse-rojo/evidencias/alta-res.webp": {
+    "width": 1024,
+    "webp": [],
+    "avif": [
+      1024
+    ]
+  },
+  "/projects/eclipse-rojo/evidencias/atmosferico.webp": {
+    "width": 1024,
+    "webp": [],
+    "avif": [
+      1024
+    ]
+  },
+  "/projects/eclipse-rojo/evidencias/espectrometro.webp": {
+    "width": 1024,
+    "webp": [],
+    "avif": [
+      1024
+    ]
+  },
+  "/projects/eclipse-rojo/evidencias/radar.webp": {
+    "width": 1024,
+    "webp": [],
+    "avif": [
+      1024
+    ]
+  },
+  "/projects/eclipse-rojo/evidencias/region.webp": {
+    "width": 1024,
+    "webp": [],
+    "avif": [
+      1024
+    ]
+  },
+  "/projects/eclipse-rojo/evidencias/termica.webp": {
+    "width": 1024,
+    "webp": [],
+    "avif": [
+      1024
+    ]
+  },
+  "/projects/eclipse-rojo/mars-texture.webp": {
+    "width": 2048,
+    "webp": [
+      1024
+    ],
+    "avif": [
+      1024,
+      2048
+    ]
+  },
+  "/projects/eclipse-rojo/menu.webp": {
+    "width": 1440,
+    "webp": [
+      640,
+      960
+    ],
+    "avif": [
+      640,
+      960,
+      1440
+    ]
+  },
+  "/projects/gym-zong/screen-01.webp": {
+    "width": 1080,
+    "webp": [
+      360,
+      540,
+      720
+    ],
+    "avif": [
+      360,
+      540,
+      720,
+      1080
+    ]
+  },
+  "/projects/gym-zong/screen-02.webp": {
+    "width": 1080,
+    "webp": [
+      360,
+      540,
+      720
+    ],
+    "avif": [
+      360,
+      540,
+      720,
+      1080
+    ]
+  },
+  "/projects/gym-zong/screen-03.webp": {
+    "width": 1080,
+    "webp": [
+      360,
+      540,
+      720
+    ],
+    "avif": [
+      360,
+      540,
+      720,
+      1080
+    ]
+  },
+  "/projects/gym-zong/screen-04.webp": {
+    "width": 1080,
+    "webp": [
+      360,
+      540,
+      720
+    ],
+    "avif": [
+      360,
+      540,
+      720,
+      1080
+    ]
+  },
+  "/projects/gym-zong/screen-05.webp": {
+    "width": 1080,
+    "webp": [
+      360,
+      540,
+      720
+    ],
+    "avif": [
+      360,
+      540,
+      720,
+      1080
+    ]
+  },
+  "/projects/gym-zong/screen-06.webp": {
+    "width": 1080,
+    "webp": [
+      360,
+      540,
+      720
+    ],
+    "avif": [
+      360,
+      540,
+      720,
+      1080
+    ]
+  },
+  "/projects/imoney/ajolote-perfil.webp": {
+    "width": 480,
+    "webp": [],
+    "avif": [
+      480
+    ]
+  },
+  "/projects/imoney/screen-01.webp": {
+    "width": 585,
+    "webp": [
+      360
+    ],
+    "avif": [
+      360,
+      585
+    ]
+  },
+  "/projects/imoney/screen-02.webp": {
+    "width": 585,
+    "webp": [
+      360
+    ],
+    "avif": [
+      360,
+      585
+    ]
+  },
+  "/projects/imoney/screen-03.webp": {
+    "width": 585,
+    "webp": [
+      360
+    ],
+    "avif": [
+      360,
+      585
+    ]
+  },
+  "/projects/imoney/screen-04.webp": {
+    "width": 585,
+    "webp": [
+      360
+    ],
+    "avif": [
+      360,
+      585
+    ]
+  },
+  "/projects/imoney/screen-05.webp": {
+    "width": 585,
+    "webp": [
+      360
+    ],
+    "avif": [
+      360,
+      585
+    ]
+  },
+  "/projects/imoney/screen-06.webp": {
+    "width": 585,
+    "webp": [
+      360
+    ],
+    "avif": [
+      360,
+      585
+    ]
+  },
+  "/certificates/eclipse-rojo-mini.webp": {
+    "width": 88,
+    "webp": [],
+    "avif": [
+      88
+    ]
+  },
+  "/certificates/eclipse-rojo-tile.webp": {
+    "width": 404,
+    "webp": [],
+    "avif": [
+      404
+    ]
+  },
+  "/certificates/innova-logo-mini.webp": {
+    "width": 88,
+    "webp": [],
+    "avif": [
+      88
+    ]
+  },
+  "/certificates/innova-logo.webp": {
+    "width": 404,
+    "webp": [],
+    "avif": [
+      404
+    ]
+  },
+  "/certificates/innovathon-2026.webp": {
+    "width": 1600,
+    "webp": [
+      800,
+      1200
+    ],
+    "avif": [
+      800,
+      1200,
+      1600
+    ]
+  },
+  "/certificates/innovathon-cert-mini.webp": {
+    "width": 88,
+    "webp": [],
+    "avif": [
+      88
+    ]
+  },
+  "/certificates/space-apps-2026.webp": {
+    "width": 1056,
+    "webp": [
+      640,
+      800
+    ],
+    "avif": [
+      640,
+      800,
+      1056
+    ]
+  },
+  "/certificates/space-apps-cert-mini.webp": {
+    "width": 88,
+    "webp": [],
+    "avif": [
+      88
+    ]
+  },
+  "/certificates/space-apps-logo-mini.webp": {
+    "width": 88,
+    "webp": [],
+    "avif": [
+      88
+    ]
+  },
+  "/certificates/space-apps-logo.webp": {
+    "width": 404,
+    "webp": [],
+    "avif": [
+      404
+    ]
+  },
+  "/certificates/zumek-icon.webp": {
+    "width": 404,
+    "webp": [],
+    "avif": [
+      404
+    ]
+  },
+  "/certificates/zumek-mini.webp": {
+    "width": 88,
+    "webp": [],
+    "avif": [
+      88
+    ]
+  }
+}

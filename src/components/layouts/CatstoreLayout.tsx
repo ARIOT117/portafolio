@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import type { CSSProperties } from 'react'
-import '@fontsource-variable/fraunces/wght.css'
-import '@fontsource-variable/fraunces/wght-italic.css'
-import '@fontsource-variable/inter'
+import '../../styles/fonts/fraunces.css'
+import '../../styles/fonts/fraunces-italic.css'
+import '../../styles/fonts/inter.css'
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
@@ -11,6 +11,7 @@ import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion
 import { Build, ScrollScene } from '../motion/ScrollScene'
 import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './CatstoreLayout.module.css'
+import Picture from '../Picture'
 
 type Lang = 'es' | 'en'
 const pick = (lang: Lang, v: { es: string; en: string }) => v[lang]
@@ -181,9 +182,10 @@ export default function CatstoreLayout({ project }: { project: Project }) {
             </div>
             <div className={styles.screens}>
               {shotSrc.map((src, i) => (
-                <img
+                <Picture
                   key={src}
                   className={styles.screen}
+                  sizes="(min-width: 62rem) 640px, 100vw"
                   data-active={active === i}
                   src={src}
                   alt={pick(lang, local.shots[i]!.alt)}
@@ -197,7 +199,7 @@ export default function CatstoreLayout({ project }: { project: Project }) {
             </div>
           </figure>
           <figure className={styles.phone}>
-            <img src={mobile!} alt={pick(lang, local.mobile)} width={780} height={1688} loading="lazy" decoding="async" />
+            <Picture src={mobile!} sizes="152px" alt={pick(lang, local.mobile)} width={780} height={1688} loading="lazy" decoding="async" />
           </figure>
         </motion.div>
         </Build>

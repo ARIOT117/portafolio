@@ -1,11 +1,11 @@
 import { motion, useMotionValue, useMotionValueEvent, useScroll, useTransform, type MotionValue } from 'motion/react'
 import { useRef, useState, type CSSProperties } from 'react'
-import '@fontsource/rajdhani/500.css'
-import '@fontsource/rajdhani/600.css'
-import '@fontsource/barlow/400.css'
-import '@fontsource/barlow/500.css'
-import '@fontsource/ibm-plex-mono/400.css'
-import '@fontsource/ibm-plex-mono/500.css'
+import '@fontsource/rajdhani/latin-500.css'
+import '@fontsource/rajdhani/latin-600.css'
+import '@fontsource/barlow/latin-400.css'
+import '@fontsource/barlow/latin-500.css'
+import '@fontsource/ibm-plex-mono/latin-400.css'
+import '@fontsource/ibm-plex-mono/latin-500.css'
 import type { Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useScroller } from '../../hooks/useScroller'
@@ -15,6 +15,9 @@ import { Build, ScrollScene } from '../motion/ScrollScene'
 import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import EclipseRojoPlanet from './EclipseRojoPlanet'
 import styles from './EclipseRojoLayout.module.css'
+import Picture from '../Picture'
+
+const MotionPicture = motion.create(Picture)
 
 type Bi = { es: string; en: string }
 const pick = (b: Bi, lang: Lang) => b[lang]
@@ -180,8 +183,8 @@ function ScanFrame({ reduced, lang }: { reduced: boolean; lang: Lang }) {
   return (
     <figure className={styles.scan}>
       <div ref={ref} className={styles.scanFrame}>
-        <img className={styles.scanBase} src="/projects/eclipse-rojo/evidencias/region.webp" alt={pick(L.scanAlt, lang)} width={1024} height={640} loading="lazy" />
-        <motion.img
+        <Picture className={styles.scanBase} src="/projects/eclipse-rojo/evidencias/region.webp" alt={pick(L.scanAlt, lang)} width={1024} height={640} loading="lazy" />
+        <MotionPicture
           className={styles.scanHeat}
           src="/projects/eclipse-rojo/evidencias/termica.webp"
           alt=""
@@ -312,7 +315,7 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
               </ul>
             </Build>
             <Build as="figure" i={2} blur={false} className={styles.shot}>
-              <img src={project.assets.cover} alt={pick(L.screenAlt, lang)} loading="lazy" width={1440} height={900} />
+              <Picture src={project.assets.cover} sizes="(min-width: 700px) 50vw, 100vw" alt={pick(L.screenAlt, lang)} loading="lazy" width={1440} height={900} />
             </Build>
           </div>
         </ScrollScene>
@@ -337,7 +340,7 @@ export default function EclipseRojoLayout({ project }: { project: Project }) {
                 <Build i={i % 3} blur={false}>
                   <figure className={styles.card}>
                     <div className={styles.cardMedia}>
-                      <img
+                      <Picture
                         src={`/projects/eclipse-rojo/evidencias/${e.src}.webp`}
                         alt={pick(e.alt, lang)}
                         width={1024}

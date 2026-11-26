@@ -1,5 +1,5 @@
-import '@fontsource-variable/geist'
-import '@fontsource-variable/geist-mono'
+import './styles/fonts/geist.css'
+import './styles/fonts/geist-mono.css'
 import './styles/tokens.css'
 import './styles/global.css'
 

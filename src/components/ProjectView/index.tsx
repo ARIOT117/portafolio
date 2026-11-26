@@ -1,5 +1,5 @@
 import { animate, motion, usePresence } from 'motion/react'
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { getProject, type Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
@@ -8,6 +8,7 @@ import { duration, easeOutExpo, useReducedMotionSafe } from '../../styles/motion
 import { CoverArt, useCover } from '../Folder/cover'
 import { layouts } from '../layouts'
 import { projectTitleId } from '../layouts/ProjectBasics'
+import LayoutErrorBoundary from './LayoutErrorBoundary'
 import styles from './ProjectView.module.css'
 
 /** Vistas oscuras: la barra y el botón Volver toman su fondo y tinta. */
@@ -77,6 +78,12 @@ function measureFlight(slug: string): Flight | null {
 const rectStyle = (r: Rect) => ({ left: r.left, top: r.top, width: r.width, height: r.height })
 const insetBottom = (px: number) => `inset(0px 0px ${Math.round(px)}px 0px)`
 
+/** Avisa cuando el layout diferido ya está montado (sus hermanos en Suspense no montan antes). */
+function LayoutMounted({ onMount }: { onMount: (ready: boolean) => void }) {
+  useEffect(() => onMount(true), [onMount])
+  return null
+}
+
 function ProjectDialog({ project }: { project: Project }) {
   const { t } = useT()
   const baseTitle = useRef(t.meta.title)
@@ -105,6 +112,8 @@ function ProjectDialog({ project }: { project: Project }) {
   const scrollerRef = useRef<HTMLDivElement>(null)
   const [scrolled, setScrolled] = useState(false)
   const [viewBg, setViewBg] = useState<string>()
+  // El layout es diferido: la medición del fondo espera a que aparezca en el DOM.
+  const [layoutReady, setLayoutReady] = useState(false)
 
   const close = useCallback(
     (byKeyboard = false) => {
@@ -167,7 +176,7 @@ function ProjectDialog({ project }: { project: Project }) {
       sc.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(id)
     }
-  }, [])
+  }, [layoutReady])
 
   // Título de la pestaña: "<proyecto> · Diego Esparza"; al cerrar vuelve al título base
   // (LangProvider fija el título base en su efecto, que corre después del de este hijo:
@@ -356,7 +365,12 @@ function ProjectDialog({ project }: { project: Project }) {
         transition={{ duration: isPresent ? (reduced ? 0.15 : 0.35) : 0.12, delay: isPresent && flight ? 0.16 : 0, ease: 'easeOut' }}
       >
         <div ref={scrollerRef} className={styles.scroller}>
-          <Layout project={project} />
+          <LayoutErrorBoundary>
+            <Suspense fallback={null}>
+              <Layout project={project} />
+              <LayoutMounted onMount={setLayoutReady} />
+            </Suspense>
+          </LayoutErrorBoundary>
         </div>
         <div
           aria-hidden

@@ -3,6 +3,7 @@ import type { Certificate } from '../../content/certificates'
 import { useT } from '../../i18n/context'
 import { useReducedMotionSafe } from '../../styles/motion'
 import styles from './CertificateFolder.module.css'
+import Picture from '../Picture'
 
 /*
  * Carpeta de constancia: port de IconFolder (21st.dev, @romanvasnev) con tema claro.
@@ -158,7 +159,7 @@ export default function CertificateFolder({
                 onPointerLeave={() => setHi((h) => (h === i ? null : h))}
               >
                 <span className={styles.face} data-fit={tile.fit}>
-                  <img src={tile.src} alt="" width={tile.width} height={tile.height} draggable={false} loading="lazy" decoding="async" className={styles.cover} />
+                  <Picture src={tile.src} alt="" width={tile.width} height={tile.height} sizes="160px" draggable={false} loading="lazy" decoding="async" className={styles.cover} />
                 </span>
                 <span className={styles.label}>{tile.label}</span>
               </span>
@@ -194,7 +195,7 @@ export default function CertificateFolder({
           {tiles.map((tile) => (
             <span key={tile.label} className={styles.mini}>
               <span className={styles.miniFace} data-fit={tile.fit}>
-                <img src={tile.mini} alt="" width={88} height={88} draggable={false} loading="lazy" decoding="async" className={styles.cover} />
+                <Picture src={tile.mini} alt="" width={88} height={88} draggable={false} loading="lazy" decoding="async" className={styles.cover} />
               </span>
             </span>
           ))}

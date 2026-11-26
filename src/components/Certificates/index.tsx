@@ -5,6 +5,7 @@ import { useT } from '../../i18n/context'
 import { Build, ScrollScene } from '../motion/ScrollScene'
 import CertificateFolder from './CertificateFolder'
 import styles from './Certificates.module.css'
+import Picture from '../Picture'
 
 const arrow = (
   <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -72,7 +73,16 @@ function CertificateDialog({ cert, onClose }: { cert: Certificate; onClose: (res
           </svg>
         </button>
         <figure className={styles.figure}>
-          <img src={cert.image} width={cert.imageW} height={cert.imageH} alt={text.alt} className={styles.image} />
+          <Picture
+            src={cert.image}
+            width={cert.imageW}
+            height={cert.imageH}
+            sizes="(max-width: 64rem) 100vw, 60rem"
+            loading="lazy"
+            decoding="async"
+            alt={text.alt}
+            className={styles.image}
+          />
         </figure>
         <div className={styles.body}>
           <div className={styles.dialogHead}>

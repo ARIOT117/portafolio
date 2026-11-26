@@ -80,8 +80,8 @@ describe('carpetas y vista de proyecto', () => {
       renderAt(`/p/${slug}`)
       const dialog = await screen.findByRole('dialog')
       // Solo los enlaces que salen del sitio; «Siguiente proyecto» es interno.
-      const links = within(dialog)
-        .getAllByRole('link')
+      // El layout carga diferido: se espera a que aparezcan los enlaces.
+      const links = (await within(dialog).findAllByRole('link'))
         .filter((a) => /^https?:\/\//.test(a.getAttribute('href') ?? ''))
       expect(links.length).toBeGreaterThan(0)
       for (const a of links) {

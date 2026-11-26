@@ -131,3 +131,23 @@
 .close[data-tone='dark']:hover {
   background: color-mix(in srgb, var(--view-bg, #0d141d) 88%, white 6%);
 }
+
+/* El chunk del layout no cargó (LayoutErrorBoundary) */
+.loadError {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md, 1rem);
+  padding: var(--gutter);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  text-align: center;
+}
+
+.reload {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

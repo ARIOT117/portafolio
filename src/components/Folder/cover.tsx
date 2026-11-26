@@ -1,15 +1,16 @@
 import { useEffect, useState, type CSSProperties } from 'react'
-import '@fontsource-variable/fraunces/wght.css'
-import '@fontsource-variable/fraunces/wght-italic.css'
-import '@fontsource-variable/manrope'
-import '@fontsource-variable/figtree'
-import '@fontsource/ibm-plex-mono/400.css'
-import '@fontsource/ibm-plex-mono/500.css'
-import '@fontsource/jetbrains-mono/400.css'
-import '@fontsource/rajdhani/600.css'
+import '../../styles/fonts/fraunces.css'
+import '../../styles/fonts/fraunces-italic.css'
+import '../../styles/fonts/manrope.css'
+import '../../styles/fonts/figtree.css'
+import '@fontsource/ibm-plex-mono/latin-400.css'
+import '@fontsource/ibm-plex-mono/latin-500.css'
+import '@fontsource/jetbrains-mono/latin-400.css'
+import '@fontsource/rajdhani/latin-600.css'
 import { gymZongKit, type Project } from '../../content/projects'
 import { useT } from '../../i18n/context'
 import styles from './covers.module.css'
+import Picture from '../Picture'
 
 let framesPromise: Promise<string[]> | null = null
 let framesCache: string[] | null = null
@@ -57,9 +58,10 @@ function EclipseCover({ eager }: Pick<Props, 'eager'>) {
     <>
       <span className={styles.erStars} />
       <span className={styles.erSphere}>
-        <img
+        <Picture
           className={styles.erMars}
           src="/projects/eclipse-rojo/mars-texture.webp"
+          sizes="300px"
           alt=""
           draggable={false}
           loading={eager ? 'eager' : 'lazy'}
@@ -102,8 +104,9 @@ function GymZongCover({ eager }: Pick<Props, 'eager'>) {
       </span>
       <span className={styles.gzLine}>{L.gym[lang]}</span>
       <span className={styles.gzPhone}>
-        <img
+        <Picture
           src="/projects/gym-zong/screen-01.webp"
+          sizes="180px"
           alt=""
           draggable={false}
           loading={eager ? 'eager' : 'lazy'}
@@ -152,7 +155,7 @@ function ImoneyCover({ eager }: Pick<Props, 'eager'>) {
   return (
     <span className={styles.imRoot}>
       <span className={styles.imBrand}>
-        <img
+        <Picture
           src="/projects/imoney/ajolote-perfil.webp"
           alt=""
           draggable={false}
@@ -207,8 +210,9 @@ function CatstoreCover({ eager }: Pick<Props, 'eager'>) {
     <span className={styles.csRoot}>
       <span className={styles.csSun} />
       <span className={styles.csArch}>
-        <img
+        <Picture
           src="/projects/catstore/home.webp"
+          sizes="700px"
           alt=""
           draggable={false}
           loading={eager ? 'eager' : 'lazy'}

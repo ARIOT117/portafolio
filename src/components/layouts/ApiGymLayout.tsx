@@ -1,4 +1,4 @@
-import '@fontsource-variable/manrope'
+import '../../styles/fonts/manrope.css'
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { AnimatePresence, animate, motion, useInView } from 'motion/react'
 import type { Project } from '../../content/projects'
@@ -8,6 +8,7 @@ import { tween, useReducedMotionSafe } from '../../styles/motion'
 import { Build, ScrollScene } from '../motion/ScrollScene'
 import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './ApiGymLayout.module.css'
+import Picture from '../Picture'
 
 interface ManifestExercise {
   id: string
@@ -269,9 +270,10 @@ function BrowserShots({ reduced }: { reduced: boolean }) {
         </div>
         <div className={styles.viewport}>
           {SHOTS.map((name, k) => (
-            <img
+            <Picture
               key={name}
               src={`/projects/apigym/${name}.webp`}
+              sizes="(min-width: 900px) 800px, 100vw"
               alt={ui.shotAlts[k]}
               width={1440}
               height={900}

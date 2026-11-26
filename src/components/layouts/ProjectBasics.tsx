@@ -6,6 +6,7 @@ import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { Build, ScrollScene, useBuildStyle } from '../motion/ScrollScene'
 import styles from './ProjectBasics.module.css'
+import Picture from '../Picture'
 
 /** Id del h1 del proyecto: lo usa la vista para aria-labelledby y para el foco. */
 export const projectTitleId = (slug: string) => `project-title-${slug}`
@@ -161,9 +162,10 @@ function NextCard({ next }: { next: Project }) {
       state={backgroundLocation ? { backgroundLocation } : undefined}
       className={styles.next}
     >
-      <img
+      <Picture
         className={styles.nextThumb}
         src={thumb.src}
+        sizes="112px"
         width={thumb.width}
         height={thumb.height}
         alt=""

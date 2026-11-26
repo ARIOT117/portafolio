@@ -7,6 +7,8 @@ import Footer from './components/Footer'
 import FolderGrid from './components/FolderGrid'
 import Hero from './components/Hero'
 import Intro from './components/Intro'
+import { useIntroPhase } from './components/Intro/introStore'
+import { preloadAllLayouts } from './components/layouts'
 import Nav from './components/Nav'
 import ProjectView from './components/ProjectView'
 import { OpenProjectContext } from './components/ProjectView/context'
@@ -38,6 +40,7 @@ export default function App() {
   const { lang } = useT()
   const location = useLocation()
   const navType = useNavigationType()
+  const introPhase = useIntroPhase()
   const match = useMatch('/p/:slug')
   const slug = match?.params.slug ?? null
   const backgroundLocation = (location.state as { backgroundLocation?: typeof location } | null)
@@ -53,6 +56,11 @@ export default function App() {
     if (navType === 'POP' && !isFirst) return
     document.getElementById(location.hash.slice(1))?.scrollIntoView()
   }, [location.key]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cuando termina la intro, los layouts de proyecto se descargan en tiempo ocioso.
+  useEffect(() => {
+    if (introPhase === 'done') preloadAllLayouts()
+  }, [introPhase])
 
   return (
     <OpenProjectContext.Provider value={slug}>

@@ -1,5 +1,5 @@
-import '@fontsource-variable/manrope'
-import '@fontsource-variable/inter'
+import '../../styles/fonts/manrope.css'
+import '../../styles/fonts/inter.css'
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useRef, useState, type PointerEvent, type KeyboardEvent, type CSSProperties } from 'react'
 import type { Project } from '../../content/projects'
@@ -9,6 +9,7 @@ import { easeOutExpo, useReducedMotionSafe } from '../../styles/motion'
 import { Build, ScrollScene } from '../motion/ScrollScene'
 import ProjectBasics, { ProjectClosing } from './ProjectBasics'
 import styles from './GymZongLayout.module.css'
+import Picture from '../Picture'
 
 type Bi = { es: string; en: string }
 
@@ -150,7 +151,7 @@ function Screens({ images }: { images: string[] }) {
               <figure className={styles.figure}>
                 <div className={styles.phone}>
                   <div className={styles.screen}>
-                    <img src={src} width={1080} height={2400} alt={alt(i)} loading={i < 3 ? 'eager' : 'lazy'} draggable={false} />
+                    <Picture src={src} sizes="(max-width: 700px) 62vw, 256px" width={1080} height={2400} alt={alt(i)} loading={i < 3 ? 'eager' : 'lazy'} draggable={false} />
                   </div>
                 </div>
                 <figcaption className={styles.caption}>
@@ -216,8 +217,9 @@ function Screens({ images }: { images: string[] }) {
                 <div className={styles.float} style={{ animationDelay: `${-i * 1.07}s` }}>
                   <div className={styles.phone}>
                     <div className={styles.screen}>
-                      <img
+                      <Picture
                         src={src}
+                        sizes="(max-width: 700px) 62vw, 256px"
                         width={1080}
                         height={2400}
                         alt={alt(i)}
@@ -331,10 +333,10 @@ export default function GymZongLayout({ project }: { project: Project }) {
             <Build as="figure" i={1} className={styles.details}>
               <div className={styles.crops}>
                 <div className={styles.crop} data-shot="stats">
-                  <img src="/projects/gym-zong/screen-05.webp" width={1080} height={2400} alt={L.statsAlt[lang]} loading="lazy" decoding="async" />
+                  <Picture src="/projects/gym-zong/screen-05.webp" sizes="(min-width: 700px) 400px, 90vw" width={1080} height={2400} alt={L.statsAlt[lang]} loading="lazy" decoding="async" />
                 </div>
                 <div className={styles.crop} data-shot="records">
-                  <img src="/projects/gym-zong/screen-06.webp" width={1080} height={2400} alt={L.recordsAlt[lang]} loading="lazy" decoding="async" />
+                  <Picture src="/projects/gym-zong/screen-06.webp" sizes="(min-width: 700px) 400px, 90vw" width={1080} height={2400} alt={L.recordsAlt[lang]} loading="lazy" decoding="async" />
                 </div>
               </div>
               <figcaption className={styles.detailCap}>

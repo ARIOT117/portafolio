@@ -1,6 +1,6 @@
-import '@fontsource-variable/figtree'
-import '@fontsource/jetbrains-mono/400.css'
-import '@fontsource/jetbrains-mono/500.css'
+import '../../styles/fonts/figtree.css'
+import '@fontsource/jetbrains-mono/latin-400.css'
+import '@fontsource/jetbrains-mono/latin-500.css'
 import { useInView } from 'motion/react'
 import { useRef, type CSSProperties } from 'react'
 import { imoneyKit, type Project } from '../../content/projects'
@@ -10,6 +10,7 @@ import { useReducedMotionSafe } from '../../styles/motion'
 import { Build, ScrollScene } from '../motion/ScrollScene'
 import { ProjectClosing, ProjectLinks, projectTitleId } from './ProjectBasics'
 import styles from './ImoneyLayout.module.css'
+import Picture from '../Picture'
 
 interface Ui {
   context: string
@@ -62,7 +63,7 @@ function Phone({ src, alt, eager, width, height }: { src: string; alt: string; e
   return (
     <div className={styles.phone}>
       <div className={styles.screen}>
-        <img src={src} width={width} height={height} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" draggable={false} />
+        <Picture src={src} sizes="(max-width: 600px) 72vw, 272px" width={width} height={height} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" draggable={false} />
       </div>
     </div>
   )
@@ -146,7 +147,7 @@ export default function ImoneyLayout({ project }: { project: Project }) {
         <div className={styles.heroText}>
           <Build as="p" className={styles.kicker}>
             {project.assets.logo && (
-              <img src={project.assets.logo} alt="" width={480} height={408} className={styles.logo} />
+              <Picture src={project.assets.logo} alt="" width={480} height={408} className={styles.logo} />
             )}
             <span>{text.kicker}</span>
           </Build>

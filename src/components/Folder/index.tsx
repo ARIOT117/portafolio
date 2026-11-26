@@ -4,6 +4,7 @@ import { projects, type Project } from '../../content/projects'
 import { useProjectText } from '../../content/useProjectText'
 import { useT } from '../../i18n/context'
 import { useReducedMotionSafe } from '../../styles/motion'
+import { preloadLayout } from '../layouts'
 import { OpenProjectContext } from '../ProjectView/context'
 import { CoverArt, useCover } from './cover'
 import FolderShell from './FolderShell'
@@ -55,6 +56,9 @@ export default function Folder({ project, caption = true }: { project: Project; 
           '--bob-delay': `${-index * 0.95}s`,
         } as React.CSSProperties
       }
+      onPointerEnter={() => preloadLayout(project.slug)}
+      onFocus={() => preloadLayout(project.slug)}
+      onTouchStart={() => preloadLayout(project.slug)}
       onPointerMove={onPointerMove}
       onPointerLeave={() => !frozen() && setOffset(0, 0)}
     >
